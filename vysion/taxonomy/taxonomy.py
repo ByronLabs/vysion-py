@@ -537,7 +537,7 @@ class Telegram(Entity):
     )
 
 
-class Whatsapp(Entity):
+class WhatsApp(Entity):
 
     _flavours = Flavours(
         vysion=Vysion("network", "im", "whatsapp"),

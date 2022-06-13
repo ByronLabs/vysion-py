@@ -2,19 +2,27 @@
 
 # TODO Referenciar vt-py
 
-import requests
-import json
+from datetime import datetime
 from enum import Enum
+from imghdr import what
+import json
+from this import s
+from urllib.parse import urljoin
 
-from vysion.model import models
+import requests
+from requests.compat import urljoin, urlencode
+
+from vysion.model import model
 
 
 _API_HOST = 'https://api.vysion.ai'
+_API_HOST = 'https://vysion-api-secured-afkbm06.nw.gateway.dev'
 
 # All API endpoints start with this prefix, you don't need to include the
 # prefix in the paths you request as it's prepended automatically.
-_ENDPOINT_PREFIX = '/api/v1'
+_ENDPOINT_PREFIX = '/api/v1/'
 
+_BASE_API = urljoin(_API_HOST, _ENDPOINT_PREFIX)
 
 class VysionResponse():
     pass
@@ -34,44 +42,57 @@ class VysionErrors:
         UNAUTHORIZED = 403
 
 
-class VysionURL():
-  pass
-      
-class VysionPage(VysionData):
-
-  def __init__(self, page:models.Page):
-
 
 class Client():
 
-    def __init__(self, apiKey:str, headers:dict=None, proxy:dict=None):
+    def __init__(self, apiKey:str, headers: dict = dict(), proxy:dict=None):
         
-        assert isinstance(apiKey, str)
+        assert isinstance(apiKey, str), "API key MUST be a string"
 
         self.apiKey = apiKey
         self.proxy = proxy
+        self.headers=headers
 
-    def __get_session__(self) --> requests.requests.Session:
+        self._session = None
 
-        if not self._session_:
+
+    def __get_session__(self) -> requests.Session:
+
+        if self._session is None:
 
             headers = self.headers.copy()
             headers.update({
                 "X-API-KEY": self.apiKey,
             })
 
-            self._session_ = requests.Session(headers=headers)
+            self._session = requests.Session()
+            self._session.headers.update(headers)
 
-        return self._session_
+        return self._session
 
-    def add_url(self, url:str, type:VysionURL.Type):
-        """Add a Tor URL to be analyzed by PARCHE.
+    # def add_url(self, url:str, type:VysionURL.Type):
+    #     """Add a Tor URL to be analyzed by PARCHE.
 
-        :param url: URL to be scanned.
-        :param type: Instance of :class:`VysionURL.Type`
-        :returns: An instance of :class:`VysionResponse`
-        """
-        pass
+    #     :param url: URL to be scanned.
+    #     :param type: Instance of :class:`VysionURL.Type`
+    #     :returns: An instance of :class:`VysionResponse`
+    #     """
+    #     pass
+
+    def _build_api_url_(self, endpoint, param, **query_params):
+      
+      base = urljoin(_BASE_API, f"{endpoint}/{param}")
+
+      query_params_initialzed = query_params.copy()
+
+      for qp in query_params:
+        if query_params[qp] is None:
+          del query_params_initialzed[qp]
+
+      query = "?" + urlencode(query_params_initialzed)
+
+      return urljoin(base, query)
+
 
     def find_btc(self):
         pass
@@ -79,13 +100,58 @@ class Client():
     def find_onion(self):
         pass
 
-    def find_email(self, value):
-        session = self.__get_session__()
+    def find_email(self, email: str, page: int = 1, before: datetime = None, after: datetime = None):
+
+      session = self.__get_session__()
+      url = self._build_api_url_("email", email, page=page, before=before, after=after)
+      print(url)
+      r = session.get(url)
+
+      response = r.json()
+      raw_hits = response.get('hits', [])
+
+      hits = []
+      for raw_hit in raw_hits:
+
+        # TODO Create builder
+        source = raw_hit['_source']
+
+        url = model.URL(
+          protocol=source.get('protocol'),
+          domain=source.get('domain'),
+          port=source.get('port'),
+          path=source.get('path'),
+          signature=source.get('signature'),
+          network=model.Network(source.get('network')),
+        )
+
+        page = model.Page(url=url, 
+          parent=source.get('parent'),
+          title=source.get('title'),
+          language=source.get('language'),
+          html=source.get('html'),
+          sha1sum=source.get('sha1sum'),
+          ssdeep=source.get('ssdeep'),
+          date=source.get('date'),
+        )
+
+        email = [model.Email(e) for e in source.get('email', [])]
+        paste = [model.Paste(v) for v in source.get('pastebin-dumps', [])] # TODO pastebin-dumps -> pastebin
+        skype = [model.Skype(v) for v in source.get('skype', [])]
+        telegram = [model.Telegram(v) for v in source.get('telegram', [])]
+        whatsapp = [model.Whatsapp(v) for v in source.get('whatsapp', [])]
 
 
+        hit = model.Hit(page  = page, email=email, paste=paste, skype=skype, telegram=telegram, whatsapp=whatsapp)
+        hits.append(hit)
 
+      return model.Result(hits=hits)
+
+
+# https://vysion-api-secured-afkbm06.nw.gateway.dev/api/v1/email/purplefdw@protonmail.ch' \
 
 '''
+SAMPLE API's RESPONSE (20220613)
 $ curl --location --request GET 'https://vysion-api-secured-afkbm06.nw.gateway.dev/api/v1/email/purplefdw@protonmail.ch' --header 'Accept: application/json' --header 'x-api-key: *********************' | jq 
 
 {
