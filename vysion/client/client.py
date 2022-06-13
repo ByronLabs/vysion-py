@@ -4,15 +4,15 @@
 
 from datetime import datetime
 from enum import Enum
-from imghdr import what
 import json
 from this import s
+from typing import List
 from urllib.parse import urljoin
 
 import requests
 from requests.compat import urljoin, urlencode
 
-from vysion.model import model
+import vysion.model as model
 
 
 _API_HOST = 'https://api.vysion.ai'
@@ -45,7 +45,7 @@ class VysionErrors:
 
 class Client():
 
-    def __init__(self, apiKey:str, headers: dict = dict(), proxy:dict=None):
+    def __init__(self, apiKey:str, headers: dict = dict(), proxy: dict=None):
         
         assert isinstance(apiKey, str), "API key MUST be a string"
 
@@ -110,42 +110,7 @@ class Client():
       response = r.json()
       raw_hits = response.get('hits', [])
 
-      hits = []
-      for raw_hit in raw_hits:
-
-        # TODO Create builder
-        source = raw_hit['_source']
-
-        url = model.URL(
-          protocol=source.get('protocol'),
-          domain=source.get('domain'),
-          port=source.get('port'),
-          path=source.get('path'),
-          signature=source.get('signature'),
-          network=model.Network(source.get('network')),
-        )
-
-        page = model.Page(url=url, 
-          parent=source.get('parent'),
-          title=source.get('title'),
-          language=source.get('language'),
-          html=source.get('html'),
-          sha1sum=source.get('sha1sum'),
-          ssdeep=source.get('ssdeep'),
-          date=source.get('date'),
-        )
-
-        email = [model.Email(e) for e in source.get('email', [])]
-        paste = [model.Paste(v) for v in source.get('pastebin-dumps', [])] # TODO pastebin-dumps -> pastebin
-        skype = [model.Skype(v) for v in source.get('skype', [])]
-        telegram = [model.Telegram(v) for v in source.get('telegram', [])]
-        whatsapp = [model.Whatsapp(v) for v in source.get('whatsapp', [])]
-
-
-        hit = model.Hit(page  = page, email=email, paste=paste, skype=skype, telegram=telegram, whatsapp=whatsapp)
-        hits.append(hit)
-
-      return model.Result(hits=hits)
+      return model.Result.process_response(raw_hits)
 
 
 # https://vysion-api-secured-afkbm06.nw.gateway.dev/api/v1/email/purplefdw@protonmail.ch' \

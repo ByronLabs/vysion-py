@@ -112,6 +112,48 @@ class Result():
     total: int
     hits: List[Hit] = dataclasses.field(default_factory=lambda: [])
 
+    @classmethod
+    def process_response(cls, raw_hits) -> List[Hit]:
+    
+        hits = []
+        
+        for raw_hit in raw_hits:
+
+            # TODO Create builder
+            source = raw_hit['_source']
+
+            url = URL(
+            protocol=source.get('protocol'),
+            domain=source.get('domain'),
+            port=source.get('port'),
+            path=source.get('path'),
+            signature=source.get('signature'),
+            network=Network(source.get('network')),
+            )
+
+            page = Page(url=url, 
+            parent=source.get('parent'),
+            title=source.get('title'),
+            language=source.get('language'),
+            html=source.get('html'),
+            sha1sum=source.get('sha1sum'),
+            ssdeep=source.get('ssdeep'),
+            date=source.get('date'),
+            )
+
+            email = [Email(e) for e in source.get('email', [])]
+            paste = [Paste(v) for v in source.get('pastebin-dumps', [])] # TODO pastebin-dumps -> pastebin
+            skype = [Skype(v) for v in source.get('skype', [])]
+            telegram = [Telegram(v) for v in source.get('telegram', [])]
+            whatsapp = [Whatsapp(v) for v in source.get('whatsapp', [])]
+
+            hit = Hit(page  = page, email=email, paste=paste, skype=skype, telegram=telegram, whatsapp=whatsapp)
+            
+            hits.append(hit)
+        
+        return cls(hits = hits)
+
+
     def __init__(self, hits):
         self.hits = hits
         self.total = len(self.hits)
