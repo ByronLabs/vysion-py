@@ -1,25 +1,227 @@
-#!/bin/env python3.10
+#!/usr/bin/env python3.10
+"""
+   Copyright 2022 ByronLabs S.L.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+"""
 
 from datetime import datetime
 from typing import List, Optional
+from enum import Enum, IntEnum
 
 from pydantic import BaseModel, Field, constr
 
 from vysion import taxonomy as vystaxonomy
 
 
-# TODO Enums?
+class Network(str, Enum):
 
-class Network(BaseModel):
+    tor = "tor"
+    i2p = "i2p"
+    zeronet = "zeronet"
+    freenet = "freenet"
+    paste = "paste"
 
-    value: str
 
+class Language(str, Enum):
 
-class Language(BaseModel):
+    '''
+    Using names from ISO 639-1
+    '''
 
-    value: str
-
-#-- END ENUMS ---
+    avaric = "av"
+    swati = "ss"
+    russian = "ru"
+    lingala = "ln"
+    afar = "aa"
+    mongolian = "mn"
+    tahitian = "ty"
+    somali = "so"
+    gaelic = "gd"
+    uighur = "ug"
+    pushto = "ps"
+    akan = "ak"
+    abkhazian = "ab"
+    tamil = "ta"
+    micmac = "Mi"
+    kannada = "kn"
+    cree = "cr"
+    ndonga = "ng"
+    aymara = "ay"
+    italian = "it"
+    latvian = "lv"
+    ukrainian = "uk"
+    malay = "ms"
+    ganda = "lg"
+    finnish = "fi"
+    tswana = "tn"
+    telugu = "te"
+    chuvash = "cv"
+    ewe = "ee"
+    azerbaijani = "az"
+    lao = "lo"
+    sindhi = "sd"
+    sardinian = "sc"
+    thai = "th"
+    haitian = "ht"
+    bihariLanguages = "bh"
+    romansh = "rm"
+    bashkir = "ba"
+    volapük = "vo"
+    yiddish = "yi"
+    guarani = "gn"
+    croatian = "hr"
+    bambara = "bm"
+    belarusian = "be"
+    sundanese = "su"
+    kongo = "kg"
+    kirghiz = "ky"
+    nepali = "ne"
+    icelandic = "is"
+    herero = "hz"
+    lithuanian = "lt"
+    fulah = "ff"
+    swahili = "sw"
+    manx = "gv"
+    marathi = "mr"
+    sinhala = "si"
+    tajik = "tg"
+    marshallese = "mh"
+    aragonese = "an"
+    dutch = "nl"
+    hindi = "hi"
+    ido = "io"
+    tagalog = "tl"
+    japanese = "ja"
+    centralKhmer = "km"
+    greek = "el"
+    maori = "mi"
+    luxembourgish = "lb"
+    slovenian = "sl"
+    maltese = "mt"
+    kikuyu = "ki"
+    tatar = "tt"
+    lubaKatanga = "lu"
+    swedish = "sv"
+    panjabi = "pa"
+    kashmiri = "ks"
+    divehi = "dv"
+    indonesian = "id"
+    malagasy = "mg"
+    oriya = "or"
+    kuanyama = "kj"
+    sango = "sg"
+    westernFrisian = "fy"
+    zhuang = "za"
+    arabic = "ar"
+    afrikaans = "af"
+    cornish = "kw"
+    xhosa = "xh"
+    armenian = "hy"
+    malayalam = "ml"
+    sotho = "st"
+    esperanto = "eo"
+    latin = "la"
+    korean = "ko"
+    interlingua = "ia"
+    albanian = "sq"
+    catalan = "ca"
+    norwegianNynorsk = "nn"
+    galician = "gl"
+    kurdish = "ku"
+    igbo = "ig"
+    twi = "tw"
+    inuktitut = "iu"
+    hungarian = "hu"
+    yoruba = "yo"
+    tsonga = "ts"
+    slovak = "sk"
+    dzongkha = "dz"
+    churchSlavicc = "cu"
+    quechua = "qu"
+    romanian = "ro"
+    fijian = "fj"
+    chechen = "ce"
+    amharic = "am"
+    burmese = "my"
+    gujarati = "gu"
+    samoan = "sm"
+    chamorro = "ch"
+    irish = "ga"
+    french = "fr"
+    ndebele = "nd"
+    pali = "pi"
+    vietnamese = "vi"
+    kazakh = "kk"
+    navajo = "nv"
+    inupiaq = "ik"
+    avestan = "ae"
+    nauru = "na"
+    danish = "da"
+    breton = "br"
+    persian = "fa"
+    serbian = "sr"
+    georgian = "ka"
+    english = "en"
+    sichuanYi = "ii"
+    oromo = "om"
+    northernSami = "se"
+    venda = "ve"
+    chinese = "zh"
+    norwegian = "no"
+    interlingue = "ie"
+    rundi = "rn"
+    bislama = "bi"
+    hiriMotu = "ho"
+    faroese = "fo"
+    shona = "sn"
+    bengali = "bn"
+    kalaallisut = "kl"
+    bokmål = "nb"
+    occitan = "oc",
+    polish = "pl"
+    bulgarian = "bg"
+    assamese = "as"
+    limburgan = "li"
+    turkish = "tr"
+    zulu = "zu"
+    corsican = "co"
+    kanuri = "kr"
+    ojibwa = "oj"
+    tonga = "to",
+    sanskrit = "sa"
+    hebrew = "he"
+    wolof = "wo"
+    kinyarwanda = "rw"
+    turkmen = "tk"
+    uzbek = "uz"
+    ossetian = "os"
+    tibetan = "bo"
+    komi = "kv"
+    portuguese = "pt"
+    macedonian = "mk"
+    javanese = "jv"
+    basque = "eu"
+    urdu = "ur"
+    tigrinya = "ti"
+    bosnian = "bs"
+    estonian = "et"
+    hausa = "ha"
+    walloon = "wa"
+    welsh = "cy"
+    czech = "cs"
+    german = "de"
+    spanish = "es"
 
 
 class Email(BaseModel):
@@ -74,7 +276,7 @@ class URL(BaseModel):
     _taxonomy = [
         vystaxonomy.URL
     ]
-    
+   
     protocol: str
     domain: str
     port: int
@@ -88,7 +290,7 @@ class Page(BaseModel):
     url: URL
     parent: str
     title: str
-    language: str
+    language: Language
     html: str
     sha1sum: str
     ssdeep: str
@@ -109,49 +311,6 @@ class Result(BaseModel):
 
     total: int = 0
     hits: List[Hit] = Field(default_factory=lambda: [])
-
-    @classmethod
-    def process_response(cls, raw_hits: List[dict]) -> List[Hit]:
-    
-        hits = []
-        
-        for raw_hit in raw_hits:
-
-            # TODO Create builder
-            source = raw_hit['_source']
-
-            url = URL(
-                protocol=source.get('protocol'),
-                domain=source.get('domain'),
-                port=source.get('port'),
-                path=source.get('path'),
-                signature=source.get('signature'),
-                network=Network(value = source.get('network')),
-            )
-
-            page = Page(
-                url=url, 
-                parent=source.get('parent'),
-                title=source.get('title'),
-                language=source.get('language'),
-                html=source.get('html'),
-                sha1sum=source.get('sha1sum'),
-                ssdeep=source.get('ssdeep'),
-                date=source.get('date'),
-            )
-
-            email = [Email(value=e) for e in source.get('email', [])]
-            paste = [Paste(value=v) for v in source.get('pastebin-dumps', [])] # TODO pastebin-dumps -> paste
-            skype = [Skype(value=v) for v in source.get('skype', [])]
-            telegram = [Telegram(value=v) for v in source.get('telegram', [])]
-            whatsapp = [WhatsApp(value=v) for v in source.get('whatsapp', [])]
-
-            hit = Hit(page  = page, email=email, paste=paste, skype=skype, telegram=telegram, whatsapp=whatsapp)
-            
-            hits.append(hit)
-        
-        return cls(hits=hits)
-
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

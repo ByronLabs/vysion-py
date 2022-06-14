@@ -1,4 +1,19 @@
-#!/bin/env python3
+#!/usr/bin/env python3.10
+"""
+   Copyright 2022 ByronLabs S.L.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+"""
 
 # TODO Referenciar vt-py
 
@@ -52,7 +67,6 @@ class Client():
 
         self._session = None
 
-
     def __get_session__(self) -> requests.Session:
 
         if self._session is None:
@@ -82,9 +96,9 @@ class Client():
 
       query_params_initialzed = query_params.copy()
 
-      for qp in query_params:
-        if query_params[qp] is None:
-          del query_params_initialzed[qp]
+      for i, v in query_params.items():
+        if v is None:
+          del query_params_initialzed[i]
 
       query = "?" + urlencode(query_params_initialzed)
 
@@ -135,7 +149,7 @@ class Client():
     # def consume_feed(self):
     #   pass
 
-    def find_email(self, email: str, page: int = 1, before: datetime = None, after: datetime = None):
+    def find_email(self, email: str, page: int = 1, before: datetime = None, after: datetime = None) -> model.Result:
       
       url = self._build_api_url_("email", email, page=page, before=before, after=after)
 

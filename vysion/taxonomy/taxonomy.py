@@ -1,16 +1,51 @@
-from tkinter import Entry
-from .flavours import Flavours, EmptyFlavour, DBSafe, MISP, Vysion
+#!/usr/bin/env python3.10
+"""
+   Copyright 2022 ByronLabs S.L.
 
-'''
-Vysion taxonomy 1.0
-'''
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+"""
+
+from vysion.taxonomy.flavours import Flavours, EmptyFlavour, DBSafe, MISP, Vysion
+
+"""
+    
+    # Vysion taxonomy 1.0
+
+    Siguiendo metodología de MISP:
+
+    - https://github.com/MISP/misp-taxonomies/blob/main/tools/docs/images/taxonomy-explanation.png?raw=true
+
+    Tratar de ajustarse a los nombres ("value") que utilicen ellos.
+
+    Predicados propios
+
+    
+    ## ENTITY TEMPLATE
+    
+    class Template(Entity):
+
+        _flavours = Flavours(
+            vysion=Vysion(namespace="vysion", predicate="api", value="template"),
+            dbsafe=EmptyFlavour(),
+            misp=EmptyFlavour,
+            stix=EmptyFlavour(),
+            case=EmptyFlavour()
+        )
+
+"""
 
 class Field():
     pass
-
-# class Phone(TimedItem):
-#     number = scrapy.Field()
-#     found_at = scrapy.Field()
 
 
 # class Username(TimedItem):
@@ -23,60 +58,13 @@ class Field():
 #     found_at = scrapy.Field()
 
 
-# class BTCWallet(TimedItem):
-#     address = scrapy.Field()
-#     found_at = scrapy.Field()
-
-
 # class TwitterUsername(TimedItem):
 #     name = scrapy.Field()
 #     found_at = scrapy.Field()
 
-
-# class I2P_URL(TimedItem):
-#     address = scrapy.Field()
-#     found_at = scrapy.Field(default=None)
-
-
-# class Tor_URL(TimedItem):
-#     address = scrapy.Field()
-#     found_at = scrapy.Field(default=None)
-
-
-# class Freenet_URL(TimedItem):
-#     address = scrapy.Field()
-#     found_at = scrapy.Field(default=None)
-
-
-# class Zeronet_URL(TimedItem):
-#     address = scrapy.Field()
-#     found_at = scrapy.Field(default=None)
-
-
-# class Whatsapp_URL(TimedItem):
-#     address = scrapy.Field()
-#     found_at = scrapy.Field()
-
-
-# class Telegram_URL(TimedItem):
-#     address = scrapy.Field()
-#     found_at = scrapy.Field()
-
-
-# class Skype_URL(TimedItem):
-#     address = scrapy.Field()
-#     found_at = scrapy.Field()
-
-
 # class Discord_URL(TimedItem):
 #     address = scrapy.Field()
 #     found_at = scrapy.Field()
-
-
-# class Paste(TimedItem):
-#     address = scrapy.Field()
-#     found_at = scrapy.Field()
-
 
 # class Metadata(TimedItem):
 #     file_name = scrapy.Field()
@@ -86,24 +74,7 @@ class Field():
 #     raw_metadata = scrapy.Field()
 #     found_at = scrapy.Field()
 
-
-# class Page(TimedItem):
-#     title = scrapy.Field()
-#     lang = scrapy.Field()
-#     value = scrapy.Field()
-#     sha1sum = scrapy.Field()
-#     ssdeep = scrapy.Field()
-#     found_at = scrapy.Field()
-
-# class Phone(Item):
-#     pass
-
-
 # class Keyword(Item):
-#     pass
-
-
-# class TW_Account(Item):
 #     pass
 
 
@@ -119,19 +90,11 @@ class Field():
 #     pass
 
 
-# class Password(Item):
-#     pass
-
-
 # class Base64(Item):
 #     pass
 
 
 # class OwnName(Item):
-#     pass
-
-
-# class Paste(Item):
 #     pass
 
 # class MD5(Item):
@@ -159,29 +122,6 @@ class Entity:
 
 
 # class XMR
-
-'''
-    Siguiendo metodología de MISP:
-
-    - https://github.com/MISP/misp-taxonomies/blob/main/tools/docs/images/taxonomy-explanation.png?raw=true
-
-    Tratar de ajustarse a los nombres ("value") que utilicen ellos.
-
-    Predicados propios
-'''
-
-'''
-TEMPLATE ENTITY
-'''
-class Template(Entity):
-
-    _flavours = Flavours(
-        vysion=Vysion(namespace="vysion", predicate="api", value="template"),
-        dbsafe=EmptyFlavour(),
-        misp=EmptyFlavour,
-        stix=EmptyFlavour(),
-        case=EmptyFlavour()
-    )
 
 
 class Bitcoin_Address(Entity):
