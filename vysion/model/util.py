@@ -16,7 +16,7 @@
 """
 
 from typing import List
-from .model import URL, Email, Hit, Page, Paste, Result, Skype, Telegram, WhatsApp
+from .model import URL, Email, Hit, Network, Page, Paste, Result, Skype, Telegram, WhatsApp
 
 def process_response(raw_elk_hits: List[dict]) -> Result:
 

@@ -25,7 +25,7 @@ from pydantic import validate_arguments
 import requests
 
 import vysion.model as model
-
+from vysion.model.util import process_response
 
 _API_HOST = 'https://api.vysion.ai'
 _API_HOST = 'https://vysion-api-secured-afkbm06.nw.gateway.dev'
@@ -122,7 +122,7 @@ class Client():
       response = r.json()
       raw_hits = response.get('hits', [])
 
-      return model.Result.process_response(raw_hits)
+      return process_response(raw_hits)
 
 
     def get_document(self, document_id: str):
@@ -135,7 +135,7 @@ class Client():
       response = r.json()
       raw_hits = response.get('hits', [])
 
-      return model.Result.process_response(raw_hits)
+      return process_response(raw_hits)
 
     # def find_btc(self):
     #   pass
@@ -159,7 +159,7 @@ class Client():
       response = r.json()
       raw_hits = response.get('hits', [])
 
-      return model.Result.process_response(raw_hits)
+      return process_response(raw_hits)
 
 
 # https://vysion-api-secured-afkbm06.nw.gateway.dev/api/v1/email/purplefdw@protonmail.ch' \
