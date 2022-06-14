@@ -5,12 +5,9 @@
 from datetime import datetime
 from enum import Enum
 import json
-from this import s
-from typing import List
-from urllib.parse import urljoin
-
+from urllib.parse import urljoin, urlencode
+from pydantic import validate_arguments
 import requests
-from requests.compat import urljoin, urlencode
 
 import vysion.model as model
 
@@ -93,18 +90,56 @@ class Client():
 
       return urljoin(base, query)
 
-
-    def find_btc(self):
-        pass
-
-    def find_onion(self):
-        pass
-
-    def find_email(self, email: str, page: int = 1, before: datetime = None, after: datetime = None):
+    def search(self, query: str, exact: bool = False, network: model.Network = None, language: model.Language = None, page: int = 1, before: datetime = None, after: datetime = None):
+      
+      url = self._build_api_url_(
+            "search", query, 
+            exact = exact, 
+            network = network, 
+            language = language, 
+            page=page, 
+            before=before, 
+            after=after
+      )
 
       session = self.__get_session__()
+      r = session.get(url)
+
+      response = r.json()
+      raw_hits = response.get('hits', [])
+
+      return model.Result.process_response(raw_hits)
+
+
+    def get_document(self, document_id: str):
+      
+      url = self._build_api_url_("document", document_id)
+
+      session = self.__get_session__()
+      r = session.get(url)
+
+      response = r.json()
+      raw_hits = response.get('hits', [])
+
+      return model.Result.process_response(raw_hits)
+
+    # def find_btc(self):
+    #   pass
+
+    # def find_onion(self):
+    #   pass
+
+    # def add_onion(self):
+    #   pass
+
+    # def consume_feed(self):
+    #   pass
+
+    def find_email(self, email: str, page: int = 1, before: datetime = None, after: datetime = None):
+      
       url = self._build_api_url_("email", email, page=page, before=before, after=after)
-      print(url)
+
+      session = self.__get_session__()
       r = session.get(url)
 
       response = r.json()

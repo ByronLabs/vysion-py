@@ -67,6 +67,8 @@ class Flavours:
 
         assert None not in (vysion, misp, stix, case, dbsafe)
 
+
+        # TODO Each one should contain a list of names?
         self.vysion = vysion
         self.misp = misp
         self.stix = stix

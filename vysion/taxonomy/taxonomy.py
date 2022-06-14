@@ -187,35 +187,29 @@ class Template(Entity):
 class Bitcoin_Address(Entity):
 
     _flavours = Flavours(
-        vysion=Vysion("digital-asset", "cryptocoin", "bitcoin-address"),
+        vysion=Vysion("digital-asset", "cryptocurrency", "bitcoin-address"),
         dbsafe=DBSafe("vysion", "automatic-detection", "bitcoin-address"),
         misp=MISP("infoleak", "automatic-detection", "bitcoin-address"),
         stix=EmptyFlavour(),
         case=EmptyFlavour()
     )
 
-    address = Field()
-    found_at = Field()
-
 
 class Binance_Address(Entity):
 
     _flavours = Flavours(
-        vysion=Vysion("digital-asset", "cryptocoin", "binance-address"),
+        vysion=Vysion("digital-asset", "cryptocurrency", "binance-address"),
         dbsafe=DBSafe("vysion", "automatic-detection", "binance-address"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
         case=EmptyFlavour()
     )
 
-    address = Field()
-    found_at = Field()
-
 
 class Polkadot_Address(Entity):
 
     _flavours = Flavours(
-        vysion=Vysion("digital-asset", "cryptocoin", "polkadot-address"),
+        vysion=Vysion("digital-asset", "cryptocurrency", "polkadot-address"),
         dbsafe=DBSafe("vysion", "automatic-detection", "polkadot-address"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
@@ -229,7 +223,7 @@ class Polkadot_Address(Entity):
 class Ethereum_Address(Entity):
 
     _flavours = Flavours(
-        vysion=Vysion("digital-asset", "cryptocoin", "ethereum-address"),
+        vysion=Vysion("digital-asset", "cryptocurrency", "ethereum-address"),
         dbsafe=DBSafe("vysion", "automatic-detection", "ethereum-address"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
@@ -243,7 +237,7 @@ class Ethereum_Address(Entity):
 class Monero_Address(Entity):
 
     _flavours = Flavours(
-        vysion=Vysion("digital-asset", "cryptocoin", "monero-address"),
+        vysion=Vysion("digital-asset", "cryptocurrency", "monero-address"),
         dbsafe=DBSafe("vysion", "automatic-detection", "monero-address"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
@@ -257,7 +251,7 @@ class Monero_Address(Entity):
 class Ripple_Address(Entity):
 
     _flavours = Flavours(
-        vysion=Vysion("digital-asset", "cryptocoin", "ripple-address"),
+        vysion=Vysion("digital-asset", "cryptocurrency", "ripple-address"),
         dbsafe=DBSafe("vysion", "automatic-detection", "ripple-address"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
@@ -271,7 +265,7 @@ class Ripple_Address(Entity):
 class Zcash_Address(Entity):
 
     _flavours = Flavours(
-        vysion=Vysion("digital-asset", "cryptocoin", "zcash-address"),
+        vysion=Vysion("digital-asset", "cryptocurrency", "zcash-address"),
         dbsafe=DBSafe("vysion", "automatic-detection", "zcash-address"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
@@ -282,10 +276,21 @@ class Zcash_Address(Entity):
     found_at = Field()
 
 
-class Tor_Domain(Entity):
+class Tor_Domain_v3(Entity):
 
     _flavours = Flavours(
         vysion=Vysion("darknet", "tor", "onion-v3"),
+        dbsafe=DBSafe("vysion", "automatic-detection", "url"),
+        misp=MISP("infoleak", "automatic-detection", "onion"),
+        stix=EmptyFlavour(),
+        case=EmptyFlavour()
+    )
+
+
+class Tor_Domain_v2(Entity):
+
+    _flavours = Flavours(
+        vysion=Vysion("darknet", "tor", "onion-v2"),
         dbsafe=DBSafe("vysion", "automatic-detection", "url"),
         misp=MISP("infoleak", "automatic-detection", "onion"),
         stix=EmptyFlavour(),
@@ -525,6 +530,16 @@ class PGPPrivate(Entity):
         case=EmptyFlavour()
     )
 
+
+class Tor(Entity):
+
+    _flavours = Flavours(
+        vysion=Vysion("network", "darknet", "tor"),
+        dbsafe=EmptyFlavour(),
+        misp=EmptyFlavour(),
+        stix=EmptyFlavour(),
+        case=EmptyFlavour()
+    )
 
 class Telegram(Entity):
 
