@@ -1,5 +1,5 @@
 from vysion import client
-from .secrets import API_KEY
+from secrets import API_KEY
 
 c = client.Client(apiKey=API_KEY)
 
