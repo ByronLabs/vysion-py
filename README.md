@@ -3,7 +3,6 @@
 
 - https://pydantic-docs.helpmanual.io/
 - https://python-patterns.guide/
-- https://github.com/VirusTotal/vt-py
 
 ## Style
 
@@ -37,3 +36,7 @@ import this
 > If the implementation is easy to explain, it may be a good idea.
 > Namespaces are one honking great idea -- let's do more of those!
 ```
+
+# Ackowledgement
+
+We really appreciate the documentation of https://github.com/VirusTotal/vt-py
