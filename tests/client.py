@@ -1,7 +1,7 @@
 from vysion import client
 from secrets import API_KEY
 
-c = client.Client(apiKey=API_KEY)
+c = client.Client(api_key=API_KEY)
 
 result = c.find_email("purplefdw@protonmail.ch")
 result = c.search("tijuana")
