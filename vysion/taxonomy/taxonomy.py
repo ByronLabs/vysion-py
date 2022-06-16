@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-   Copyright 2022 Byron Labs S.L.
+   Copyright 2022 ByronLabs S.L.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -127,7 +127,7 @@ class Entity:
 class Bitcoin_Address(Entity):
 
     _flavours = Flavours(
-        vysion=Vysion("digital-asset", "cryptocurrency", "bitcoin-address"),
+        vysion=Vysion("digital-asset", "cryptocurrency", "bitcoin_address"),
         dbsafe=DBSafe("vysion", "automatic-detection", "bitcoin-address"),
         misp=MISP("infoleak", "automatic-detection", "bitcoin-address"),
         stix=EmptyFlavour(),
@@ -138,7 +138,7 @@ class Bitcoin_Address(Entity):
 class Binance_Address(Entity):
 
     _flavours = Flavours(
-        vysion=Vysion("digital-asset", "cryptocurrency", "binance-address"),
+        vysion=Vysion("digital-asset", "cryptocurrency", "binance_address"),
         dbsafe=DBSafe("vysion", "automatic-detection", "binance-address"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
@@ -149,7 +149,7 @@ class Binance_Address(Entity):
 class Polkadot_Address(Entity):
 
     _flavours = Flavours(
-        vysion=Vysion("digital-asset", "cryptocurrency", "polkadot-address"),
+        vysion=Vysion("digital-asset", "cryptocurrency", "polkadot_address"),
         dbsafe=DBSafe("vysion", "automatic-detection", "polkadot-address"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
@@ -163,7 +163,7 @@ class Polkadot_Address(Entity):
 class Ethereum_Address(Entity):
 
     _flavours = Flavours(
-        vysion=Vysion("digital-asset", "cryptocurrency", "ethereum-address"),
+        vysion=Vysion("digital-asset", "cryptocurrency", "ethereum_address"),
         dbsafe=DBSafe("vysion", "automatic-detection", "ethereum-address"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
@@ -177,7 +177,7 @@ class Ethereum_Address(Entity):
 class Monero_Address(Entity):
 
     _flavours = Flavours(
-        vysion=Vysion("digital-asset", "cryptocurrency", "monero-address"),
+        vysion=Vysion("digital-asset", "cryptocurrency", "monero_address"),
         dbsafe=DBSafe("vysion", "automatic-detection", "monero-address"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
@@ -191,7 +191,7 @@ class Monero_Address(Entity):
 class Ripple_Address(Entity):
 
     _flavours = Flavours(
-        vysion=Vysion("digital-asset", "cryptocurrency", "ripple-address"),
+        vysion=Vysion("digital-asset", "cryptocurrency", "ripple_address"),
         dbsafe=DBSafe("vysion", "automatic-detection", "ripple-address"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
@@ -205,7 +205,7 @@ class Ripple_Address(Entity):
 class Zcash_Address(Entity):
 
     _flavours = Flavours(
-        vysion=Vysion("digital-asset", "cryptocurrency", "zcash-address"),
+        vysion=Vysion("digital-asset", "cryptocurrency", "zcash_address"),
         dbsafe=DBSafe("vysion", "automatic-detection", "zcash-address"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
@@ -219,7 +219,7 @@ class Zcash_Address(Entity):
 class Tor_Domain_v3(Entity):
 
     _flavours = Flavours(
-        vysion=Vysion("darknet", "tor", "onion-v3"),
+        vysion=Vysion("darknet", "tor", "onion_v3"),
         dbsafe=DBSafe("vysion", "automatic-detection", "url"),
         misp=MISP("infoleak", "automatic-detection", "onion"),
         stix=EmptyFlavour(),
@@ -230,7 +230,7 @@ class Tor_Domain_v3(Entity):
 class Tor_Domain_v2(Entity):
 
     _flavours = Flavours(
-        vysion=Vysion("darknet", "tor", "onion-v2"),
+        vysion=Vysion("darknet", "tor", "onion_v2"),
         dbsafe=DBSafe("vysion", "automatic-detection", "url"),
         misp=MISP("infoleak", "automatic-detection", "onion"),
         stix=EmptyFlavour(),
@@ -247,7 +247,6 @@ class I2P_Domain(Entity):
         stix=EmptyFlavour(),
         case=EmptyFlavour()
     )
-
 
 
 class I2P_B32_Domain(Entity):

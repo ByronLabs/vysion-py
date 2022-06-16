@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-   Copyright 2022 Byron Labs S.L.
+   Copyright 2022 ByronLabs S.L.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -231,8 +231,7 @@ class Email(BaseModel):
     ]
     
     # RFC 5322 Official Standard (https://www.emailregex.com/)
-    # value: constr(regex=r'''(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])''') # TODO Añadir que es str
-    value: str # TODO Fix regex to allow caps
+    value: constr(regex=r'''(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])''') # TODO Añadir que es str
 
 
 class Paste(BaseModel):
@@ -258,6 +257,15 @@ class Telegram(BaseModel):
 
     _taxonomy = [
         vystaxonomy.Telegram # TODO Create Telegram URL
+    ]
+
+    value: str # TODO Regex
+
+
+class BitcoinAddress(BaseModel):
+
+    _taxonomy = [
+        vystaxonomy.Bitcoin_Address # TODO Create Telegram URL
     ]
 
     value: str # TODO Regex
@@ -289,18 +297,18 @@ class URL(BaseModel):
         return f"{self.protocol}://{self.domain}:{self.port}{self.path}"
 
 
+
 class Page(BaseModel):
 
     id: str
     url: URL
     parent: str
-    title: str = None # TODO Revisar si None o str()
+    title: str
     language: Language
     html: str
     sha1sum: str
     ssdeep: str
     date: datetime
-    chunk: bool = False
 
 
 class Hit(BaseModel):
@@ -311,14 +319,13 @@ class Hit(BaseModel):
     skype: List[Skype] = Field(default_factory=lambda: [])
     telegram: List[Telegram] = Field(default_factory=lambda: [])
     whatsapp: List[WhatsApp] = Field(default_factory=lambda: [])
-
+    bitcoin_address: List[BitcoinAddress] = Field(default_factory=lambda: [])
 
 class Result(BaseModel):
 
-    total: int = -1
+    total: int = 0
     hits: List[Hit] = Field(default_factory=lambda: [])
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        if self.total < 0:
-            self.total = len(self.hits)
+        self.total = len(self.hits)
