@@ -296,18 +296,18 @@ class URL(BaseModel):
         return f"{self.protocol}://{self.domain}:{self.port}{self.path}"
 
 
-
 class Page(BaseModel):
 
     id: str
     url: URL
     parent: str
-    title: str
+    title: str = None # TODO Revisar si None o str()
     language: Language
     html: str
     sha1sum: str
     ssdeep: str
     date: datetime
+    chunk: bool = False
 
 
 class Hit(BaseModel):
@@ -320,11 +320,13 @@ class Hit(BaseModel):
     whatsapp: List[WhatsApp] = Field(default_factory=lambda: [])
     bitcoin_address: List[BitcoinAddress] = Field(default_factory=lambda: [])
 
+
 class Result(BaseModel):
 
-    total: int = 0
+    total: int = -1
     hits: List[Hit] = Field(default_factory=lambda: [])
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.total = len(self.hits)
+        if self.total < 0:
+            self.total = len(self.hits)
