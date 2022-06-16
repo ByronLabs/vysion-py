@@ -26,7 +26,6 @@ import requests
 from vysion.client.error import APIError
 
 import vysion.model as model
-from vysion.model.util import process_response
 
 _API_HOST = 'https://api.vysion.ai'
 _API_HOST = 'https://vysion-api-secured-afkbm06.nw.gateway.dev'
@@ -108,7 +107,7 @@ class Client:
 
       return urljoin(base, query)
 
-    def search(self, query: str, exact: bool = False, network: model.Network = None, language: model.Language = None, page: int = 1, before: datetime = None, after: datetime = None):
+    def search(self, query: str, exact: bool = False, network: model.Network = None, language: model.Language = None, page: int = 1, before: datetime = None, after: datetime = None) -> model.Result:
       
       url = self._build_api_url_(
             "search", query, 
@@ -123,23 +122,33 @@ class Client:
       session = self.__get_session__()
       r = session.get(url)
 
+      # TODO Improve this
+      if r.status_code != 200:
+        raise APIError(r.status_code, r.text)
+
       response = r.json()
-      raw_hits = response.get('hits', [])
 
-      return process_response(raw_hits)
+      result = model.VysionResponse.parse_obj(response)
+
+      return result.data
 
 
-    def get_document(self, document_id: str):
+    def get_document(self, document_id: str) -> model.Result:
       
       url = self._build_api_url_("document", document_id)
 
       session = self.__get_session__()
       r = session.get(url)
 
-      response = r.json()
-      raw_hits = response.get('hits', [])
+      # TODO Improve this
+      if r.status_code != 200:
+        raise APIError(r.status_code, r.text)
 
-      return process_response(raw_hits)
+      response = r.json()
+
+      result = model.VysionResponse.parse_obj(response)
+
+      return result.data
 
     # def find_btc(self):
     #   pass
@@ -154,7 +163,7 @@ class Client:
     #   pass
 
     def find_email(self, email: str, page: int = 1, before: datetime = None, after: datetime = None) -> model.Result:
-      
+
       url = self._build_api_url_("email", email, page=page, before=before, after=after)
 
       session = self.__get_session__()
@@ -165,9 +174,10 @@ class Client:
         raise APIError(r.status_code, r.text)
 
       response = r.json()
-      raw_hits = response.get('hits', [])
 
-      return process_response(raw_hits)
+      result = model.VysionResponse.parse_obj(response)
+
+      return result.data
 
 
 # TODO /api/v1/feeds

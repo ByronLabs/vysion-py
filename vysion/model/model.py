@@ -330,3 +330,12 @@ class Result(BaseModel):
         super().__init__(**kwargs)
         if self.total < 0:
             self.total = len(self.hits)
+
+
+class VysionResponse(BaseModel):
+
+    '''
+    VysionResponse is a json:api flavoured response from the API
+    '''
+
+    data: Result

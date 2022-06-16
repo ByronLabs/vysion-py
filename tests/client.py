@@ -3,7 +3,7 @@ from secrets import API_KEY
 
 c = client.Client(api_key=API_KEY)
 
-result = c.find_email("purplefdw@protonmail.ch")
+# result = c.find_email("purplefdw@protonmail.ch")
 result = c.search("tijuana")
 
 for hit in result.hits:
