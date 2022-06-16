@@ -285,6 +285,9 @@ class URL(BaseModel):
     signature: str
     network: Network
 
+    def build(self):
+        return f"{self.protocol}://{self.domain}:{self.port}{self.path}"
+
 
 class Page(BaseModel):
 
@@ -312,9 +315,10 @@ class Hit(BaseModel):
 
 class Result(BaseModel):
 
-    total: int = 0
+    total: int = -1
     hits: List[Hit] = Field(default_factory=lambda: [])
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.total = len(self.hits)
+        if self.total < 0:
+            self.total = len(self.hits)
