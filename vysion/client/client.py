@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-   Copyright 2022 ByronLabs S.L.
+   Copyright 2022 Byron Labs S.L.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-
 """
 
 # TODO Referenciar vt-py
@@ -38,6 +37,7 @@ _ENDPOINT_PREFIX = '/api/v1/'
 
 _BASE_API = urljoin(_API_HOST, _ENDPOINT_PREFIX)
 
+
 class VysionResponse():
     pass
 
@@ -56,9 +56,9 @@ class VysionErrors:
         UNAUTHORIZED = 403
 
 
+class Client:
 
-class Client():
-
+    @validate_arguments
     def __init__(self, api_key: str, headers: dict = dict(), proxy: dict = None):
 
         assert isinstance(api_key, str), "API key MUST be a string"
@@ -67,12 +67,14 @@ class Client():
         self.proxy = proxy
         self.headers=headers
 
-        self._session = None
-
     def __get_session__(self) -> requests.Session:
+        
+        # TODO Configure proxy
 
-        if self._session is None:
-
+        # If session is undefined
+        try: self._session
+        except (NameError, AttributeError):
+          
             headers = self.headers.copy()
             headers.update({
                 "X-API-KEY": self.api_key,

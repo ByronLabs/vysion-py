@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-   Copyright 2022 ByronLabs S.L.
+   Copyright 2022 Byron Labs S.L.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-
 """
 
 from typing import List
@@ -136,6 +135,7 @@ def process_response(raw_elk_hits: List[dict]) -> Result:
     for raw_hit in raw_elk_hits:
 
         # TODO Create builder
+        page_id = raw_hit['_id']
         source = raw_hit['_source']
 
         url = URL(
@@ -148,7 +148,8 @@ def process_response(raw_elk_hits: List[dict]) -> Result:
         )
 
         page = Page(
-            url=url, 
+            id=page_id,
+            url=url,
             parent=source.get('parent'),
             title=source.get('title'),
             language=source.get('language'),
@@ -156,6 +157,7 @@ def process_response(raw_elk_hits: List[dict]) -> Result:
             sha1sum=source.get('sha1sum'),
             ssdeep=source.get('ssdeep'),
             date=source.get('date'),
+            chunk=True                  # Poner esto si solo se coge el highlight, o se recorta el html
         )
 
         email = [Email(value=e) for e in source.get('email', [])]
