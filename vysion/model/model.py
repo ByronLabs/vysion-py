@@ -14,10 +14,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+import hashlib
 
 from datetime import datetime
 from typing import List, Optional
 from enum import Enum, IntEnum
+from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field, constr
 
@@ -30,6 +32,7 @@ class Network(str, Enum):
     zeronet = "zeronet"
     freenet = "freenet"
     paste = "paste"
+    clearnet = "clearnet"
 
 
 class Language(str, Enum):
@@ -284,7 +287,7 @@ class URL(BaseModel):
     _taxonomy = [
         vystaxonomy.URL
     ]
-   
+
     protocol: str
     domain: str
     port: int
@@ -292,7 +295,63 @@ class URL(BaseModel):
     signature: str
     network: Network
 
-    def build(self):
+    @classmethod
+    def parse(cls, url):
+
+        service_port = {
+            'http': 80,
+            'https': 443,
+            'ssh': 22,
+            'sftp': 22,
+            'ftp': 21,
+            'irc': 194
+        }
+
+        parsed = urlparse(url)
+
+        scheme = parsed.scheme
+        netloc = parsed.netloc
+        path = parsed.path
+        query = parsed.query
+        fragment = parsed.fragment
+        params = parsed.params
+        username = parsed.username
+        password = parsed.password
+
+        # Build domain:port
+        domain_port = netloc.split(':')
+        domain = domain_port[0]
+        if len(domain_port) <= 1:
+            port = service_port.get(scheme, 'http')
+        else:
+            port = domain_port[1]
+
+        # Rebuild path's query
+        query_parts = [param.split('=') for param in query.split('&')]
+        query_dict = {}
+        for part in query_parts:
+            if len(part) <= 1:
+                query_dict[part[0]] = str()
+            else:
+                query_dict[part[0]] = part[1]
+
+        query_keys = list(query_dict.keys())
+        query_keys.sort()
+        res_query_parts = [f"{k}={query_dict[k]}" for k in query_keys]
+        res_query = "?" + "&".join(res_query_parts)
+
+        # Build /path?query#fragment
+        res_path = path + res_query + f"#{fragment}"
+
+        # TODO Adapt restalker.link_extractors.UUF logic to fix URLs
+        # TODO Detect network
+        result = cls(protocol=scheme, domain=domain, port=port, path=res_path, signature=str(), network=Network.clearnet)
+        signature = hashlib.sha1(result.build().encode()).hexdigest()
+        result.signature = signature
+
+        return result
+
+    def build(self) -> str:
         return f"{self.protocol}://{self.domain}:{self.port}{self.path}"
 
 
@@ -300,13 +359,13 @@ class Page(BaseModel):
 
     id: str
     url: URL
-    parent: str
-    title: str = None # TODO Revisar si None o str()
+    parent: str = None
+    title: str = None  # TODO Revisar si None o str()
     language: Language
-    html: str
-    sha1sum: str
-    ssdeep: str
-    date: datetime
+    html: str = None
+    sha1sum: str = None
+    ssdeep: str = None
+    date: datetime = None
     chunk: bool = False
 
 
@@ -323,6 +382,7 @@ class Hit(BaseModel):
 
 class Result(BaseModel):
 
+    # TODO Añadir paginación, query, etc?
     total: int = -1
     hits: List[Hit] = Field(default_factory=lambda: [])
 
@@ -330,3 +390,27 @@ class Result(BaseModel):
         super().__init__(**kwargs)
         if self.total < 0:
             self.total = len(self.hits)
+
+
+# TODO Move API responses to other class
+class VysionResponse(BaseModel):
+
+    '''
+    VysionResponse is a json:api flavoured response from the API
+    '''
+
+    data: Result
+
+
+class VysionError(BaseModel):
+
+    class StatusCode(int, Enum):
+
+        OK = 200
+        INTERNAL_ERROR = 500
+        REQ_ERROR = 400
+        UNAUTHORIZED = 403
+        UNK = 000
+
+    code: StatusCode = StatusCode.UNK
+    msg: str = "UNK_ERR"
