@@ -22,6 +22,7 @@ class APIError(Exception):
   def from_dict(cls, dict_error):
     return cls(dict_error['code'], dict_error.get('message'))
 
-  def __init__(self, code, message):
+  def __init__(self, code: int, message: str):
     self.code = code
     self.message = message
+  

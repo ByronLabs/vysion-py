@@ -26,33 +26,15 @@ import requests
 from vysion.client.error import APIError
 
 import vysion.model as model
+from vysion.model.model import VysionError
 
 _API_HOST = 'https://api.vysion.ai'
-_API_HOST = 'https://vysion-api-secured-afkbm06.nw.gateway.dev'
 
 # All API endpoints start with this prefix, you don't need to include the
 # prefix in the paths you request as it's prepended automatically.
 _ENDPOINT_PREFIX = '/api/v1/'
 
 _BASE_API = urljoin(_API_HOST, _ENDPOINT_PREFIX)
-
-
-class VysionResponse():
-    pass
-
-
-class VysionData:
-    pass
-
-
-class VysionErrors:
-    
-    class StatusCode(Enum):
-
-        OK = 200
-        INTERNAL_ERROR = 500
-        REQ_ERROR = 400
-        UNAUTHORIZED = 403
 
 
 class Client:
@@ -64,7 +46,7 @@ class Client:
 
         self.api_key = api_key
         self.proxy = proxy
-        self.headers=headers
+        self.headers = headers
 
     def __get_session__(self) -> requests.Session:
         
@@ -84,6 +66,41 @@ class Client:
 
         return self._session
 
+    def _build_api_url_(self, endpoint, param, **query_params):
+      
+      base = urljoin(_BASE_API, f"{endpoint}/{param}")
+
+      query_params_initialzed = query_params.copy()
+
+      keys = list(query_params.keys())
+      keys.sort()
+
+      for i in keys:
+        
+        v = query_params[i]
+
+        if v is None:
+          del query_params_initialzed[i]
+
+      query = "?" + urlencode(query_params_initialzed)
+
+      return urljoin(base, query)
+
+    def __make_request(self, url: str) -> model.VysionResponse:
+
+      session = self.__get_session__()
+      r = session.get(url)
+
+      # TODO Improve this
+      if r.status_code != 200:
+        raise APIError(r.status_code, r.text)
+
+      payload = r.json()
+
+      result = model.VysionResponse.parse_obj(payload)
+
+      return result
+
     # def add_url(self, url:str, type:VysionURL.Type):
     #     """Add a Tor URL to be analyzed by PARCHE.
 
@@ -92,20 +109,6 @@ class Client:
     #     :returns: An instance of :class:`VysionResponse`
     #     """
     #     pass
-
-    def _build_api_url_(self, endpoint, param, **query_params):
-      
-      base = urljoin(_BASE_API, f"{endpoint}/{param}")
-
-      query_params_initialzed = query_params.copy()
-
-      for i, v in query_params.items():
-        if v is None:
-          del query_params_initialzed[i]
-
-      query = "?" + urlencode(query_params_initialzed)
-
-      return urljoin(base, query)
 
     def search(self, query: str, exact: bool = False, network: model.Network = None, language: model.Language = None, page: int = 1, before: datetime = None, after: datetime = None) -> model.Result:
       
@@ -119,39 +122,38 @@ class Client:
             after=after
       )
 
-      session = self.__get_session__()
-      r = session.get(url)
-
-      # TODO Improve this
-      if r.status_code != 200:
-        raise APIError(r.status_code, r.text)
-
-      response = r.json()
-
-      result = model.VysionResponse.parse_obj(response)
-
-      return result.data
+      try:
+        result = self.__make_request(url)
+        return result.data
+      except APIError as e:
+        return VysionError(e.code, e.message)
+      except:
+        return VysionError()
 
 
     def get_document(self, document_id: str) -> model.Result:
       
       url = self._build_api_url_("document", document_id)
 
-      session = self.__get_session__()
-      r = session.get(url)
+      try:
+        result = self.__make_request(url)
+        return result.data
+      except APIError as e:
+        return VysionError(e.code, e.message)
+      except:
+        return VysionError()
 
-      # TODO Improve this
-      if r.status_code != 200:
-        raise APIError(r.status_code, r.text)
+    def find_btc(self):
+      
+      url = self._build_api_url_("document", document_id)
 
-      response = r.json()
-
-      result = model.VysionResponse.parse_obj(response)
-
-      return result.data
-
-    # def find_btc(self):
-    #   pass
+      try:
+        result = self.__make_request(url)
+        return result.data
+      except APIError as e:
+        return VysionError(e.code, e.message)
+      except:
+        return VysionError()
 
     # def find_onion(self):
     #   pass
@@ -162,22 +164,30 @@ class Client:
     # def consume_feed(self):
     #   pass
 
+    # TODO find_domain?
+    def find_url(self, query_url: str, page: int = 1, before: datetime = None, after: datetime = None) -> model.Result:
+      
+      url = self._build_api_url_("url", query_url, page=page, before=before, after=after)
+
+      try:
+        result = self.__make_request(url)
+        return result.data
+      except APIError as e:
+        return VysionError(e.code, e.message)
+      except:
+        return VysionError()
+
+
     def find_email(self, email: str, page: int = 1, before: datetime = None, after: datetime = None) -> model.Result:
 
       url = self._build_api_url_("email", email, page=page, before=before, after=after)
 
-      session = self.__get_session__()
-      r = session.get(url)
-
-      # TODO Improve this
-      if r.status_code != 200:
-        raise APIError(r.status_code, r.text)
-
-      response = r.json()
-
-      result = model.VysionResponse.parse_obj(response)
-
-      return result.data
-
+      try:
+        result = self.__make_request(url)
+        return result.data
+      except APIError as e:
+        return VysionError(e.code, e.message)
+      except:
+        return VysionError()
 
 # TODO /api/v1/feeds
