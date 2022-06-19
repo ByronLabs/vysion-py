@@ -24,6 +24,7 @@ from urllib.parse import urlparse
 from pydantic import BaseModel, Field, constr
 
 from vysion import taxonomy as vystaxonomy
+from .enum import Services
 
 class Network(str, Enum):
 
@@ -298,15 +299,6 @@ class URL(BaseModel):
     @classmethod
     def parse(cls, url):
 
-        service_port = {
-            'http': 80,
-            'https': 443,
-            'ssh': 22,
-            'sftp': 22,
-            'ftp': 21,
-            'irc': 194
-        }
-
         parsed = urlparse(url)
 
         scheme = parsed.scheme
@@ -322,7 +314,10 @@ class URL(BaseModel):
         domain_port = netloc.split(':')
         domain = domain_port[0]
         if len(domain_port) <= 1:
-            port = service_port.get(scheme, 'http')
+            try:
+                port = Services[scheme]
+            except KeyError:
+                port = 80
         else:
             port = domain_port[1]
 
