@@ -405,7 +405,8 @@ class VysionError(BaseModel):
         INTERNAL_ERROR = 500
         REQ_ERROR = 400
         UNAUTHORIZED = 403
+        NOT_FOUND = 404
         UNK = 000
 
     code: StatusCode = StatusCode.UNK
-    msg: str = "UNK_ERR"
+    message: str = "UNK_ERR"

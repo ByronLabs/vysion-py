@@ -93,8 +93,17 @@ class Client:
 
       # TODO Improve this
       if r.status_code != 200:
-        raise APIError(r.status_code, r.text)
+        try:
+          err = r.json()
+          code = err.get('code')
+          message = err.get('message')
+        except:
+          code = r.status_code
+          message = r.text
 
+        raise APIError(code, message)
+
+          
       payload = r.json()
 
       result = model.VysionResponse.parse_obj(payload)
@@ -126,7 +135,7 @@ class Client:
         result = self.__make_request(url)
         return result.data
       except APIError as e:
-        return VysionError(e.code, e.message)
+        return VysionError(code = e.code, message = e.message)
       except:
         return VysionError()
 
@@ -139,7 +148,7 @@ class Client:
         result = self.__make_request(url)
         return result.data
       except APIError as e:
-        return VysionError(e.code, e.message)
+        return VysionError(code = e.code, message = e.message)
       except:
         return VysionError()
 
@@ -151,7 +160,7 @@ class Client:
         result = self.__make_request(url)
         return result.data
       except APIError as e:
-        return VysionError(e.code, e.message)
+        return VysionError(code = e.code, message = e.message)
       except:
         return VysionError()
 
@@ -173,7 +182,7 @@ class Client:
         result = self.__make_request(url)
         return result.data
       except APIError as e:
-        return VysionError(e.code, e.message)
+        return VysionError(code = e.code, message = e.message)
       except:
         return VysionError()
 
@@ -186,7 +195,7 @@ class Client:
         result = self.__make_request(url)
         return result.data
       except APIError as e:
-        return VysionError(e.code, e.message)
+        return VysionError(code = e.code, message = e.message)
       except:
         return VysionError()
 
