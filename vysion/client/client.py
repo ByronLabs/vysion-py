@@ -152,17 +152,8 @@ class Client:
       except:
         return VysionError()
 
-    def find_btc(self):
-      
-      url = self._build_api_url_("document", document_id)
-
-      try:
-        result = self.__make_request(url)
-        return result.data
-      except APIError as e:
-        return VysionError(code = e.code, message = e.message)
-      except:
-        return VysionError()
+    # def find_btc(self):
+      # pass
 
     # def find_onion(self):
     #   pass
