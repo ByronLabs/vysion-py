@@ -237,13 +237,14 @@ class Email(BaseModel):
     # value: constr(regex=r'''(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])''') # TODO Añadir que es str
     value: str # TODO Fix regex to allow caps
 
+
 class Paste(BaseModel):
 
     _taxonomy = [
         vystaxonomy.Pastebin,
         vystaxonomy.JustPaste
     ]
-    
+   
     value: str # TODO Regex
 
 
@@ -375,25 +376,32 @@ class Hit(BaseModel):
     bitcoin_address: List[BitcoinAddress] = Field(default_factory=lambda: [])
 
 
-class Result(BaseModel):
+class RansomFeedHit(BaseModel):
+    company: str
+    link: str
+    group: RansomGroup
+    date: datetime
+    info: str
+    company_link: str
 
+
+class Result(BaseModel):
     # TODO Añadir paginación, query, etc?
-    total: int = -1
-    hits: List[Hit] = Field(default_factory=lambda: [])
+    total: int = 0
+    hits: Union[List[Hit], List[RansomFeedHit]] = Field(default_factory=lambda: [])
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        if self.total < 0:
+        if self.total <= 0:
             self.total = len(self.hits)
 
 
 # TODO Move API responses to other class
 class VysionResponse(BaseModel):
-
     '''
     VysionResponse is a json:api flavoured response from the API
     '''
-
+    # TODO Add type to all JSON:API responses
     data: Result
 
 
