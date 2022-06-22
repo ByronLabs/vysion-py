@@ -44,7 +44,7 @@ class Paste(BaseModel):
         vystaxonomy.Pastebin,
         vystaxonomy.JustPaste
     ]
-   
+
     value: str # TODO Regex
 
 
@@ -141,11 +141,12 @@ class URL(BaseModel):
 
         # TODO Adapt restalker.link_extractors.UUF logic to fix URLs
         # TODO Detect network
-        result = cls(protocol=scheme, domain=domain, port=port, path=res_path, signature=str(), network=Network.clearnet)
-        signature = hashlib.sha1(result.build().encode()).hexdigest()
-        result.signature = signature
+        tmp_result = cls(protocol=scheme, domain=domain, port=port, path=res_path, signature=str(), network=Network.clearnet)
 
-        return result
+        signature = hashlib.sha1(tmp_result.build().encode()).hexdigest()
+        tmp_result.signature = signature
+
+        return tmp_result
 
     def build(self) -> str:
         return f"{self.protocol}://{self.domain}:{self.port}{self.path}"
@@ -177,6 +178,7 @@ class Hit(BaseModel):
 
 
 class RansomFeedHit(BaseModel):
+
     company: str
     link: str
     group: RansomGroup
@@ -186,6 +188,7 @@ class RansomFeedHit(BaseModel):
 
 
 class Result(BaseModel):
+
     # TODO Añadir paginación, query, etc?
     total: int = 0
     hits: Union[List[Hit], List[RansomFeedHit]] = Field(default_factory=lambda: [])
@@ -198,23 +201,22 @@ class Result(BaseModel):
 
 # TODO Move API responses to other class
 class VysionResponse(BaseModel):
-    '''
+    """
     VysionResponse is a json:api flavoured response from the API
-    '''
-    # TODO Add type to all JSON:API responses
-    data: Result
+    """
+    data: Result    # TODO Add type to all JSON:API responses
 
 
 class VysionError(BaseModel):
 
     class StatusCode(int, Enum):
 
+        UNK = 000
         OK = 200
-        INTERNAL_ERROR = 500
         REQ_ERROR = 400
         UNAUTHORIZED = 403
         NOT_FOUND = 404
-        UNK = 000
+        INTERNAL_ERROR = 500
 
     code: StatusCode = StatusCode.UNK
     message: str = "UNK_ERR"
