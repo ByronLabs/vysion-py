@@ -78,7 +78,7 @@ class MISPProcessor():
         misp_object.add_attribute('link', type='link', value=hit.link)
         misp_object.add_attribute(
             'group', type="threat-actor", value=hit.group)
-        misp_object.add_attribute('date', type='datetime,', value=hit.date)
+        misp_object.add_attribute('date', type='datetime', value=hit.date)
         misp_object.add_attribute('info', type='text', value=hit.info)
         self.misp_event.add_object(misp_object)
 
