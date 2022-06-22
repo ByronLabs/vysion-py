@@ -8,7 +8,7 @@ print(requirements)
 # https://docs.python.org/3/distutils/setupscript.html
 setuptools.setup(
     name='vysion',
-    version='0.2.1',    # TODO Read from __version__
+    version='0.2.2',    # TODO Read from __version__
     description='The official Python client library for Vysion',
     license='Apache 2',
     license_files = ('LICENSE'),
