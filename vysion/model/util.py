@@ -67,6 +67,8 @@ class MISPProcessor():
 
     def parse_ransom_feed_hit(self, hit: model.RansomFeedHit):
 
+        # TODO Add event info!
+        
         misp_object = MISPObject('vysion-ransomware-feed')
         misp_object.add_attribute('id', type='text', value=hit.id)
         misp_object.add_attribute(
@@ -76,7 +78,7 @@ class MISPProcessor():
         misp_object.add_attribute('link', type='link', value=hit.link)
         misp_object.add_attribute(
             'group', type="threat-actor", value=hit.group)
-        misp_object.add_attribute('date', type='date', value=hit.date)
+        misp_object.add_attribute('date', type='datetime,', value=hit.date)
         misp_object.add_attribute('info', type='text', value=hit.info)
         self.misp_event.add_object(misp_object)
 
@@ -89,5 +91,5 @@ class MISPProcessor():
 
         for hit in result.hits:
             processor(hit)
-
+    
         return self.misp_event
