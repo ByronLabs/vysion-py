@@ -17,16 +17,15 @@
 
 # TODO Referenciar vt-py
 
-from datetime import datetime
-from enum import Enum
-import json
+from datetime import datetime, timedelta
+import logging
 from urllib.parse import urljoin, urlencode
-from pydantic import validate_arguments
+# from pydantic import validate_arguments
 import requests
 from vysion.client.error import APIError
 
 import vysion.model as model
-from vysion.model.model import VysionError
+from vysion.model import VysionError
 
 _API_HOST = 'https://api.vysion.ai'
 
@@ -36,70 +35,89 @@ _ENDPOINT_PREFIX = '/api/v1/'
 
 _BASE_API = urljoin(_API_HOST, _ENDPOINT_PREFIX)
 
+LOGGER = logging.getLogger('vysion-py')
+LOGGER.setLevel(logging.INFO)
 
-class Client:
+# __all__ = []
 
-    @validate_arguments
-    def __init__(self, api_key: str, headers: dict = dict(), proxy: dict = None):
+class BaseClient:
 
+    # __attrs__ = []
+
+    # @validate_arguments #
+    def __init__(self, api_key: str = None, headers: dict = dict(), proxy: dict = None):
+
+        assert api_key is not None, "API key MUST be provided"
         assert isinstance(api_key, str), "API key MUST be a string"
 
         self.api_key = api_key
-        self.proxy = proxy
+        self.proxy = proxy  # TODO Rename proxy to proxies
         self.headers = headers
 
     def __get_session__(self) -> requests.Session:
-        
+
         # TODO Configure proxy
 
         # If session is undefined
         try: self._session
         except (NameError, AttributeError):
-          
+
             headers = self.headers.copy()
             headers.update({
                 "X-API-KEY": self.api_key,
             })
 
-            self._session = requests.Session()
+            self._session: requests.Session = requests.Session()
             self._session.headers.update(headers)
+            self._session.proxies = self.proxy
 
         return self._session
 
-    def _build_api_url_(self, endpoint, param, **query_params):
-      
-      base = urljoin(_BASE_API, f"{endpoint}/{param}")
+    def _build_api_url__(self, endpoint, param, **query_params):
 
-      query_params_initialzed = query_params.copy()
+        base = urljoin(_BASE_API, f"{endpoint}/{param}")
 
-      keys = list(query_params.keys())
-      keys.sort()
+        query_params_initialzed = query_params.copy()
 
-      for i in keys:
-        
-        v = query_params[i]
+        keys = list(query_params.keys())
+        keys.sort()
 
-        if v is None:
-          del query_params_initialzed[i]
+        for i in keys:
 
-      query = "?" + urlencode(query_params_initialzed)
+            v = query_params[i]
 
-      return urljoin(base, query)
+            if v is None:
+                del query_params_initialzed[i]
 
-    def __make_request(self, url: str) -> model.VysionResponse:
+        query = "?" + urlencode(query_params_initialzed)
 
-      session = self.__get_session__()
-      r = session.get(url)
+        return urljoin(base, query)
 
-      # TODO Improve this
-      if r.status_code != 200:
-        raise APIError(r.status_code, r.text)
+    def _make_request(self, url: str) -> model.VysionResponse:
 
-      payload = r.json()
+        session = self.__get_session__()
+        r = session.get(url)
 
-      result = model.VysionResponse.parse_obj(payload)
+        # TODO Improve this
+        if r.status_code != 200:
+            try:
+                err = r.json()
+                code = err.get('code')
+                message = err.get('message')
+            except:
+                code = r.status_code
+                message = r.text
 
-      return result
+            raise APIError(code, message)
+
+        payload = r.json()
+
+        result = model.VysionResponse.parse_obj(payload)
+
+        return result
+
+
+class Client(BaseClient):
 
     # def add_url(self, url:str, type:VysionURL.Type):
     #     """Add a Tor URL to be analyzed by PARCHE.
@@ -110,51 +128,6 @@ class Client:
     #     """
     #     pass
 
-    def search(self, query: str, exact: bool = False, network: model.Network = None, language: model.Language = None, page: int = 1, before: datetime = None, after: datetime = None) -> model.Result:
-      
-      url = self._build_api_url_(
-            "search", query, 
-            exact = exact, 
-            network = network, 
-            language = language, 
-            page=page, 
-            before=before, 
-            after=after
-      )
-
-      try:
-        result = self.__make_request(url)
-        return result.data
-      except APIError as e:
-        return VysionError(e.code, e.message)
-      except:
-        return VysionError()
-
-
-    def get_document(self, document_id: str) -> model.Result:
-      
-      url = self._build_api_url_("document", document_id)
-
-      try:
-        result = self.__make_request(url)
-        return result.data
-      except APIError as e:
-        return VysionError(e.code, e.message)
-      except:
-        return VysionError()
-
-    def find_btc(self):
-      
-      url = self._build_api_url_("document", document_id)
-
-      try:
-        result = self.__make_request(url)
-        return result.data
-      except APIError as e:
-        return VysionError(e.code, e.message)
-      except:
-        return VysionError()
-
     # def find_onion(self):
     #   pass
 
@@ -164,30 +137,139 @@ class Client:
     # def consume_feed(self):
     #   pass
 
+    def search(self, query: str, exact: bool = False, network: model.Network = None, language: model.Language = None, page: int = 1, before: datetime = None, after: datetime = None) -> model.Result:
+
+        url = self._build_api_url__(
+              "search", query, 
+              exact = exact, 
+              network = network, 
+              language = language, 
+              page=page, 
+              before=before, 
+              after=after
+        )
+
+        try:
+            result = self._make_request(url)
+            return result.data
+        except APIError as e:
+            return VysionError(code=e.code, message=e.message)
+        except Exception as e:
+            LOGGER.error(e)
+            return VysionError()
+
+    def find_btc(self, btc: str, page: int = 1, before: datetime = None, after: datetime = None) -> model.Result:
+
+        url = self._build_api_url__("btc", btc, page=page, before=before, after=after)
+
+        try:
+            result = self._make_request(url)
+            return result.data
+        except APIError as e:
+            return VysionError(code=e.code, message=e.message)
+        except Exception as e:
+            LOGGER.error(e)
+            return VysionError()
+
     # TODO find_domain?
     def find_url(self, query_url: str, page: int = 1, before: datetime = None, after: datetime = None) -> model.Result:
-      
-      url = self._build_api_url_("url", query_url, page=page, before=before, after=after)
 
-      try:
-        result = self.__make_request(url)
-        return result.data
-      except APIError as e:
-        return VysionError(e.code, e.message)
-      except:
-        return VysionError()
+        url = self._build_api_url__("url", query_url, page=page, before=before, after=after)
 
+        try:
+            result = self._make_request(url)
+            return result.data
+        except APIError as e:
+            return VysionError(code=e.code, message=e.message)
+        except Exception as e:
+            LOGGER.error(e)
+            return VysionError()
 
     def find_email(self, email: str, page: int = 1, before: datetime = None, after: datetime = None) -> model.Result:
 
-      url = self._build_api_url_("email", email, page=page, before=before, after=after)
+        url = self._build_api_url__("email", email, page=page, before=before, after=after)
 
-      try:
-        result = self.__make_request(url)
-        return result.data
-      except APIError as e:
-        return VysionError(e.code, e.message)
-      except:
-        return VysionError()
+        try:
+            result = self._make_request(url)
+            return result.data
+        except APIError as e:
+            return VysionError(code = e.code, message = e.message)
+        except Exception as e:
+            LOGGER.error(e)
+            return VysionError()
+
+    def get_document(self, document_id: str) -> model.Result:
+      
+        url = self._build_api_url__("document", document_id)
+
+        try:
+            result = self._make_request(url)
+            return result.data
+        except APIError as e:
+            return VysionError(code=e.code, message=e.message)
+        except Exception as e:
+            LOGGER.error(e)
+            return VysionError()
+
+    # FEEDS
+    def consume_feed_ransomware(self, batch_day: datetime = datetime.today()):
+        pass
+
+
+# Example: https://github.com/VirusTotal/vt-py/blob/master/vt/feed.py
+class DaylyFeed(Client):
+
+  def _consume_batch(self, start_time, end_time):
+      raise NotImplemented()
+
+  def consume(self, batch_day: datetime = datetime.today()):
+      start_time = datetime(datetime.year, datetime.month, datetime.day)
+      end_time = start_time + timedelta(days = 1)
+      return self._consume_batch(start_time, end_time)
+
+
+class RansomwareFeed(DaylyFeed):
+
+    def _consume_batch(self, start_time, end_time):
+
+        days = (datetime.now() - start_time).days
+        pages = (end_time - start_time).days
+
+        for page in range(pages):
+            url = self._build_api_url__("feed", "ransomware", days=days, page=page+1)
+            yield self._make_request(url)
+
+
+'''TODO Transform response
+{
+  "total": {
+    "value": 26,
+    "relation": "eq"
+  },
+  "max_score": null,
+  "hits": [
+    {
+      "_index": "ransomware-62022",
+      "_id": "dab4447fbd8440251d41e31b8ab1770186f429e46d9cd6903fbe17367efcba23",
+      "_score": null,
+      "_ignored": [
+        "info.keyword"
+      ],
+      "_source": {
+        "company": "RG Alliance Group",
+        "link": "http://quantum445bh3gzuyilxdzs5xdepf3b7lkcupswvkryf3n7hgzpxebid.onion/target/rgalliancegroup",
+        "date": "2022-06-16T00:00:00",
+        "group": "Quantum",
+        "info": "1.2TB 3.6K visibility\n2022-06-16\nInfo Post About: \"RG Alliance Group\"\nCompany Name\nRG Alliance Group\nCompany Website\nOfficial Link\nTotal Revenue\n$9M\nLast Updated:\n2022-06-16\nVolume Of Data Uploaded\n0% (announcement)\n- Complete databases of clients of the accounting program QuickBooks, including tax, payroll and banking information of Client Companies.\n- Contracts, Accounting.Ballances, Scans, invoices, etc. Client companies\n- Email correspondence with client companies\n- Personal information (Scans+SSN+Bank info+etc) of employees of Client Companies\n- Personal information (Scans+SSN+Bank info+etc) of RG Alliance Group employees\n- Outlook .pst backups of RG Alliance Group employees\nYour Feedback\nAuthor\nMessage\nSUBMIT",
+        "company_link": "http://www.rgalliance.com/"
+      },
+      "sort": [
+        1655337600000
+      ]
+    }
+    ...
+  ]
+}
+'''
 
 # TODO /api/v1/feeds

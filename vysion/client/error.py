@@ -14,6 +14,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+from vysion.model import VysionError
 
 class APIError(Exception):
   """Class that encapsules errors returned by the Vysion API."""
@@ -23,6 +24,12 @@ class APIError(Exception):
     return cls(dict_error['code'], dict_error.get('message'))
 
   def __init__(self, code: int, message: str):
-    self.code = code
-    self.message = message
-  
+
+    super().__init__()
+
+    if code not in [i.value for i in VysionError.StatusCode]:
+      self.code = VysionError.StatusCode.UNK
+      self.message = f"{message} (Original code: {code})"
+    else:
+      self.code = code
+      self.message = message

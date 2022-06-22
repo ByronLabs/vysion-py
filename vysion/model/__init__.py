@@ -16,4 +16,5 @@
 """
 
 from .model import *
+from . import enum
 from . import util
