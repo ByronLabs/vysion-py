@@ -18,6 +18,12 @@ from enum import Enum
 import hashlib
 
 from datetime import datetime
+
+try:
+    from types import NoneType
+except:
+    NoneType = type(None)
+
 from typing import List, Optional, Union
 from urllib.parse import urlparse
 
@@ -179,12 +185,13 @@ class Hit(BaseModel):
 
 class RansomFeedHit(BaseModel):
 
-    company: str
+    id: str
+    company: Optional[str]
+    company_link: Optional[str]
     link: str
     group: RansomGroup
     date: datetime
-    info: str
-    company_link: str
+    info: Optional[str]
 
 
 class Result(BaseModel):
@@ -197,6 +204,13 @@ class Result(BaseModel):
         super().__init__(**kwargs)
         if self.total <= 0:
             self.total = len(self.hits)
+
+    def get_type(self) -> type:
+
+        if len(self.hits) <= 0:
+            return NoneType
+
+        return type(self.hits[0])
 
 
 # TODO Move API responses to other class
