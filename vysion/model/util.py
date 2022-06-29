@@ -31,10 +31,11 @@ class MISPProcessor():
     def __init__(self):
         self.misp_event = MISPEvent()
 
-    def parse_hit(self, hit: model.Hit):
+    def parse_hit(self, hit: model.Hit, ref_attribute: MISPAttribute = None, **kwargs):
 
         page: model.Page = hit.page
 
+        # TODO Add more page parameters
         misp_object = MISPObject('vysion-page')
 
         page_id = page.id
@@ -42,16 +43,15 @@ class MISPProcessor():
 
         url = page.url
         misp_object.add_attribute('url', type='url', value=url.build())
-
+        
         network = url.network
         misp_object.add_attribute('network', type='text', value=network)
 
-        # misp_object.add_reference(misp_attribute.uuid, 'associated-to')
-
-        # TODO Add more page parameters
-
-        self.misp_event.add_object(misp_object)
-
+        if ref_attribute is not None:
+            misp_object.add_reference(ref_attribute.uuid, 'associated-to')
+            
+            self.misp_event.add_object(**misp_object)
+            
         vysion_reference_id = misp_object.uuid
 
         # TODO Remove this addition when the vysion-page object works
@@ -65,10 +65,10 @@ class MISPProcessor():
         for btc in hit.bitcoin_address:
             self.misp_event.add_attribute('btc', value=btc.value)
 
-    def parse_ransom_feed_hit(self, hit: model.RansomFeedHit):
+    def parse_ransom_feed_hit(self, hit: model.RansomFeedHit, **kwargs):
 
         # TODO Add event info!
-        
+
         misp_object = MISPObject('vysion-ransomware-feed')
         misp_object.add_attribute('id', type='text', value=hit.id)
         misp_object.add_attribute(
@@ -82,7 +82,7 @@ class MISPProcessor():
         misp_object.add_attribute('info', type='text', value=hit.info)
         self.misp_event.add_object(misp_object)
 
-    def process(self, result: model.Result) -> MISPEvent:
+    def process(self, result: model.Result, **kwargs) -> MISPEvent:
 
         processor = {
             Hit: self.parse_hit,
@@ -90,6 +90,6 @@ class MISPProcessor():
         }.get(result.get_type(), lambda *_, **__: {})
 
         for hit in result.hits:
-            processor(hit)
+            processor(hit, **kwargs)
     
         return self.misp_event
