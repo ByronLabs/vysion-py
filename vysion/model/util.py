@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 """
-    Copyright 2022 Byron Labs S.L.
+Copyright 2022 Byron Labs S.L.
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
     http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 """
 import json
 from pymisp import MISPAttribute, MISPEvent, MISPObject
@@ -23,7 +23,7 @@ except:
     NoneType = type(None)
 
 import vysion.model as model
-from vysion.model.model import Hit, RansomFeedHit
+from vysion.model import Hit, RansomFeedHit
 
 
 class MISPProcessor():
@@ -31,27 +31,28 @@ class MISPProcessor():
     def __init__(self):
         self.misp_event = MISPEvent()
 
-    def parse_hit(self, hit: model.Hit):
+    def parse_hit(self, hit: model.Hit, ref_attribute: MISPAttribute = None, **_):
 
         page: model.Page = hit.page
 
+        # TODO Add more page parameters
         misp_object = MISPObject('vysion-page')
+        misp_object.template_uuid = "4d0b66f1-5268-47e0-9d29-f2e4f3db8e7f"
 
         page_id = page.id
         misp_object.add_attribute('id', type='text', value=page_id)
 
         url = page.url
         misp_object.add_attribute('url', type='url', value=url.build())
-
+        
         network = url.network
         misp_object.add_attribute('network', type='text', value=network)
 
-        # misp_object.add_reference(misp_attribute.uuid, 'associated-to')
-
-        # TODO Add more page parameters
-
-        self.misp_event.add_object(misp_object)
-
+        if ref_attribute is not None:
+            misp_object.add_reference(ref_attribute.uuid, 'associated-to')
+            
+            self.misp_event.add_object(**misp_object)
+            
         vysion_reference_id = misp_object.uuid
 
         # TODO Remove this addition when the vysion-page object works
@@ -65,10 +66,10 @@ class MISPProcessor():
         for btc in hit.bitcoin_address:
             self.misp_event.add_attribute('btc', value=btc.value)
 
-    def parse_ransom_feed_hit(self, hit: model.RansomFeedHit):
+    def parse_ransom_feed_hit(self, hit: model.RansomFeedHit, **kwargs):
 
         # TODO Add event info!
-        
+
         misp_object = MISPObject('vysion-ransomware-feed')
         misp_object.add_attribute('id', type='text', value=hit.id)
         misp_object.add_attribute(
@@ -82,7 +83,7 @@ class MISPProcessor():
         misp_object.add_attribute('info', type='text', value=hit.info)
         self.misp_event.add_object(misp_object)
 
-    def process(self, result: model.Result) -> MISPEvent:
+    def process(self, result: model.Result, **kwargs) -> MISPEvent:
 
         processor = {
             Hit: self.parse_hit,
@@ -90,6 +91,6 @@ class MISPProcessor():
         }.get(result.get_type(), lambda *_, **__: {})
 
         for hit in result.hits:
-            processor(hit)
+            processor(hit, **kwargs)
     
         return self.misp_event

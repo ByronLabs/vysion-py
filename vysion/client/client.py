@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 """
-   Copyright 2022 Byron Labs S.L.
+Copyright 2022 Byron Labs S.L.
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 """
 
 # TODO Referenciar vt-py
@@ -26,6 +26,7 @@ from vysion.client.error import APIError
 
 import vysion.model as model
 from vysion.model import VysionError
+from vysion.version import __version__ as vysion_version
 
 _API_HOST = 'https://api.vysion.ai'
 
@@ -65,6 +66,7 @@ class BaseClient:
             headers = self.headers.copy()
             headers.update({
                 "X-API-KEY": self.api_key,
+                "User-Agent": "vysion-py/%s" % vysion_version 
             })
 
             self._session: requests.Session = requests.Session()
@@ -136,6 +138,10 @@ class Client(BaseClient):
 
     # def consume_feed(self):
     #   pass
+
+    def status(self):
+        # TODO Check API status
+        pass
 
     def search(self, query: str, exact: bool = False, network: model.Network = None, language: model.Language = None, page: int = 1, before: datetime = None, after: datetime = None) -> model.Result:
 
@@ -216,11 +222,12 @@ class Client(BaseClient):
         pass
 
 
+# TODO Develop feeds logic
 # Example: https://github.com/VirusTotal/vt-py/blob/master/vt/feed.py
 class DaylyFeed(Client):
 
   def _consume_batch(self, start_time, end_time):
-      raise NotImplemented()
+      raise NotImplementedError()
 
   def consume(self, batch_day: datetime = datetime.today()):
       start_time = datetime(datetime.year, datetime.month, datetime.day)
