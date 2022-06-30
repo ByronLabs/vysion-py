@@ -26,6 +26,7 @@ from vysion.client.error import APIError
 
 import vysion.model as model
 from vysion.model import VysionError
+from vysion.version import __version__ as vysion_version
 
 _API_HOST = 'https://api.vysion.ai'
 
@@ -65,6 +66,7 @@ class BaseClient:
             headers = self.headers.copy()
             headers.update({
                 "X-API-KEY": self.api_key,
+                "User-Agent": "vysion-py/%s" % vysion_version 
             })
 
             self._session: requests.Session = requests.Session()
