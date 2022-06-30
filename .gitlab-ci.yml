@@ -23,7 +23,7 @@ pytest:
     - if: $CI_COMMIT_BRANCH == "main"
     - if: $CI_COMMIT_BRANCH == "develop"
   script:
-    - pip install pytest>=6
+    - pip install .
     - pytest
 
 snyk:
