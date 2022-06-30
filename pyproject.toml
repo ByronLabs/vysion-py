@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "vysion"
+version = "0.3.0"
+description = "The official Python client library for Vysion"
+homepage = "https://vysion.ai"
+repository = "https://gitlab.com/byronlabs/vysion/vysion-py"
+documentation = "https://developers.vysion.ai"
+authors = [
+  "Javier Junquera-Sánchez <javier.junquera@byronlabs.io>"
+]
+license = "Apache-2.0"
+readme = "README.md"
+classifiers=[
+   "Programming Language :: Python :: 3",
+   "License :: OSI Approved :: Apache Software License",
+   "Operating System :: OS Independent"
+]
+# packages = [vysion', 'vysion.client', 'vysion.model', 'vysion.taxonomy'],
+
+[tool.poetry.dependencies]
+python = "^3.7.0"
+
+requests = "2.27.1"
+pydantic = "1.9.1"
+pymisp = "2.4.159"
+
+[tool.poetry.dev-dependencies]
+pytest = "7.1.2"
+python-dotenv = "0.19.2"
+
+flake8 = "4.0.1"
+pyflakes = "2.4.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
