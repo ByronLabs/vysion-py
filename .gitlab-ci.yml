@@ -12,7 +12,7 @@ setup:
   stage: build
   rules:
     - when: always
-    - if: $CI_COMMIT_BRANCH =~ /^feature/:
+    - if: $CI_COMMIT_BRANCH =~ /^feature/
       when: manual
   script:
     - pip install .
