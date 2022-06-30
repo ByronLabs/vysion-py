@@ -137,6 +137,10 @@ class Client(BaseClient):
     # def consume_feed(self):
     #   pass
 
+    def status(self):
+        # TODO Check API status
+        pass
+
     def search(self, query: str, exact: bool = False, network: model.Network = None, language: model.Language = None, page: int = 1, before: datetime = None, after: datetime = None) -> model.Result:
 
         url = self._build_api_url__(
@@ -216,11 +220,12 @@ class Client(BaseClient):
         pass
 
 
+# TODO Develop feeds logic
 # Example: https://github.com/VirusTotal/vt-py/blob/master/vt/feed.py
 class DaylyFeed(Client):
 
   def _consume_batch(self, start_time, end_time):
-      raise NotImplemented()
+      raise NotImplementedError()
 
   def consume(self, batch_day: datetime = datetime.today()):
       start_time = datetime(datetime.year, datetime.month, datetime.day)

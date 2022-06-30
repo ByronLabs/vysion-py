@@ -22,5 +22,5 @@ def test_invalid_apikey():
     try:
         client.Client(api_key="invalid api key")
     except Exception as e:
-        assert type(e) is VysionError
+        assert type(e) is VysionError # TODO Validate 403
 
