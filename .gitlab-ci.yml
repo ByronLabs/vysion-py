@@ -24,7 +24,7 @@ pytest:
     - if: $CI_COMMIT_BRANCH == "develop"
   script:
     - pip install .
-    - pip install pytest
+    - pip install pytest dotenv
     - pytest
 
 snyk:
