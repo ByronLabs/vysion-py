@@ -10,26 +10,24 @@ variables:
 
 setup:
   stage: build
-  rules:
-    - when: always
-    - if: $CI_COMMIT_BRANCH =~ /^feature/
-      when: manual
   script:
     - pip install .
+  only:
+      - ~ /^feature/
 
 pytest:
   stage: test
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
-    - if: $CI_COMMIT_BRANCH == "develop"
   script:
     - pip install .
     - pip install pytest dotenv
     - pytest
+  only:
+    - main
+    - develop
 
 snyk:
   stage: test
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
   script:
     - snyk monitor --org=50d263d0-ae67-4586-a999-084b375b1ab2 --command=python3
+  only:
+    - main
