@@ -19,7 +19,9 @@ limitations under the License.
 
 from datetime import datetime, timedelta
 import logging
+from typing import Union
 from urllib.parse import urljoin, urlencode
+
 # from pydantic import validate_arguments
 import requests
 from vysion.client.error import APIError
@@ -28,18 +30,19 @@ import vysion.model as model
 from vysion.model import VysionError
 from vysion.version import __version__ as vysion_version
 
-_API_HOST = 'https://api.vysion.ai'
+_API_HOST = "https://api.vysion.ai"
 
 # All API endpoints start with this prefix, you don't need to include the
 # prefix in the paths you request as it's prepended automatically.
-_ENDPOINT_PREFIX = '/api/v1/'
+_ENDPOINT_PREFIX = "/api/v1/"
 
 _BASE_API = urljoin(_API_HOST, _ENDPOINT_PREFIX)
 
-LOGGER = logging.getLogger('vysion-py')
+LOGGER = logging.getLogger("vysion-py")
 LOGGER.setLevel(logging.INFO)
 
 # __all__ = []
+
 
 class BaseClient:
 
@@ -60,14 +63,17 @@ class BaseClient:
         # TODO Configure proxy
 
         # If session is undefined
-        try: self._session
+        try:
+            self._session
         except (NameError, AttributeError):
 
             headers = self.headers.copy()
-            headers.update({
-                "X-API-KEY": self.api_key,
-                "User-Agent": "vysion-py/%s" % vysion_version 
-            })
+            headers.update(
+                {
+                    "X-API-KEY": self.api_key,
+                    "User-Agent": "vysion-py/%s" % vysion_version,
+                }
+            )
 
             self._session: requests.Session = requests.Session()
             self._session.headers.update(headers)
@@ -104,8 +110,8 @@ class BaseClient:
         if r.status_code != 200:
             try:
                 err = r.json()
-                code = err.get('code')
-                message = err.get('message')
+                code = err.get("code")
+                message = err.get("message")
             except:
                 code = r.status_code
                 message = r.text
@@ -117,6 +123,21 @@ class BaseClient:
         result = model.VysionResponse.parse_obj(payload)
 
         return result
+
+
+def vysion_error_manager(method) -> Union[model.Result, VysionError]:
+
+    def manage(*args, **kwargs):
+        try:
+            result = method(*args, **kwargs)
+            return result
+        except APIError as e:
+            return VysionError(code=e.code, message=e.message)
+        except Exception as e:
+            LOGGER.error(e)
+            return VysionError()
+
+    return manage
 
 
 class Client(BaseClient):
@@ -139,85 +160,86 @@ class Client(BaseClient):
     # def consume_feed(self):
     #   pass
 
+    @vysion_error_manager
     def status(self):
         # TODO Check API status
         pass
 
-    def search(self, query: str, exact: bool = False, network: model.Network = None, language: model.Language = None, page: int = 1, before: datetime = None, after: datetime = None) -> model.Result:
+    @vysion_error_manager
+    def search(
+        self,
+        query: str,
+        exact: bool = False,
+        network: model.Network = None,
+        language: model.Language = None,
+        page: int = 1,
+        before: datetime = None,
+        after: datetime = None,
+    ) -> model.Result:
 
         url = self._build_api_url__(
-              "search", query, 
-              exact = exact, 
-              network = network, 
-              language = language, 
-              page=page, 
-              before=before, 
-              after=after
+            "search",
+            query,
+            exact=exact,
+            network=network,
+            language=language,
+            page=page,
+            before=before,
+            after=after,
         )
 
-        try:
-            result = self._make_request(url)
-            return result.data
-        except APIError as e:
-            return VysionError(code=e.code, message=e.message)
-        except Exception as e:
-            LOGGER.error(e)
-            return VysionError()
+        result = self._make_request(url)
+        return result.data
 
-    def find_btc(self, btc: str, page: int = 1, before: datetime = None, after: datetime = None) -> model.Result:
+    @vysion_error_manager
+    def find_btc(
+        self, btc: str, page: int = 1, before: datetime = None, after: datetime = None
+    ) -> model.Result:
 
         url = self._build_api_url__("btc", btc, page=page, before=before, after=after)
 
-        try:
-            result = self._make_request(url)
-            return result.data
-        except APIError as e:
-            return VysionError(code=e.code, message=e.message)
-        except Exception as e:
-            LOGGER.error(e)
-            return VysionError()
+        result = self._make_request(url)
+        return result.data
 
     # TODO find_domain?
-    def find_url(self, query_url: str, page: int = 1, before: datetime = None, after: datetime = None) -> model.Result:
+    @vysion_error_manager
+    def find_url(
+        self,
+        query_url: str,
+        page: int = 1,
+        before: datetime = None,
+        after: datetime = None,
+    ) -> model.Result:
 
-        url = self._build_api_url__("url", query_url, page=page, before=before, after=after)
+        url = self._build_api_url__(
+            "url", query_url, page=page, before=before, after=after
+        )
 
-        try:
-            result = self._make_request(url)
-            return result.data
-        except APIError as e:
-            return VysionError(code=e.code, message=e.message)
-        except Exception as e:
-            LOGGER.error(e)
-            return VysionError()
+        result = self._make_request(url)
+        return result.data
 
-    def find_email(self, email: str, page: int = 1, before: datetime = None, after: datetime = None) -> model.Result:
+    @vysion_error_manager
+    def find_email(
+        self, email: str, page: int = 1, before: datetime = None, after: datetime = None
+    ) -> model.Result:
 
-        url = self._build_api_url__("email", email, page=page, before=before, after=after)
+        url = self._build_api_url__(
+            "email", email, page=page, before=before, after=after
+        )
 
-        try:
-            result = self._make_request(url)
-            return result.data
-        except APIError as e:
-            return VysionError(code = e.code, message = e.message)
-        except Exception as e:
-            LOGGER.error(e)
-            return VysionError()
+        result = self._make_request(url)
+        return result.data
 
+    @vysion_error_manager
     def get_document(self, document_id: str) -> model.Result:
-      
+
         url = self._build_api_url__("document", document_id)
 
-        try:
-            result = self._make_request(url)
-            return result.data
-        except APIError as e:
-            return VysionError(code=e.code, message=e.message)
-        except Exception as e:
-            LOGGER.error(e)
-            return VysionError()
+        result = self._make_request(url)
+        return result.data
 
     # FEEDS
+    @vysion_error_manager
     def consume_feed_ransomware(self, batch_day: datetime = datetime.today()):
         pass
 
@@ -225,29 +247,27 @@ class Client(BaseClient):
 # TODO Develop feeds logic
 # Example: https://github.com/VirusTotal/vt-py/blob/master/vt/feed.py
 class DaylyFeed(Client):
+    def _consume_batch(self, start_time, end_time):
+        raise NotImplementedError()
 
-  def _consume_batch(self, start_time, end_time):
-      raise NotImplementedError()
-
-  def consume(self, batch_day: datetime = datetime.today()):
-      start_time = datetime(datetime.year, datetime.month, datetime.day)
-      end_time = start_time + timedelta(days = 1)
-      return self._consume_batch(start_time, end_time)
+    def consume(self, batch_day: datetime = datetime.today()):
+        start_time = datetime(datetime.year, datetime.month, datetime.day)
+        end_time = start_time + timedelta(days=1)
+        return self._consume_batch(start_time, end_time)
 
 
 class RansomwareFeed(DaylyFeed):
-
     def _consume_batch(self, start_time, end_time):
 
         days = (datetime.now() - start_time).days
         pages = (end_time - start_time).days
 
         for page in range(pages):
-            url = self._build_api_url__("feed", "ransomware", days=days, page=page+1)
+            url = self._build_api_url__("feed", "ransomware", days=days, page=page + 1)
             yield self._make_request(url)
 
 
-'''TODO Transform response
+"""TODO Transform response
 {
   "total": {
     "value": 26,
@@ -277,6 +297,6 @@ class RansomwareFeed(DaylyFeed):
     ...
   ]
 }
-'''
+"""
 
 # TODO /api/v1/feeds

@@ -1,5 +1,6 @@
-- [ ] Wheel 
-
-    Using legacy 'setup.py install' for vysion, since package 'wheel' is not installed.
-
-- [ ] 
+- [ ] Poetry + Gitlab CI
+- [ ] Snyk
+- [ ] Pypi deployment (deploy stage in CI)
+- [ ] https://black.readthedocs.io/en/stable/ ?
+- [ ] https://readthedocs.org/ ? 
+- [ ] https://mypy.readthedocs.io/en/stable/ ? 

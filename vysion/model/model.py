@@ -22,79 +22,64 @@ from datetime import datetime
 try:
     from types import NoneType
 except:
-    NoneType = type(None)
+    NoneType: type = type(None)
 
 from typing import List, Optional, Union
 from urllib.parse import urlparse
 
-from pydantic import BaseModel, Field, constr
+from pydantic import BaseModel, Field # , constr
 
 from vysion import taxonomy as vystaxonomy
-from .enum import (Services, Network, Language, RansomGroup)
+from .enum import Services, Network, Language, RansomGroup
 
 
 class Email(BaseModel):
 
-    _taxonomy = [
-        vystaxonomy.Email
-    ]
-    
+    _taxonomy = [vystaxonomy.Email]
+
     # RFC 5322 Official Standard (https://www.emailregex.com/)
     # value: constr(regex=r'''(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])''') # TODO Añadir que es str
-    value: str # TODO Fix regex to allow caps
+    value: str  # TODO Fix regex to allow caps
 
 
 class Paste(BaseModel):
 
-    _taxonomy = [
-        vystaxonomy.Pastebin,
-        vystaxonomy.JustPaste
-    ]
+    _taxonomy = [vystaxonomy.Pastebin, vystaxonomy.JustPaste]
 
-    value: str # TODO Regex
+    value: str  # TODO Regex
 
 
 class Skype(BaseModel):
 
-    _taxonomy = [
-        vystaxonomy.Skype
-    ]
+    _taxonomy = [vystaxonomy.Skype]
 
-    value: str # TODO Regex
+    value: str  # TODO Regex
 
 
 class Telegram(BaseModel):
 
-    _taxonomy = [
-        vystaxonomy.Telegram # TODO Create Telegram URL
-    ]
+    _taxonomy = [vystaxonomy.Telegram]  # TODO Create Telegram URL
 
-    value: str # TODO Regex
+    value: str  # TODO Regex
 
 
 class BitcoinAddress(BaseModel):
 
-    _taxonomy = [
-        vystaxonomy.Bitcoin_Address # TODO Create Telegram URL
-    ]
+    _taxonomy = [vystaxonomy.Bitcoin_Address]  # TODO Create Telegram URL
 
-    value: str # TODO Regex
+    value: str  # TODO Regex
 
 
 class WhatsApp(BaseModel):
 
-    _taxonomy = [
-        vystaxonomy.WhatsApp
-    ]
+    _taxonomy = [vystaxonomy.WhatsApp]
 
-    value: str # TODO Regex
+    value: str  # TODO Regex
 
 
 class URL(BaseModel):
 
-    _taxonomy = [
-        vystaxonomy.URL
-    ]
+    _taxonomy = [vystaxonomy.URL]
 
     protocol: str
     domain: str
@@ -118,7 +103,7 @@ class URL(BaseModel):
         password = parsed.password
 
         # Build domain:port
-        domain_port = netloc.split(':')
+        domain_port = netloc.split(":")
         domain = domain_port[0]
         if len(domain_port) <= 1:
             try:
@@ -129,7 +114,7 @@ class URL(BaseModel):
             port = domain_port[1]
 
         # Rebuild path's query
-        query_parts = [param.split('=') for param in query.split('&')]
+        query_parts = [param.split("=") for param in query.split("&")]
         query_dict = {}
         for part in query_parts:
             if len(part) <= 1:
@@ -147,7 +132,14 @@ class URL(BaseModel):
 
         # TODO Adapt restalker.link_extractors.UUF logic to fix URLs
         # TODO Detect network
-        tmp_result = cls(protocol=scheme, domain=domain, port=port, path=res_path, signature=str(), network=Network.clearnet)
+        tmp_result = cls(
+            protocol=scheme,
+            domain=domain,
+            port=port,
+            path=res_path,
+            signature=str(),
+            network=Network.clearnet,
+        )
 
         signature = hashlib.sha1(tmp_result.build().encode()).hexdigest()
         tmp_result.signature = signature
@@ -218,11 +210,11 @@ class VysionResponse(BaseModel):
     """
     VysionResponse is a json:api flavoured response from the API
     """
-    data: Result    # TODO Add type to all JSON:API responses
+
+    data: Result  # TODO Add type to all JSON:API responses
 
 
 class VysionError(BaseModel):
-
     class StatusCode(int, Enum):
 
         UNK = 000

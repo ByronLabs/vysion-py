@@ -15,10 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+
 class Flavour:
 
-    _reference = None
-    _version = None
+    _reference: str = None
+    _version: str = None
 
     def __init_subclass__(cls) -> None:
 
@@ -27,8 +28,8 @@ class Flavour:
         assert cls._reference is not None, f"{cls.__name__} class needs reference field"
         assert cls._version is not None, f"{cls.__name__} class needs_version field"
 
-    def __init__(self, namespace, predicate, value):
-        
+    def __init__(self, namespace: str, predicate: str, value: str):
+
         self._namespace = namespace
         self.predicate = predicate
         self.value = value
@@ -49,7 +50,7 @@ class EmptyFlavour(Flavour):
 class DBSafe(Flavour):
 
     # TODO ¿Por ejemplo?
-    _reference = "https://peps.python.org/pep-0008/#naming-conventions" 
+    _reference = "https://peps.python.org/pep-0008/#naming-conventions"
     _version = "2001"
 
 
@@ -79,11 +80,9 @@ class Vysion(Flavour):
 
 
 class Flavours:
-
     def __init__(self, vysion=None, misp=None, stix=None, case=None, dbsafe=None):
 
         assert None not in (vysion, misp, stix, case, dbsafe)
-
 
         # TODO Each one should contain a list of names?
         self.vysion = vysion

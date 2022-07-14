@@ -25,8 +25,7 @@ except:
 import vysion.model as model
 from vysion.model import Hit, RansomFeedHit
 
-
-class MISPProcessor():
+class MISPProcessor:
 
     def __init__(self):
         self.misp_event = MISPEvent()
@@ -36,61 +35,65 @@ class MISPProcessor():
         page: model.Page = hit.page
 
         # TODO Add more page parameters
-        misp_object = MISPObject('vysion-page')
+        misp_object = MISPObject("vysion-page")
         misp_object.template_uuid = "4d0b66f1-5268-47e0-9d29-f2e4f3db8e7f"
 
         page_id = page.id
-        misp_object.add_attribute('id', type='text', value=page_id)
+        misp_object.add_attribute("id", type="text", value=page_id)
 
-        url = page.url
-        misp_object.add_attribute('url', type='url', value=url.build())
-        
+        url: model.URL = page.url
+        misp_object.add_attribute("url", type="url", value=url.build())
+
         network = url.network
-        misp_object.add_attribute('network', type='text', value=network)
+        misp_object.add_attribute("network", type="text", value=network)
+
+        title = page.title
+        misp_object.add_attribute("title", type="text", value=title)
 
         if ref_attribute is not None:
-            misp_object.add_reference(ref_attribute.uuid, 'associated-to')
+            misp_object.add_reference(ref_attribute.uuid, "associated-to")
             
-            self.misp_event.add_object(**misp_object)
-            
+        self.misp_event.add_object(misp_object)
+
         vysion_reference_id = misp_object.uuid
 
         # TODO Remove this addition when the vysion-page object works
-        self.misp_event.add_attribute('url', value=url.build())
+        self.misp_event.add_attribute("url", value=url.build())
 
-        self.misp_event.add_attribute('domain', value=url.domain)
+        self.misp_event.add_attribute("domain", value=url.domain)
 
         for email in hit.email:
-            self.misp_event.add_attribute('email', value=email.value)
+            self.misp_event.add_attribute("email", value=email.value)
 
         for btc in hit.bitcoin_address:
-            self.misp_event.add_attribute('btc', value=btc.value)
+            self.misp_event.add_attribute("btc", value=btc.value)
 
     def parse_ransom_feed_hit(self, hit: model.RansomFeedHit, **kwargs):
 
         # TODO Add event info!
 
-        misp_object = MISPObject('vysion-ransomware-feed')
-        misp_object.add_attribute('id', type='text', value=hit.id)
-        misp_object.add_attribute(
-            'company', type='target-org', value=hit.company)
-        misp_object.add_attribute(
-            'company_link', type='link', value=hit.company_link)
-        misp_object.add_attribute('link', type='link', value=hit.link)
-        misp_object.add_attribute(
-            'group', type="threat-actor", value=hit.group)
-        misp_object.add_attribute('date', type='datetime', value=hit.date)
-        misp_object.add_attribute('info', type='text', value=hit.info)
+        misp_object = MISPObject("vysion-ransomware-feed")
+        misp_object.template_uuid = "e0bfa994-c184-4894-bfaa-73b1350746e1"
+        misp_object["meta-category"] = "misc" # TODO Esto se tiene que poder hacer de otra manera... Y sólo es necesario en los feeds
+
+        misp_object.add_attribute("id", type="text", value=hit.id)
+        misp_object.add_attribute("company", type="target-org", value=hit.company)
+        misp_object.add_attribute("company_link", type="link", value=hit.company_link)
+        misp_object.add_attribute("link", type="link", value=hit.link)
+        misp_object.add_attribute("group", type="threat-actor", value=hit.group)
+        misp_object.add_attribute("date", type="datetime", value=hit.date)
+        misp_object.add_attribute("info", type="text", value=hit.info)
+
         self.misp_event.add_object(misp_object)
 
     def process(self, result: model.Result, **kwargs) -> MISPEvent:
 
         processor = {
             Hit: self.parse_hit,
-            RansomFeedHit: self.parse_ransom_feed_hit
+            RansomFeedHit: self.parse_ransom_feed_hit,
         }.get(result.get_type(), lambda *_, **__: {})
 
         for hit in result.hits:
             processor(hit, **kwargs)
-    
+
         return self.misp_event
