@@ -14,8 +14,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-
-from vysion.taxonomy.flavours import Flavours, EmptyFlavour, DBSafe, MISP, Vysion
+from typing import Dict
+from vysion.taxonomy.flavours import (
+    Flavour,
+    Flavours,
+    EmptyFlavour,
+    DBSafe,
+    MISP,
+    Vysion,
+)
 
 """
     
@@ -44,7 +51,8 @@ from vysion.taxonomy.flavours import Flavours, EmptyFlavour, DBSafe, MISP, Vysio
 
 """
 
-class Field():
+
+class Field:
     pass
 
 
@@ -109,7 +117,7 @@ class Field():
 
 class Entity:
 
-    _flavours = None
+    _flavours: Flavours = None
 
     def __init_subclass__(cls) -> None:
 
@@ -131,7 +139,7 @@ class Bitcoin_Address(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "bitcoin-address"),
         misp=MISP("infoleak", "automatic-detection", "bitcoin-address"),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -142,7 +150,7 @@ class Binance_Address(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "binance-address"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -153,7 +161,7 @@ class Polkadot_Address(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "polkadot-address"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
     address = Field()
@@ -167,7 +175,7 @@ class Ethereum_Address(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "ethereum-address"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
     address = Field()
@@ -181,7 +189,7 @@ class Monero_Address(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "monero-address"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
     address = Field()
@@ -195,7 +203,7 @@ class Ripple_Address(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "ripple-address"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
     address = Field()
@@ -209,7 +217,7 @@ class Zcash_Address(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "zcash-address"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
     address = Field()
@@ -223,7 +231,7 @@ class Tor_Domain_v3(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "url"),
         misp=MISP("infoleak", "automatic-detection", "onion"),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -234,7 +242,7 @@ class Tor_Domain_v2(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "url"),
         misp=MISP("infoleak", "automatic-detection", "onion"),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -245,7 +253,7 @@ class I2P_Domain(Entity):
         dbsafe=EmptyFlavour(),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -256,7 +264,7 @@ class I2P_B32_Domain(Entity):
         dbsafe=EmptyFlavour(),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -267,7 +275,7 @@ class ZeroNet(Entity):
         dbsafe=EmptyFlavour(),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -278,7 +286,7 @@ class ZeroNet_Bit_Domain(Entity):
         dbsafe=EmptyFlavour(),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -289,7 +297,7 @@ class ZeroNet_PK_Domain(Entity):
         dbsafe=EmptyFlavour(),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -300,8 +308,9 @@ class Freenet_SSK_Domain(Entity):
         dbsafe=EmptyFlavour(),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
+
 
 class Freenet_CHK_Domain(Entity):
 
@@ -310,7 +319,7 @@ class Freenet_CHK_Domain(Entity):
         dbsafe=EmptyFlavour(),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -321,7 +330,7 @@ class URL(Entity):
         dbsafe=DBSafe("parche", "automatic-detection", "url"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -332,7 +341,7 @@ class HTML(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "html"),
         misp=MISP("file-type", "type", "html"),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -343,7 +352,7 @@ class Location(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "location-addresss"),
         misp=MISP("gea-nz-entities", "places-address-type", "location-addresss"),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -354,7 +363,7 @@ class Business(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "business"),
         misp=MISP("stix-ttp", "victim-targeting", "business-professional-sector"),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -365,7 +374,7 @@ class PhoneNumber(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "phone-number"),
         misp=MISP("infoleak", "automatic-detection", "phone-number"),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -376,7 +385,7 @@ class Password(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "password"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -387,7 +396,7 @@ class SeedPhrase(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "seed-phrase"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -398,7 +407,7 @@ class Email(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "email"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -409,9 +418,8 @@ class Pastebin(Entity):
         dbsafe=EmptyFlavour(),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
-
 
 
 class JustPaste(Entity):
@@ -421,7 +429,7 @@ class JustPaste(Entity):
         dbsafe=EmptyFlavour(),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -432,7 +440,7 @@ class IRC(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "internet-relay-chat"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -443,7 +451,7 @@ class Skype(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "skype"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -454,9 +462,8 @@ class PGPPublic(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "pgp-public-key-block"),
         misp=MISP("infoleak", "automatic-detection", "pgp-public-key-block"),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
-
 
 
 class PGPPrivate(Entity):
@@ -466,7 +473,7 @@ class PGPPrivate(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "pgp-private-key"),
         misp=MISP("infoleak", "automatic-detection", "pgp-private-key"),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -477,17 +484,20 @@ class Tor(Entity):
         dbsafe=EmptyFlavour(),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
+
 
 class Telegram(Entity):
 
     _flavours = Flavours(
         vysion=Vysion("network", "im", "telegram"),
         dbsafe=DBSafe("vysion", "automatic-detection", "telegram"),
-        misp=MISP("DFRLab-dichotomies-of-disinformation", "platforms-messaging", "telegram"),
+        misp=MISP(
+            "DFRLab-dichotomies-of-disinformation", "platforms-messaging", "telegram"
+        ),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -496,9 +506,11 @@ class WhatsApp(Entity):
     _flavours = Flavours(
         vysion=Vysion("network", "im", "whatsapp"),
         dbsafe=DBSafe("vysion", "automatic-detection", "whatsapp"),
-        misp=MISP("DFRLab-dichotomies-of-disinformation", "platforms-messaging", "whatsapp"),
+        misp=MISP(
+            "DFRLab-dichotomies-of-disinformation", "platforms-messaging", "whatsapp"
+        ),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
 
 
@@ -509,6 +521,5 @@ class Discord(Entity):
         dbsafe=DBSafe("vysion", "automatic-detection", "discord"),
         misp=EmptyFlavour(),
         stix=EmptyFlavour(),
-        case=EmptyFlavour()
+        case=EmptyFlavour(),
     )
-

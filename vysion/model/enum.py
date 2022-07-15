@@ -303,9 +303,9 @@ class Network(str, Enum):
 
 class Language(str, Enum):
 
-    '''
+    """
     Using names from ISO 639-1
-    '''
+    """
 
     avaric = "av"
     swati = "ss"
@@ -456,7 +456,7 @@ class Language(str, Enum):
     bengali = "bn"
     kalaallisut = "kl"
     bokmål = "nb"
-    occitan = "oc",
+    occitan = ("oc",)
     polish = "pl"
     bulgarian = "bg"
     assamese = "as"
@@ -466,7 +466,7 @@ class Language(str, Enum):
     corsican = "co"
     kanuri = "kr"
     ojibwa = "oj"
-    tonga = "to",
+    tonga = ("to",)
     sanskrit = "sa"
     hebrew = "he"
     wolof = "wo"

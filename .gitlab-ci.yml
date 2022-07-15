@@ -10,6 +10,8 @@ variables:
 
 setup:
   stage: build
+  rules:
+    - when: always
   script:
     - pip install .
   only:

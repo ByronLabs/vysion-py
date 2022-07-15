@@ -16,20 +16,21 @@ limitations under the License.
 """
 from vysion.model import VysionError
 
+
 class APIError(Exception):
-  """Class that encapsules errors returned by the Vysion API."""
+    """Class that encapsules errors returned by the Vysion API."""
 
-  @classmethod
-  def from_dict(cls, dict_error):
-    return cls(dict_error['code'], dict_error.get('message'))
+    @classmethod
+    def from_dict(cls, dict_error):
+        return cls(dict_error["code"], dict_error.get("message"))
 
-  def __init__(self, code: int, message: str):
+    def __init__(self, code: int, message: str):
 
-    super().__init__()
+        super().__init__()
 
-    if code not in [i.value for i in VysionError.StatusCode]:
-      self.code = VysionError.StatusCode.UNK
-      self.message = f"{message} (Original code: {code})"
-    else:
-      self.code = code
-      self.message = message
+        if code not in [i.value for i in VysionError.StatusCode]:
+            self.code = VysionError.StatusCode.UNK
+            self.message = f"{message} (Original code: {code})"
+        else:
+            self.code = code
+            self.message = message
