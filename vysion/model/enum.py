@@ -525,3 +525,6 @@ class RansomGroup(str, Enum):
     team_news = "Team News"
     blacktor = "Bl@ckt0r"
     nightsky = "Night Sky"
+    bian_lian = "BianLian"
+    ransom_house = "RansomHouse"
+    karakurt = "Karakurt"

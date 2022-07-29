@@ -16,6 +16,13 @@
 - https://semver.org/
 - https://snyk.io/blog/python-poetry-package-manager/
 
+### Taxonomy
+
+- https://github.com/MISP/misp-taxonomies/blob/main/tools/machinetag.py
+- https://www.misp-project.org/taxonomies.html#_mapping_of_taxonomies
+- https://github.com/MISP/misp-taxonomies
+- https://github.com/MISP/misp-taxonomies/blob/main/tools/docs/images/taxonomy-explanation.png
+
 ## Entorno
 
 - vs-code

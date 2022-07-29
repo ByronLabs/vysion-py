@@ -1,3 +1,3 @@
 #!/bin/bash
-flake8
-mypy -p vysion
+flake8 vysion
+mypi -p vysion
