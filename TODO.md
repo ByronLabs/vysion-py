@@ -1,6 +1,7 @@
 - [ ] Poetry + Gitlab CI
 - [ ] Snyk
 - [ ] Pypi deployment (deploy stage in CI)
-- [ ] https://black.readthedocs.io/en/stable/ ?
+- [x] https://black.readthedocs.io/en/stable/ ?
 - [ ] https://readthedocs.org/ ? 
-- [ ] https://mypy.readthedocs.io/en/stable/ ? 
+- [x] https://mypy.readthedocs.io/en/stable/ ? 
+- [ ] pre-commit (https://pre-commit.com/#intro)
