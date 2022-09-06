@@ -68,6 +68,9 @@ class MISPProcessor:
         for btc in hit.bitcoin_address:
             self.misp_event.add_attribute("btc", value=btc.value)
 
+        for dot in hit.polkadot_address:
+            self.misp_event.add_attribute("dot", value=dot.value)
+
     def parse_ransom_feed_hit(self, hit: model.RansomFeedHit, **kwargs):
 
         # TODO Add event info!
