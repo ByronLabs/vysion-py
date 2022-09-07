@@ -211,7 +211,7 @@ class Hit(BaseModel):
     whatsapp: List[WhatsApp] = Field(default_factory=lambda: [])
     bitcoin_address: List[BitcoinAddress] = Field(default_factory=lambda: [])
     polkadot_address: List[PolkadotAddress] = Field(default_factory=lambda: [])
-    monero_address: List[Monero_Address] = Field(default_factory=lambda: [])
+    monero_address: List[MoneroAddress] = Field(default_factory=lambda: [])
     ripple_address: List[RippleAddress] = Field(default_factory=lambda: [])
     zcash_address: List[ZcashAddress] = Field(default_factory=lambda: [])
 
