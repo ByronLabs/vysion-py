@@ -196,6 +196,7 @@ class Page(BaseModel):
     language: Language
     html: str = None
     sha1sum: str = None
+    sha256sum: str = None
     ssdeep: str = None
     date: datetime = None
     chunk: bool = False
