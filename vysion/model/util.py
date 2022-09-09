@@ -68,6 +68,21 @@ class MISPProcessor:
         for btc in hit.bitcoin_address:
             self.misp_event.add_attribute("btc", value=btc.value)
 
+        for dot in hit.polkadot_address:
+            self.misp_event.add_attribute("dot", value=dot.value)
+
+        for eth in hit.ethereum_address:
+            self.misp_event.add_attribute("eth", value=eth.value)
+
+        for xmr in hit.monero_address:
+            self.misp_event.add_attribute("xmr", value=xmr.value)
+
+        for xrp in hit.ripple_address:
+            self.misp_event.add_attribute("xrp", value=xmr.value)
+        
+        for zec in hit.zcash_address:
+            self.misp_event.add_attribute("zec", value=zec.value)
+
     def parse_ransom_feed_hit(self, hit: model.RansomFeedHit, **kwargs):
 
         # TODO Add event info!

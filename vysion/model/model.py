@@ -19,6 +19,8 @@ import hashlib
 
 from datetime import datetime
 
+from vysion.taxonomy.taxonomy import Monero_Address, Ripple_Address
+
 try:
     from types import NoneType
 except:
@@ -66,6 +68,41 @@ class Telegram(BaseModel):
 class BitcoinAddress(BaseModel):
 
     _taxonomy = [vystaxonomy.Bitcoin_Address]  # TODO Create Telegram URL
+
+    value: str  # TODO Regex
+
+
+class PolkadotAddress(BaseModel):
+
+    _taxonomy = [vystaxonomy.Polkadot_Address]  # TODO Create Telegram URL
+
+    value: str  # TODO Regex
+
+
+class EthereumAddress(BaseModel):
+
+    _taxonomy = [vystaxonomy.Ethereum_Address]  # TODO Create Telegram URL
+
+    value: str  # TODO Regex
+
+
+class MoneroAddress(BaseModel):
+
+    _taxonomy = [vystaxonomy.Monero_Address]  # TODO Create Telegram URL
+
+    value: str  # TODO Regex
+
+
+class RippleAddress(BaseModel):
+
+    _taxonomy = [vystaxonomy.Ripple_Address]  # TODO Create Telegram URL
+
+    value: str  # TODO Regex
+
+
+class ZcashAddress(BaseModel):
+
+    _taxonomy = [vystaxonomy.Zcash_Address]  # TODO Create Telegram URL
 
     value: str  # TODO Regex
 
@@ -173,6 +210,10 @@ class Hit(BaseModel):
     telegram: List[Telegram] = Field(default_factory=lambda: [])
     whatsapp: List[WhatsApp] = Field(default_factory=lambda: [])
     bitcoin_address: List[BitcoinAddress] = Field(default_factory=lambda: [])
+    polkadot_address: List[PolkadotAddress] = Field(default_factory=lambda: [])
+    monero_address: List[MoneroAddress] = Field(default_factory=lambda: [])
+    ripple_address: List[RippleAddress] = Field(default_factory=lambda: [])
+    zcash_address: List[ZcashAddress] = Field(default_factory=lambda: [])
 
 
 class RansomFeedHit(BaseModel):
