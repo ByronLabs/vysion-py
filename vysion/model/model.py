@@ -228,6 +228,17 @@ class RansomFeedHit(BaseModel):
     info: Optional[str]
 
 
+class TelegramFeedHit(BaseModel):
+
+    id: str
+    telegram: str
+    date: datetime
+    url: str
+    path: str
+    network: str
+
+
+
 class Result(BaseModel):
 
     # TODO Añadir paginación, query, etc?
