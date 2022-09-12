@@ -228,12 +228,23 @@ class RansomFeedHit(BaseModel):
     info: Optional[str]
 
 
+class TelegramFeedHit(BaseModel):
+
+    id: str
+    telegram: List[str]
+    date: datetime
+    url: str
+    path: str
+    network: str
+
+
 class Result(BaseModel):
 
     # TODO Añadir paginación, query, etc?
     total: int = 0
-    hits: Union[List[Hit], List[RansomFeedHit]] = Field(default_factory=lambda: [])
-
+    hits: Union[List[Hit], List[RansomFeedHit], List[TelegramFeedHit]] = Field(
+        default_factory=lambda: [])
+        
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         if self.total <= 0:
