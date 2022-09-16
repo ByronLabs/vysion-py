@@ -220,7 +220,7 @@ class Client(BaseClient):
 
         result = self._make_request(url)
         return result.data
-    
+
     @vysion_error_manager
     def find_xrp(
         self, xrp: str, page: int = 1, before: datetime = None, after: datetime = None
