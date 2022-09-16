@@ -26,8 +26,8 @@ from urllib.parse import urljoin, urlencode
 import requests
 from vysion.client.error import APIError
 
-import vysion.model as model
-from vysion.model import VysionError
+import vysion.dto as dto
+from vysion.dto import VysionError
 from vysion.version import __version__ as vysion_version
 
 _API_HOST = "https://api.vysion.ai"
@@ -101,7 +101,7 @@ class BaseClient:
 
         return urljoin(base, query)
 
-    def _make_request(self, url: str) -> model.VysionResponse:
+    def _make_request(self, url: str) -> dto.VysionResponse:
 
         session = self.__get_session__()
         r = session.get(url)
@@ -120,12 +120,12 @@ class BaseClient:
 
         payload = r.json()
 
-        result = model.VysionResponse.parse_obj(payload)
+        result = dto.VysionResponse.parse_obj(payload)
 
         return result
 
 
-def vysion_error_manager(method) -> Union[model.Result, VysionError]:
+def vysion_error_manager(method) -> Union[dto.Result, VysionError]:
 
     def manage(*args, **kwargs):
         try:
@@ -170,12 +170,12 @@ class Client(BaseClient):
         self,
         query: str,
         exact: bool = False,
-        network: model.Network = None,
-        language: model.Language = None,
+        network: dto.Network = None,
+        language: dto.Language = None,
         page: int = 1,
         before: datetime = None,
         after: datetime = None,
-    ) -> model.Result:
+    ) -> dto.Result:
 
         url = self._build_api_url__(
             "search",
@@ -194,7 +194,7 @@ class Client(BaseClient):
     @vysion_error_manager
     def find_btc(
         self, btc: str, page: int = 1, before: datetime = None, after: datetime = None
-    ) -> model.Result:
+    ) -> dto.Result:
 
         url = self._build_api_url__("btc", btc, page=page, before=before, after=after)
 
@@ -209,7 +209,7 @@ class Client(BaseClient):
         page: int = 1,
         before: datetime = None,
         after: datetime = None,
-    ) -> model.Result:
+    ) -> dto.Result:
 
         url = self._build_api_url__(
             "url", query_url, page=page, before=before, after=after
@@ -221,7 +221,7 @@ class Client(BaseClient):
     @vysion_error_manager
     def find_email(
         self, email: str, page: int = 1, before: datetime = None, after: datetime = None
-    ) -> model.Result:
+    ) -> dto.Result:
 
         url = self._build_api_url__(
             "email", email, page=page, before=before, after=after
@@ -231,7 +231,7 @@ class Client(BaseClient):
         return result.data
 
     @vysion_error_manager
-    def get_document(self, document_id: str) -> model.Result:
+    def get_document(self, document_id: str) -> dto.Result:
 
         url = self._build_api_url__("document", document_id)
 

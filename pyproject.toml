@@ -15,7 +15,7 @@ classifiers=[
    "License :: OSI Approved :: Apache Software License",
    "Operating System :: OS Independent"
 ]
-# packages = [vysion', 'vysion.client', 'vysion.model', 'vysion.taxonomy'],
+# packages = [vysion', 'vysion.client', 'vysion.model',  'vysion.dto', 'vysion.taxonomy'],
 
 [tool.poetry.dependencies]
 python = "^3.7.0"

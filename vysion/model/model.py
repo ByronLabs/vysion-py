@@ -14,9 +14,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from enum import Enum
+from .enum import Enum
 import hashlib
-
+import uuid
 from datetime import datetime
 
 from vysion.taxonomy.taxonomy import Monero_Address, Ripple_Address
@@ -27,37 +27,14 @@ except:
     NoneType: type = type(None)
 
 from typing import List, Optional, Union
-from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field # , constr
 
-from vysion import taxonomy as vystaxonomy
-from .enum import Services, Network, Language, RansomGroup
+from .enum import Services, Network
 
+import re
 
-class Email(BaseModel):
-
-    _taxonomy = [vystaxonomy.Email]
-
-    # RFC 5322 Official Standard (https://www.emailregex.com/)
-    # value: constr(regex=r'''(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])''') # TODO Añadir que es str
-    value: str  # TODO Fix regex to allow caps
-
-
-class Paste(BaseModel):
-
-    _taxonomy = [vystaxonomy.Pastebin, vystaxonomy.JustPaste]
-
-    value: str  # TODO Regex
-
-
-class Skype(BaseModel):
-
-    _taxonomy = [vystaxonomy.Skype]
-
-    value: str  # TODO Regex
-
-
+<<<<<<< Updated upstream
 class Telegram(BaseModel):
 
     _taxonomy = [vystaxonomy.Telegram]  # TODO Create Telegram URL
@@ -113,71 +90,112 @@ class WhatsApp(BaseModel):
 
     value: str  # TODO Regex
 
+=======
+NULL_UUID = uuid.UUID("00000000-0000-0000-0000-000000000000")
+>>>>>>> Stashed changes
 
 class URL(BaseModel):
 
-    _taxonomy = [vystaxonomy.URL]
+    protocol: Optional[str] 
+    domain: Optional[str]   
+    port: Optional[int] = Field(default_factory=lambda: -1)
+    path: Optional[str]
+    signature: uuid.UUID = Field(default_factory=lambda: NULL_UUID)
+    
+    raw: str
 
-    protocol: str
-    domain: str
-    port: int
-    path: str
-    signature: str
-    network: Network
+    @staticmethod
+    def _parse_(url):
+        
+        """
+        RFC3986
+            scheme    = $2
+            authority = $4
+            path      = $5
+            query     = $7
+            fragment  = $9
+        """
+        regex = r"^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?"
+        
+        res = re.match(regex, url)
+        
+        scheme = res[2]
+        authority = res[4]
+        path = res[5]
+        query = res[7]
+        fragment = res[9]
+
+        return dict(
+            scheme=scheme,
+            authority=authority,
+            path=path,
+            query=query,
+            fragment=fragment
+        )
+
+    def _generate_signature_(self) -> uuid.UUID:
+        return uuid.uuid5(uuid.NAMESPACE_URL, self.build())
 
     @classmethod
-    def parse(cls, url):
+    def parse(cls, url, fix=False):
 
-        parsed = urlparse(url)
+        # Saving the original url
+        raw = url
 
-        scheme = parsed.scheme
-        netloc = parsed.netloc
-        path = parsed.path
-        query = parsed.query
-        fragment = parsed.fragment
-        params = parsed.params
-        username = parsed.username
-        password = parsed.password
+        parsed = cls._parse_(url)
+        
+        # Elements
+        scheme = parsed["scheme"]
+        netloc = parsed["authority"]
+        path = parsed["path"]
+        query = parsed["query"]
+        fragment = parsed["fragment"]
 
         # Build domain:port
-        domain_port = netloc.split(":")
-        domain = domain_port[0]
-        if len(domain_port) <= 1:
-            try:
-                port = Services[scheme]
-            except KeyError:
-                port = 80
+        if netloc is not None:
+            domain_port = (netloc.split(":") + [None])[:2]
         else:
-            port = domain_port[1]
+            domain_port = [None, None]
+        
+        domain = domain_port[0]
+        port = domain_port[1]
 
-        # Rebuild path's query
-        query_parts = [param.split("=") for param in query.split("&")]
-        query_dict = {}
-        for part in query_parts:
-            if len(part) <= 1:
-                query_dict[part[0]] = str()
-            else:
-                query_dict[part[0]] = part[1]
+        # Normalize path: /path?query#fragment
+        # Parse a URL into 6 components:
+        # <protocol>://<domain>:<port>/<path>
+        if query is not None:
 
-        query_keys = list(query_dict.keys())
-        query_keys.sort()
-        res_query_parts = [f"{k}={query_dict[k]}" for k in query_keys]
-        res_query = "?" + "&".join(res_query_parts)
+            # Normalize query
+            query_parts = [param.split("=") for param in query.split("&")]
+            query_dict = {}
+            for part in query_parts:
+                if len(part) <= 1:
+                    query_dict[part[0]] = str()
+                else:
+                    query_dict[part[0]] = part[1]
 
-        # Build /path?query#fragment
-        res_path = path + res_query + f"#{fragment}"
+            query_keys = list(query_dict.keys())
+            query_keys.sort()
+            res_query_parts = [f"{k}={query_dict[k]}" for k in query_keys]
+
+            res_query = "?" + "&".join(res_query_parts)
+        
+            path += res_query
+        
+        if fragment is not None:
+            path += f"#{fragment}"
 
         # TODO Adapt restalker.link_extractors.UUF logic to fix URLs
-        # TODO Detect network
-        tmp_result = cls(
+        # TODO Detect network?
+        result = cls(
             protocol=scheme,
             domain=domain,
             port=port,
-            path=res_path,
-            signature=str(),
-            network=Network.clearnet,
+            path=path,
+            raw=raw
         )
 
+<<<<<<< Updated upstream
         signature = hashlib.sha1(tmp_result.build().encode()).hexdigest()
         tmp_result.signature = signature
 
@@ -215,56 +233,57 @@ class Hit(BaseModel):
     monero_address: List[MoneroAddress] = Field(default_factory=lambda: [])
     ripple_address: List[RippleAddress] = Field(default_factory=lambda: [])
     zcash_address: List[ZcashAddress] = Field(default_factory=lambda: [])
+=======
+        if fix:
+            result._fix()
 
+        return result
+>>>>>>> Stashed changes
 
-class RansomFeedHit(BaseModel):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.signature = self._generate_signature_()
 
-    id: str
-    company: Optional[str]
-    company_link: Optional[str]
-    link: str
-    group: RansomGroup
-    date: datetime
-    info: Optional[str]
+    def build(self) -> str:
+        
+        url = self.path
 
+        if self.domain is not None:
+            
+            if self.port is not None:
+                url = f":{self.port}" + url
+            
+            url = f"{self.domain}" + url
 
-class Result(BaseModel):
+        if self.protocol is not None:
 
-    # TODO Añadir paginación, query, etc?
-    total: int = 0
-    hits: Union[List[Hit], List[RansomFeedHit]] = Field(default_factory=lambda: [])
+            url = f"{self.protocol}://" + url
+            
+        return url
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        if self.total <= 0:
-            self.total = len(self.hits)
+    def _fix(self, default_protocol=Services.http) -> None:
 
-    def get_type(self) -> type:
+        if self.protocol is None:
+            if self.port is None:
+                self.protocol = default_protocol.name
+            else:
+                self.protocol = Services(self.port).name
 
-        if len(self.hits) <= 0:
-            return NoneType
+        if self.port is None:
+            self.port = Services[self.protocol].value
 
-        return type(self.hits[0])
+        if self.domain is None:
+            path = self.path
+            if path[0] == "/":
+                path = path[1:]
+            path_parts = path.split('/')
+            self.domain = path_parts[0]
+            self.path = "/" + "/".join(path_parts[1:])
+        
+        self.signature = self._generate_signature_()
 
+    def __str__(self) -> str:
+        return self.build()
 
-# TODO Move API responses to other class
-class VysionResponse(BaseModel):
-    """
-    VysionResponse is a json:api flavoured response from the API
-    """
-
-    data: Result  # TODO Add type to all JSON:API responses
-
-
-class VysionError(BaseModel):
-    class StatusCode(int, Enum):
-
-        UNK = 000
-        OK = 200
-        REQ_ERROR = 400
-        UNAUTHORIZED = 403
-        NOT_FOUND = 404
-        INTERNAL_ERROR = 500
-
-    code: StatusCode = StatusCode.UNK
-    message: str = "UNK_ERR"
+    def __repr__(self):
+        return self.build()

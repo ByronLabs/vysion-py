@@ -1,11 +1,11 @@
 import pytest
 
-import vysion.model as model
+import vysion.dto as dto
 
 
 def test_invalid():
     try:
-        model.wrong()
+        dto.wrong()
         assert False
     except:
         assert True

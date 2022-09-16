@@ -18,5 +18,6 @@ limitations under the License.
 from . import client
 from . import taxonomy
 from . import model
+from . import dto
 
 from .version import __version__
