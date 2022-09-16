@@ -16,4 +16,3 @@ limitations under the License.
 """
 from .model import *
 from . import enum
-from . import util

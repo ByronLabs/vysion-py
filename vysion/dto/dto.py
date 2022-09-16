@@ -19,6 +19,8 @@ import hashlib
 
 from datetime import datetime
 
+from vysion.taxonomy import Monero_Address, Ripple_Address
+
 try:
     from types import NoneType
 except:
@@ -31,6 +33,36 @@ from pydantic import BaseModel, Field # , constr
 
 from vysion import taxonomy as vystaxonomy
 from vysion.model.enum import Services, Network, Language, RansomGroup
+
+
+class Email(BaseModel):
+
+    _taxonomy = [vystaxonomy.Email]
+
+    # RFC 5322 Official Standard (https://www.emailregex.com/)
+    # value: constr(regex=r'''(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])''') # TODO Añadir que es str
+    value: str  # TODO Fix regex to allow caps
+
+
+class Paste(BaseModel):
+
+    _taxonomy = [vystaxonomy.Pastebin, vystaxonomy.JustPaste]
+
+    value: str  # TODO Regex
+
+
+class Skype(BaseModel):
+
+    _taxonomy = [vystaxonomy.Skype]
+
+    value: str  # TODO Regex
+
+
+class Telegram(BaseModel):
+
+    _taxonomy = [vystaxonomy.Telegram]  # TODO Create Telegram URL
+
+    value: str  # TODO Regex
 
 
 class BitcoinAddress(BaseModel):
@@ -71,40 +103,17 @@ class RippleAddress(BaseModel):
 class ZcashAddress(BaseModel):
 
     _taxonomy = [vystaxonomy.Zcash_Address]  # TODO Create Telegram URL
+
     value: str  # TODO Regex
 
-
-class Email(BaseModel):
-
-    _taxonomy = [vystaxonomy.Email]
-    # RFC 5322 Official Standard (https://www.emailregex.com/)
-    # value: constr(regex=r'''(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])''') # TODO Añadir que es str
-    value: str  # TODO Fix regex to allow caps
-
-
-class Paste(BaseModel):
-
-    _taxonomy = [vystaxonomy.Pastebin, vystaxonomy.JustPaste]
-    value: str  # TODO Regex
-
-
-class Skype(BaseModel):
-
-    _taxonomy = [vystaxonomy.Skype]
-    value: str  # TODO Regex
-
-
-class Telegram(BaseModel):
-
-    _taxonomy = [vystaxonomy.Telegram]  # TODO Create Telegram URL
-    value: str  # TODO Regex
 
 class WhatsApp(BaseModel):
 
     _taxonomy = [vystaxonomy.WhatsApp]
+
     value: str  # TODO Regex
 
-# TODO Actualizar con URL de PARCHE
+
 class URL(BaseModel):
 
     _taxonomy = [vystaxonomy.URL]
@@ -187,6 +196,7 @@ class Page(BaseModel):
     language: Language
     html: str = None
     sha1sum: str = None
+    sha256sum: str = None
     ssdeep: str = None
     date: datetime = None
     chunk: bool = False
@@ -201,6 +211,11 @@ class Hit(BaseModel):
     telegram: List[Telegram] = Field(default_factory=lambda: [])
     whatsapp: List[WhatsApp] = Field(default_factory=lambda: [])
     bitcoin_address: List[BitcoinAddress] = Field(default_factory=lambda: [])
+    polkadot_address: List[PolkadotAddress] = Field(default_factory=lambda: [])
+    ethereum_address: List[EthereumAddress] = Field(default_factory=lambda: [])
+    monero_address: List[MoneroAddress] = Field(default_factory=lambda: [])
+    ripple_address: List[RippleAddress] = Field(default_factory=lambda: [])
+    zcash_address: List[ZcashAddress] = Field(default_factory=lambda: [])
 
 
 class RansomFeedHit(BaseModel):
@@ -214,12 +229,23 @@ class RansomFeedHit(BaseModel):
     info: Optional[str]
 
 
+class TelegramFeedHit(BaseModel):
+
+    id: str
+    telegram: List[str]
+    date: datetime
+    url: str
+    path: str
+    network: str
+
+
 class Result(BaseModel):
 
     # TODO Añadir paginación, query, etc?
     total: int = 0
-    hits: Union[List[Hit], List[RansomFeedHit]] = Field(default_factory=lambda: [])
-
+    hits: Union[List[Hit], List[RansomFeedHit], List[TelegramFeedHit]] = Field(
+        default_factory=lambda: [])
+        
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         if self.total <= 0:

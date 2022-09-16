@@ -201,6 +201,56 @@ class Client(BaseClient):
         result = self._make_request(url)
         return result.data
 
+    @vysion_error_manager
+    def find_eth(
+        self, eth: str, page: int = 1, before: datetime = None, after: datetime = None
+    ) -> dto.Result:
+
+        url = self._build_api_url__("eth", eth, page=page, before=before, after=after)
+
+        result = self._make_request(url)
+        return result.data
+
+    @vysion_error_manager
+    def find_dot(
+        self, dot: str, page: int = 1, before: datetime = None, after: datetime = None
+    ) -> dto.Result:
+
+        url = self._build_api_url__("dot", dot, page=page, before=before, after=after)
+
+        result = self._make_request(url)
+        return result.data
+    
+    @vysion_error_manager
+    def find_xrp(
+        self, xrp: str, page: int = 1, before: datetime = None, after: datetime = None
+    ) -> dto.Result:
+
+        url = self._build_api_url__("xrp", xrp, page=page, before=before, after=after)
+
+        result = self._make_request(url)
+        return result.data
+
+    @vysion_error_manager
+    def find_xmr(
+        self, xmr: str, page: int = 1, before: datetime = None, after: datetime = None
+    ) -> dto.Result:
+
+        url = self._build_api_url__("xmr", xmr, page=page, before=before, after=after)
+
+        result = self._make_request(url)
+        return result.data
+
+    @vysion_error_manager
+    def find_zec(
+        self, zec: str, page: int = 1, before: datetime = None, after: datetime = None
+    ) -> dto.Result:
+
+        url = self._build_api_url__("zec", zec, page=page, before=before, after=after)
+
+        result = self._make_request(url)
+        return result.data
+
     # TODO find_domain?
     @vysion_error_manager
     def find_url(
