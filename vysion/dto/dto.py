@@ -30,37 +30,7 @@ from urllib.parse import urlparse
 from pydantic import BaseModel, Field # , constr
 
 from vysion import taxonomy as vystaxonomy
-from .enum import Services, Network, Language, RansomGroup
-
-
-class Email(BaseModel):
-
-    _taxonomy = [vystaxonomy.Email]
-
-    # RFC 5322 Official Standard (https://www.emailregex.com/)
-    # value: constr(regex=r'''(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])''') # TODO Añadir que es str
-    value: str  # TODO Fix regex to allow caps
-
-
-class Paste(BaseModel):
-
-    _taxonomy = [vystaxonomy.Pastebin, vystaxonomy.JustPaste]
-
-    value: str  # TODO Regex
-
-
-class Skype(BaseModel):
-
-    _taxonomy = [vystaxonomy.Skype]
-
-    value: str  # TODO Regex
-
-
-class Telegram(BaseModel):
-
-    _taxonomy = [vystaxonomy.Telegram]  # TODO Create Telegram URL
-
-    value: str  # TODO Regex
+from vysion.model.enum import Services, Network, Language, RansomGroup
 
 
 class BitcoinAddress(BaseModel):
@@ -70,10 +40,68 @@ class BitcoinAddress(BaseModel):
     value: str  # TODO Regex
 
 
+class PolkadotAddress(BaseModel):
+
+    _taxonomy = [vystaxonomy.Polkadot_Address]  # TODO Create Telegram URL
+
+    value: str  # TODO Regex
+
+
+class EthereumAddress(BaseModel):
+
+    _taxonomy = [vystaxonomy.Ethereum_Address]  # TODO Create Telegram URL
+
+    value: str  # TODO Regex
+
+
+class MoneroAddress(BaseModel):
+
+    _taxonomy = [vystaxonomy.Monero_Address]  # TODO Create Telegram URL
+
+    value: str  # TODO Regex
+
+
+class RippleAddress(BaseModel):
+
+    _taxonomy = [vystaxonomy.Ripple_Address]  # TODO Create Telegram URL
+
+    value: str  # TODO Regex
+
+
+class ZcashAddress(BaseModel):
+
+    _taxonomy = [vystaxonomy.Zcash_Address]  # TODO Create Telegram URL
+    value: str  # TODO Regex
+
+
+class Email(BaseModel):
+
+    _taxonomy = [vystaxonomy.Email]
+    # RFC 5322 Official Standard (https://www.emailregex.com/)
+    # value: constr(regex=r'''(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])''') # TODO Añadir que es str
+    value: str  # TODO Fix regex to allow caps
+
+
+class Paste(BaseModel):
+
+    _taxonomy = [vystaxonomy.Pastebin, vystaxonomy.JustPaste]
+    value: str  # TODO Regex
+
+
+class Skype(BaseModel):
+
+    _taxonomy = [vystaxonomy.Skype]
+    value: str  # TODO Regex
+
+
+class Telegram(BaseModel):
+
+    _taxonomy = [vystaxonomy.Telegram]  # TODO Create Telegram URL
+    value: str  # TODO Regex
+
 class WhatsApp(BaseModel):
 
     _taxonomy = [vystaxonomy.WhatsApp]
-
     value: str  # TODO Regex
 
 # TODO Actualizar con URL de PARCHE

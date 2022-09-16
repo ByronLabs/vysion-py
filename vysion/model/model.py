@@ -19,8 +19,6 @@ import hashlib
 import uuid
 from datetime import datetime
 
-from vysion.taxonomy.taxonomy import Monero_Address, Ripple_Address
-
 try:
     from types import NoneType
 except:
@@ -34,65 +32,7 @@ from .enum import Services, Network
 
 import re
 
-<<<<<<< Updated upstream
-class Telegram(BaseModel):
-
-    _taxonomy = [vystaxonomy.Telegram]  # TODO Create Telegram URL
-
-    value: str  # TODO Regex
-
-
-class BitcoinAddress(BaseModel):
-
-    _taxonomy = [vystaxonomy.Bitcoin_Address]  # TODO Create Telegram URL
-
-    value: str  # TODO Regex
-
-
-class PolkadotAddress(BaseModel):
-
-    _taxonomy = [vystaxonomy.Polkadot_Address]  # TODO Create Telegram URL
-
-    value: str  # TODO Regex
-
-
-class EthereumAddress(BaseModel):
-
-    _taxonomy = [vystaxonomy.Ethereum_Address]  # TODO Create Telegram URL
-
-    value: str  # TODO Regex
-
-
-class MoneroAddress(BaseModel):
-
-    _taxonomy = [vystaxonomy.Monero_Address]  # TODO Create Telegram URL
-
-    value: str  # TODO Regex
-
-
-class RippleAddress(BaseModel):
-
-    _taxonomy = [vystaxonomy.Ripple_Address]  # TODO Create Telegram URL
-
-    value: str  # TODO Regex
-
-
-class ZcashAddress(BaseModel):
-
-    _taxonomy = [vystaxonomy.Zcash_Address]  # TODO Create Telegram URL
-
-    value: str  # TODO Regex
-
-
-class WhatsApp(BaseModel):
-
-    _taxonomy = [vystaxonomy.WhatsApp]
-
-    value: str  # TODO Regex
-
-=======
 NULL_UUID = uuid.UUID("00000000-0000-0000-0000-000000000000")
->>>>>>> Stashed changes
 
 class URL(BaseModel):
 
@@ -195,50 +135,10 @@ class URL(BaseModel):
             raw=raw
         )
 
-<<<<<<< Updated upstream
-        signature = hashlib.sha1(tmp_result.build().encode()).hexdigest()
-        tmp_result.signature = signature
-
-        return tmp_result
-
-    def build(self) -> str:
-        return f"{self.protocol}://{self.domain}:{self.port}{self.path}"
-
-
-class Page(BaseModel):
-
-    id: str
-    url: URL
-    parent: str = None
-    title: str = None  # TODO Revisar si None o str()
-    language: Language
-    html: str = None
-    sha1sum: str = None
-    sha256sum: str = None
-    ssdeep: str = None
-    date: datetime = None
-    chunk: bool = False
-
-
-class Hit(BaseModel):
-
-    page: Page
-    email: List[Email] = Field(default_factory=lambda: [])
-    paste: List[Paste] = Field(default_factory=lambda: [])
-    skype: List[Skype] = Field(default_factory=lambda: [])
-    telegram: List[Telegram] = Field(default_factory=lambda: [])
-    whatsapp: List[WhatsApp] = Field(default_factory=lambda: [])
-    bitcoin_address: List[BitcoinAddress] = Field(default_factory=lambda: [])
-    polkadot_address: List[PolkadotAddress] = Field(default_factory=lambda: [])
-    monero_address: List[MoneroAddress] = Field(default_factory=lambda: [])
-    ripple_address: List[RippleAddress] = Field(default_factory=lambda: [])
-    zcash_address: List[ZcashAddress] = Field(default_factory=lambda: [])
-=======
         if fix:
             result._fix()
 
         return result
->>>>>>> Stashed changes
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

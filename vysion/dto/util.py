@@ -22,7 +22,6 @@ try:
 except:
     NoneType = type(None)
 
-import vysion.dto as dto
 from vysion.dto import Hit, RansomFeedHit
 
 class MISPProcessor:
@@ -30,7 +29,7 @@ class MISPProcessor:
     def __init__(self):
         self.misp_event = MISPEvent()
 
-    def parse_hit(self, hit: dto.Hit, ref_attribute: MISPAttribute = None, **_):
+    def parse_hit(self, hit: Hit, ref_attribute: MISPAttribute = None, **_):
 
         page: dto.Page = hit.page
 
@@ -67,6 +66,21 @@ class MISPProcessor:
 
         for btc in hit.bitcoin_address:
             self.misp_event.add_attribute("btc", value=btc.value)
+
+        for dot in hit.polkadot_address:
+            self.misp_event.add_attribute("dot", value=dot.value)
+
+        for eth in hit.ethereum_address:
+            self.misp_event.add_attribute("eth", value=eth.value)
+
+        for xmr in hit.monero_address:
+            self.misp_event.add_attribute("xmr", value=xmr.value)
+
+        for xrp in hit.ripple_address:
+            self.misp_event.add_attribute("xrp", value=xmr.value)
+        
+        for zec in hit.zcash_address:
+            self.misp_event.add_attribute("zec", value=zec.value)
 
     def parse_ransom_feed_hit(self, hit: dto.RansomFeedHit, **kwargs):
 
