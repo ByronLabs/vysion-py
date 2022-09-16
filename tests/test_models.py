@@ -10,35 +10,27 @@ def test_invalid():
     except:
         assert True
 
-
 def test_email():
     pass
-
 
 def test_paste():
     pass
 
-
 def test_skype():
     pass
-
 
 def test_telegram():
     pass
 
-
 def test_bitcoin_address():
     pass
-
 
 def test_whatsapp():
     pass
 
-
 def test_url():
-    pass
-
-
+    url = dto.URL.parse("https://vysyion.ai")
+    
 def test_page():
     pass
 

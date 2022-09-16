@@ -32,6 +32,7 @@ from urllib.parse import urlparse
 from pydantic import BaseModel, Field # , constr
 
 from vysion import taxonomy as vystaxonomy
+from vysion.model import URL as URL_model
 from vysion.model.enum import Services, Network, Language, RansomGroup
 
 
@@ -118,68 +119,26 @@ class URL(BaseModel):
 
     _taxonomy = [vystaxonomy.URL]
 
-    protocol: str
-    domain: str
-    port: int
-    path: str
+    protocol: Optional[str]
+    domain: Optional[str]
+    port: Optional[int]
+    path: Optional[str]
     signature: str
-    network: Network
+    network: Network = Field(default_factory=lambda: Network.clearnet)
 
     @classmethod
     def parse(cls, url):
 
-        parsed = urlparse(url)
-
-        scheme = parsed.scheme
-        netloc = parsed.netloc
-        path = parsed.path
-        query = parsed.query
-        fragment = parsed.fragment
-        params = parsed.params
-        username = parsed.username
-        password = parsed.password
-
-        # Build domain:port
-        domain_port = netloc.split(":")
-        domain = domain_port[0]
-        if len(domain_port) <= 1:
-            try:
-                port = Services[scheme]
-            except KeyError:
-                port = 80
-        else:
-            port = domain_port[1]
-
-        # Rebuild path's query
-        query_parts = [param.split("=") for param in query.split("&")]
-        query_dict = {}
-        for part in query_parts:
-            if len(part) <= 1:
-                query_dict[part[0]] = str()
-            else:
-                query_dict[part[0]] = part[1]
-
-        query_keys = list(query_dict.keys())
-        query_keys.sort()
-        res_query_parts = [f"{k}={query_dict[k]}" for k in query_keys]
-        res_query = "?" + "&".join(res_query_parts)
-
-        # Build /path?query#fragment
-        res_path = path + res_query + f"#{fragment}"
-
-        # TODO Adapt restalker.link_extractors.UUF logic to fix URLs
-        # TODO Detect network
+        # TODO Save this parsed in a private variable? (e.g., _pared_)
+        parsed = URL_model.parse(url)
+        print(parsed)
         tmp_result = cls(
-            protocol=scheme,
-            domain=domain,
-            port=port,
-            path=res_path,
-            signature=str(),
-            network=Network.clearnet,
+            protocol=parsed.protocol,
+            domain=parsed.domain,
+            port=parsed.port,
+            path=parsed.path,
+            signature=str(parsed.signature) # TODO Replace signature: str --> UUID
         )
-
-        signature = hashlib.sha1(tmp_result.build().encode()).hexdigest()
-        tmp_result.signature = signature
 
         return tmp_result
 
