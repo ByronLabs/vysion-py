@@ -1,7 +1,5 @@
 import pytest
-
 import vysion.dto as dto
-
 
 def test_invalid():
     try:
@@ -33,7 +31,6 @@ def test_url():
     
 def test_page():
     pass
-
 
 def test_hit():
     pass
