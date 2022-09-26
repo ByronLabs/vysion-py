@@ -196,6 +196,7 @@ class TelegramFeedHit(BaseModel):
     url: str
     path: str
     network: str
+    country: str
 
 
 class Result(BaseModel):
