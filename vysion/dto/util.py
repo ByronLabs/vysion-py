@@ -22,7 +22,7 @@ try:
 except:
     NoneType = type(None)
 
-from vysion.dto import Hit, RansomFeedHit
+from vysion.dto import Hit, RansomFeedHit, dto
 
 class MISPProcessor:
 
