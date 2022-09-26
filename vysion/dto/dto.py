@@ -186,6 +186,7 @@ class RansomFeedHit(BaseModel):
     group: RansomGroup
     date: datetime
     info: Optional[str]
+    country: str
 
 
 class TelegramFeedHit(BaseModel):
@@ -196,7 +197,6 @@ class TelegramFeedHit(BaseModel):
     url: str
     path: str
     network: str
-    country: str
 
 
 class Result(BaseModel):
