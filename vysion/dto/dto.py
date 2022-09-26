@@ -228,6 +228,7 @@ class VysionResponse(BaseModel):
 
 
 class VysionError(BaseModel):
+
     class StatusCode(int, Enum):
 
         UNK = 000
