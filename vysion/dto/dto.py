@@ -146,6 +146,11 @@ class URL(BaseModel):
         return f"{self.protocol}://{self.domain}:{self.port}{self.path}"
 
 
+class Tag(BaseModel):
+
+    value: str
+
+
 class Page(BaseModel):
 
     id: str
@@ -164,6 +169,7 @@ class Page(BaseModel):
 class Hit(BaseModel):
 
     page: Page
+    tag: List[Tag]
     email: List[Email] = Field(default_factory=lambda: [])
     paste: List[Paste] = Field(default_factory=lambda: [])
     skype: List[Skype] = Field(default_factory=lambda: [])

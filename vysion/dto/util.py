@@ -15,14 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import json
-from pymisp import MISPAttribute, MISPEvent, MISPObject
+from pymisp import MISPAttribute, MISPEvent, MISPObject, MISPTag
 
 try:
     from types import NoneType
 except:
     NoneType = type(None)
 
-from vysion.dto import Hit, RansomFeedHit
+import vysion.dto as dto
+from vysion.dto import Hit, RansomFeedHit, Page, URL
 
 class MISPProcessor:
 
@@ -31,7 +32,7 @@ class MISPProcessor:
 
     def parse_hit(self, hit: Hit, ref_attribute: MISPAttribute = None, **_):
 
-        page: dto.Page = hit.page
+        page: Page = hit.page
 
         # TODO Add more page parameters
         misp_object = MISPObject("vysion-page")
@@ -40,7 +41,7 @@ class MISPProcessor:
         page_id = page.id
         misp_object.add_attribute("id", type="text", value=page_id)
 
-        url: dto.URL = page.url
+        url: URL = page.url
         misp_object.add_attribute("url", type="url", value=url.build())
 
         network = url.network
@@ -51,7 +52,7 @@ class MISPProcessor:
 
         if ref_attribute is not None:
             misp_object.add_reference(ref_attribute.uuid, "associated-to")
-            
+  
         self.misp_event.add_object(misp_object)
 
         vysion_reference_id = misp_object.uuid
@@ -82,7 +83,10 @@ class MISPProcessor:
         for zec in hit.zcash_address:
             self.misp_event.add_attribute("zec", value=zec.value)
 
-    def parse_ransom_feed_hit(self, hit: dto.RansomFeedHit, **kwargs):
+        for tag in hit.tag:
+            self.misp_event.add_tag(MISPTag(tag))
+
+    def parse_ransom_feed_hit(self, hit: RansomFeedHit, **kwargs):
 
         # TODO Add event info!
 
