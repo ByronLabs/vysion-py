@@ -28,7 +28,7 @@ def test_whatsapp():
 
 def test_url():
     url = dto.URL.parse("https://vysyion.ai")
-    
+
 def test_page():
     pass
 
