@@ -22,7 +22,7 @@ try:
 except:
     NoneType = type(None)
 
-from vysion.dto import Hit, RansomFeedHit
+from vysion.dto import Hit, RansomFeedHit, dto
 
 class MISPProcessor:
 
@@ -97,6 +97,7 @@ class MISPProcessor:
         misp_object.add_attribute("group", type="threat-actor", value=hit.group)
         misp_object.add_attribute("date", type="datetime", value=hit.date)
         misp_object.add_attribute("info", type="text", value=hit.info)
+        misp_object.add_attribute("country", type="text", value=hit.country)
 
         self.misp_event.add_object(misp_object)
 
