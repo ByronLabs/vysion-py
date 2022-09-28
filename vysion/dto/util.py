@@ -25,6 +25,7 @@ except:
 import vysion.dto as dto
 from vysion.dto import Hit, RansomFeedHit, Page, URL
 
+
 class MISPProcessor:
 
     def __init__(self):
@@ -79,7 +80,7 @@ class MISPProcessor:
 
         for xrp in hit.ripple_address:
             self.misp_event.add_attribute("xrp", value=xmr.value)
-        
+
         for zec in hit.zcash_address:
             self.misp_event.add_attribute("zec", value=zec.value)
 

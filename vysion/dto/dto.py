@@ -18,7 +18,8 @@ from enum import Enum
 import hashlib
 
 from datetime import datetime
-  
+from vysion.model import enum
+
 from vysion.taxonomy import Monero_Address, Ripple_Address
 
 try:
@@ -30,6 +31,7 @@ from typing import List, Optional, Union
 from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field # , constr
+from .tag import *
 
 from vysion import taxonomy as vystaxonomy
 from vysion.model import URL as URL_model
@@ -144,11 +146,6 @@ class URL(BaseModel):
 
     def build(self) -> str:
         return f"{self.protocol}://{self.domain}:{self.port}{self.path}"
-
-
-class Tag(BaseModel):
-
-    value: str
 
 
 class Page(BaseModel):
