@@ -17,6 +17,7 @@ limitations under the License.
 from pydantic import BaseModel
 from softenum import Softenum
 from typing import Optional
+import re
 
 '''
 https://github.com/MISP/misp-taxonomies
@@ -39,9 +40,18 @@ class Tag(BaseModel):
     predicate: Predicate
     value: Optional[str]
 
-    @staticmethod
-    def parse(tag_str):
-        raise NotImplementedError()
+    @classmethod
+    def parse(cls, tag_str):
+        
+        tag_parts = re.findall(r"(?:([^:]+):)?(?:([^=]+)=)?(?:\"(.*)\")", tag_str)[0]
 
+        namespace = Namespace(tag_parts[0])
+        predicate = Predicate(tag_parts[1])
+        value = tag_parts[2]
+
+        return cls(namespace=namespace, predicate=predicate, value=value)
+
+
+        
     def __repr__(self):
         return f'''{self.namespace}:{self.predicate}:"{self.value}"'''
