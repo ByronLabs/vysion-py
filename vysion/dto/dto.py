@@ -18,7 +18,7 @@ from enum import Enum
 import hashlib
 
 from datetime import datetime
-
+  
 from vysion.taxonomy import Monero_Address, Ripple_Address
 
 try:
@@ -192,7 +192,7 @@ class RansomFeedHit(BaseModel):
     group: RansomGroup
     date: datetime
     info: Optional[str]
-    country: str
+    country: Optional[str]
 
 
 class TelegramFeedHit(BaseModel):
