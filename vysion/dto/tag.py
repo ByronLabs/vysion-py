@@ -42,7 +42,7 @@ class Tag(BaseModel):
 
     @classmethod
     def parse(cls, tag_str):
-        
+
         tag_parts = re.findall(r"(?:([^:]+):)?(?:([^=]+)=)?(?:\"(.*)\")", tag_str)[0]
 
         namespace = Namespace(tag_parts[0])
@@ -51,7 +51,8 @@ class Tag(BaseModel):
 
         return cls(namespace=namespace, predicate=predicate, value=value)
 
-
-        
     def __repr__(self):
+        return f'''{self.namespace}:{self.predicate}:"{self.value}"'''
+
+    def __str__(self):
         return f'''{self.namespace}:{self.predicate}:"{self.value}"'''
