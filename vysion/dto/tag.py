@@ -52,7 +52,7 @@ class Tag(BaseModel):
         return cls(namespace=namespace, predicate=predicate, value=value)
 
     def __repr__(self):
-        return f'''{self.namespace}:{self.predicate}:"{self.value}"'''
+        return f"Tag<{self}>"
 
     def __str__(self):
         return f'''{self.namespace}:{self.predicate}:"{self.value}"'''
