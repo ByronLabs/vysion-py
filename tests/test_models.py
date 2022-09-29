@@ -167,7 +167,11 @@ def test_whatsapp():
 
 
 def test_url():
-    url = dto.URL.parse("https://vysyion.ai")
+    try:
+        url = dto.URL.parse("https://vysyion.ai")
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, f"'test_url' raised an exception {exc}"
 
 
 def test_page():
@@ -190,7 +194,7 @@ def test_hit(get_document_fixture):
                 signature="68239670191c0af7218275274376ff43",
                 network="tor"
             )
-            
+
             hit.page.url = url
             
             hits.append(hit)
