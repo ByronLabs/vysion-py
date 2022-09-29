@@ -182,12 +182,6 @@ def test_hit(get_document_fixture):
         for raw_hit in raw_hits:
             hit: Hit = json.loads(json.dumps(raw_hit), object_hook=lambda d: SimpleNamespace(**d))
 
-            base: BaseModel = ({"protocol": "http",
-                                "domain": "deepv2w7p33xa4pwxzwi2ps4j62gfxpyp44ezjbmpttxz3owlsp4ljid",
-                                "port":80,
-                                "path": "/show.php",
-                                "signature": "68239670191c0af7218275274376ff43"})
-
             url = URL(
                 protocol="http",
                 domain="deepv2w7p33xa4pwxzwi2ps4j62gfxpyp44ezjbmpttxz3owlsp4ljid",
@@ -196,6 +190,7 @@ def test_hit(get_document_fixture):
                 signature="68239670191c0af7218275274376ff43",
                 network="tor"
             )
+            
             hit.page.url = url
             
             hits.append(hit)
