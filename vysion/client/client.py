@@ -288,6 +288,14 @@ class Client(BaseClient):
         result = self._make_request(url)
         return result.data
 
+    @vysion_error_manager
+    def get_tag(self, tag: str) -> dto.Result:
+
+        url = self._build_api_url__("tag", tag)
+
+        result = self._make_request(url)
+        return result.data
+
     # FEEDS
     @vysion_error_manager
     def consume_feed_ransomware(self, batch_day: datetime = datetime.today()):
