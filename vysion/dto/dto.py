@@ -33,6 +33,7 @@ from urllib.parse import urlparse
 from pydantic import BaseModel, Field # , constr
 from .tag import *
 
+from urllib.parse import urlparse
 from vysion import taxonomy as vystaxonomy
 from vysion.model import URL as URL_model
 from vysion.model.enum import Services, Network, Language, RansomGroup
@@ -154,7 +155,7 @@ class Page(BaseModel):
     url: URL
     parent: str = None
     title: str = None  # TODO Revisar si None o str()
-    language: Language
+    language: Optional[Language]
     html: str = None
     sha1sum: str = None
     sha256sum: str = None
@@ -162,6 +163,24 @@ class Page(BaseModel):
     date: datetime = None
     chunk: bool = False
 
+class RansomwarePage(BaseModel):
+
+    id: str
+    url: URL
+    # title: str = None  
+    group: RansomGroup
+    company: Optional[str]
+    company_address : Optional[str]
+    company_link : Optional[str]
+    info: Optional[str]
+    country: Optional[str]
+    sha256sum: str = None
+    ssdeep: str = None
+    date: datetime 
+    chunk: bool = False
+
+class RansomwareHit(BaseModel):
+    page: RansomwarePage
 
 class Hit(BaseModel):
 
@@ -206,7 +225,7 @@ class Result(BaseModel):
 
     # TODO Añadir paginación, query, etc?
     total: int = 0
-    hits: Union[List[Hit], List[RansomFeedHit], List[TelegramFeedHit]] = Field(
+    hits: Union[List[Hit], List[RansomFeedHit], List[TelegramFeedHit], List[RansomwareHit]] = Field(
         default_factory=lambda: [])
         
     def __init__(self, **kwargs):
