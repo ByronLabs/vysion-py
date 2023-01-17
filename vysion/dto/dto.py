@@ -163,6 +163,7 @@ class Page(BaseModel):
     date: datetime = None
     chunk: bool = False
 
+
 class RansomwarePage(BaseModel):
 
     id: str
@@ -170,17 +171,20 @@ class RansomwarePage(BaseModel):
     # title: str = None  
     group: RansomGroup
     company: Optional[str]
-    company_address : Optional[str]
-    company_link : Optional[str]
+    company_address: Optional[str]
+    company_link: Optional[str]
     info: Optional[str]
+    html: Optional[str]
     country: Optional[str]
     sha256sum: str = None
     ssdeep: str = None
     date: datetime 
     chunk: bool = False
 
+
 class RansomwareHit(BaseModel):
     page: RansomwarePage
+
 
 class Hit(BaseModel):
 
