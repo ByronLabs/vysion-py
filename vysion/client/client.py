@@ -169,6 +169,8 @@ class Client(BaseClient):
     def search(
         self,
         query: str,
+        tag: str = None,
+        notTag: str = None,
         exact: bool = False,
         network: dto.Network = None,
         language: dto.Language = None,
@@ -180,6 +182,8 @@ class Client(BaseClient):
         url = self._build_api_url__(
             "search",
             query,
+            tag=tag,
+            notTag=notTag,
             exact=exact,
             network=network,
             language=language,
