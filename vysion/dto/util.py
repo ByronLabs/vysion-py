@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import json
+
 from pymisp import MISPAttribute, MISPEvent, MISPObject, MISPTag
 
 try:
@@ -23,7 +24,7 @@ except:
     NoneType = type(None)
 
 import vysion.dto as dto
-from vysion.dto import Hit, RansomFeedHit, Page, URL
+from vysion.dto import URL, Hit, Page, RansomFeedHit
 
 
 class MISPProcessor:

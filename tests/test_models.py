@@ -1,5 +1,7 @@
 import pytest
+
 import vysion.dto as dto
+
 
 def test_invalid():
     try:

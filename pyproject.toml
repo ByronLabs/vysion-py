@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "vysion"
-version = "1.0.0"
+version = "1.0.5"
 description = "The official Python client library for Vysion"
 homepage = "https://vysion.ai"
 repository = "https://gitlab.com/byronlabs/vysion/vysion-py"
@@ -20,7 +20,7 @@ classifiers=[
 [tool.poetry.dependencies]
 python = "^3.7.0"
 
-pydantic = "1.9.1"
+pydantic = "1.10.3"
 pymisp = "2.4.159"
 softenum = "1.0.1"
 requests = "^2.28.1"

@@ -14,23 +14,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from .enum import Enum
 import hashlib
 import uuid
 from datetime import datetime
+
+from .enum import Enum
 
 try:
     from types import NoneType
 except:
     NoneType: type = type(None)
 
+import re
 from typing import List, Optional, Union
 
-from pydantic import BaseModel, Field # , constr
+from pydantic import BaseModel, Field  # , constr
 
-from .enum import Services, Network
-
-import re
+from .enum import Network, Services
 
 NULL_UUID = uuid.UUID("00000000-0000-0000-0000-000000000000")
 
