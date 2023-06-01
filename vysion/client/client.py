@@ -173,8 +173,8 @@ class Client(BaseClient):
         network: dto.Network = None,
         language: dto.Language = None,
         page: int = 1,
-        before: datetime = None,
-        after: datetime = None,
+        lte: datetime = None,
+        gte: datetime = None,
     ) -> dto.Result:
 
         url = self._build_api_url__(
@@ -184,8 +184,8 @@ class Client(BaseClient):
             network=network,
             language=language,
             page=page,
-            before=before,
-            after=after,
+            lte=lte,
+            gte=gte,
         )
 
         result = self._make_request(url)
@@ -193,60 +193,60 @@ class Client(BaseClient):
 
     @vysion_error_manager
     def find_btc(
-        self, btc: str, page: int = 1, before: datetime = None, after: datetime = None
+        self, btc: str, page: int = 1, lte: datetime = None, gte: datetime = None
     ) -> dto.Result:
 
-        url = self._build_api_url__("btc", btc, page=page, before=before, after=after)
+        url = self._build_api_url__("btc", btc, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
         return result.data
 
     @vysion_error_manager
     def find_eth(
-        self, eth: str, page: int = 1, before: datetime = None, after: datetime = None
+        self, eth: str, page: int = 1, lte: datetime = None, gte: datetime = None
     ) -> dto.Result:
 
-        url = self._build_api_url__("eth", eth, page=page, before=before, after=after)
+        url = self._build_api_url__("eth", eth, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
         return result.data
 
     @vysion_error_manager
     def find_dot(
-        self, dot: str, page: int = 1, before: datetime = None, after: datetime = None
+        self, dot: str, page: int = 1, lte: datetime = None, gte: datetime = None
     ) -> dto.Result:
 
-        url = self._build_api_url__("dot", dot, page=page, before=before, after=after)
+        url = self._build_api_url__("dot", dot, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
         return result.data
 
     @vysion_error_manager
     def find_xrp(
-        self, xrp: str, page: int = 1, before: datetime = None, after: datetime = None
+        self, xrp: str, page: int = 1, lte: datetime = None, gte: datetime = None
     ) -> dto.Result:
 
-        url = self._build_api_url__("xrp", xrp, page=page, before=before, after=after)
+        url = self._build_api_url__("xrp", xrp, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
         return result.data
 
     @vysion_error_manager
     def find_xmr(
-        self, xmr: str, page: int = 1, before: datetime = None, after: datetime = None
+        self, xmr: str, page: int = 1, lte: datetime = None, gte: datetime = None
     ) -> dto.Result:
 
-        url = self._build_api_url__("xmr", xmr, page=page, before=before, after=after)
+        url = self._build_api_url__("xmr", xmr, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
         return result.data
 
     @vysion_error_manager
     def find_zec(
-        self, zec: str, page: int = 1, before: datetime = None, after: datetime = None
+        self, zec: str, page: int = 1, lte: datetime = None, gte: datetime = None
     ) -> dto.Result:
 
-        url = self._build_api_url__("zec", zec, page=page, before=before, after=after)
+        url = self._build_api_url__("zec", zec, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
         return result.data
@@ -257,12 +257,12 @@ class Client(BaseClient):
         self,
         query_url: str,
         page: int = 1,
-        before: datetime = None,
-        after: datetime = None,
+        lte: datetime = None,
+        gte: datetime = None,
     ) -> dto.Result:
 
         url = self._build_api_url__(
-            "url", query_url, page=page, before=before, after=after
+            "url", query_url, page=page, lte=lte, gte=gte
         )
 
         result = self._make_request(url)
@@ -270,11 +270,11 @@ class Client(BaseClient):
 
     @vysion_error_manager
     def find_email(
-        self, email: str, page: int = 1, before: datetime = None, after: datetime = None
+        self, email: str, page: int = 1, lte: datetime = None, gte: datetime = None
     ) -> dto.Result:
 
         url = self._build_api_url__(
-            "email", email, page=page, before=before, after=after
+            "email", email, page=page, lte=lte, gte=gte
         )
 
         result = self._make_request(url)
@@ -325,36 +325,5 @@ class RansomwareFeed(DaylyFeed):
             yield self._make_request(url)
 
 
-"""TODO Transform response
-{
-  "total": {
-    "value": 26,
-    "relation": "eq"
-  },
-  "max_score": null,
-  "hits": [
-    {
-      "_index": "ransomware-62022",
-      "_id": "dab4447fbd8440251d41e31b8ab1770186f429e46d9cd6903fbe17367efcba23",
-      "_score": null,
-      "_ignored": [
-        "info.keyword"
-      ],
-      "_source": {
-        "company": "RG Alliance Group",
-        "link": "http://quantum445bh3gzuyilxdzs5xdepf3b7lkcupswvkryf3n7hgzpxebid.onion/target/rgalliancegroup",
-        "date": "2022-06-16T00:00:00",
-        "group": "Quantum",
-        "info": "1.2TB 3.6K visibility\n2022-06-16\nInfo Post About: \"RG Alliance Group\"\nCompany Name\nRG Alliance Group\nCompany Website\nOfficial Link\nTotal Revenue\n$9M\nLast Updated:\n2022-06-16\nVolume Of Data Uploaded\n0% (announcement)\n- Complete databases of clients of the accounting program QuickBooks, including tax, payroll and banking information of Client Companies.\n- Contracts, Accounting.Ballances, Scans, invoices, etc. Client companies\n- Email correspondence with client companies\n- Personal information (Scans+SSN+Bank info+etc) of employees of Client Companies\n- Personal information (Scans+SSN+Bank info+etc) of RG Alliance Group employees\n- Outlook .pst backups of RG Alliance Group employees\nYour Feedback\nAuthor\nMessage\nSUBMIT",
-        "company_link": "http://www.rgalliance.com/"
-      },
-      "sort": [
-        1655337600000
-      ]
-    }
-    ...
-  ]
-}
-"""
 
 # TODO /api/v1/feeds
