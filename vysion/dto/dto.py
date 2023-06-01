@@ -14,12 +14,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from enum import Enum
 import hashlib
-
 from datetime import datetime
-from vysion.model import enum
+from enum import Enum
 
+from vysion.model import enum
 from vysion.taxonomy import Monero_Address, Ripple_Address
 
 try:
@@ -30,13 +29,13 @@ except:
 from typing import List, Optional, Union
 from urllib.parse import urlparse
 
-from pydantic import BaseModel, Field # , constr
-from .tag import *
+from pydantic import BaseModel, Field  # , constr
 
-from urllib.parse import urlparse
 from vysion import taxonomy as vystaxonomy
 from vysion.model import URL as URL_model
-from vysion.model.enum import Services, Network, Language, RansomGroup
+from vysion.model.enum import Language, Network, RansomGroup, Services
+
+from .tag import *
 
 
 class Email(BaseModel):

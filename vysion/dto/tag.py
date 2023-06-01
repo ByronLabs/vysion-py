@@ -14,10 +14,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import re
+from typing import Optional
+
 from pydantic import BaseModel
 from softenum import Softenum
-from typing import Optional
-import re
 
 '''
 https://github.com/MISP/misp-taxonomies

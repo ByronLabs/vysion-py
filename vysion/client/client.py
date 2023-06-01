@@ -17,16 +17,16 @@ limitations under the License.
 
 # TODO Referenciar vt-py
 
-from datetime import datetime, timedelta
 import logging
+from datetime import datetime, timedelta
 from typing import Union
-from urllib.parse import urljoin, urlencode
+from urllib.parse import urlencode, urljoin
 
 # from pydantic import validate_arguments
 import requests
-from vysion.client.error import APIError
 
 import vysion.dto as dto
+from vysion.client.error import APIError
 from vysion.dto import VysionError
 from vysion.version import __version__ as vysion_version
 
