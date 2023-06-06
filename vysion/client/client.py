@@ -196,6 +196,34 @@ class Client(BaseClient):
         return result.data
 
     @vysion_error_manager
+    def fuzzy_search(
+        self,
+        query: str,
+        tag: str = None,
+        notTag: str = None,
+        network: dto.Network = None,
+        language: dto.Language = None,
+        page: int = 1,
+        lte: datetime = None,
+        gte: datetime = None,
+    ) -> dto.Result:
+
+        url = self._build_api_url__(
+            "fuzzy",
+            query,
+            tag=tag,
+            notTag=notTag,
+            network=network,
+            language=language,
+            page=page,
+            lte=lte,
+            gte=gte,
+        )
+
+        result = self._make_request(url)
+        return result.data
+
+    @vysion_error_manager
     def find_btc(
         self, btc: str, page: int = 1, lte: datetime = None, gte: datetime = None
     ) -> dto.Result:
