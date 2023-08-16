@@ -34,19 +34,20 @@ from .enum import Network, Services
 
 NULL_UUID = uuid.UUID("00000000-0000-0000-0000-000000000000")
 
+
 class URL(BaseModel):
 
-    protocol: Optional[str] 
-    domain: Optional[str]   
+    protocol: Optional[str]
+    domain: Optional[str]
     port: Optional[int] = Field(default_factory=lambda: -1)
     path: Optional[str]
     signature: uuid.UUID = Field(default_factory=lambda: NULL_UUID)
-    
+
     raw: str
 
     @staticmethod
     def _parse_(url):
-        
+
         """
         RFC3986
             scheme    = $2
@@ -56,9 +57,9 @@ class URL(BaseModel):
             fragment  = $9
         """
         regex = r"^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?"
-        
+
         res = re.match(regex, url)
-        
+
         scheme = res[2]
         authority = res[4]
         path = res[5]
@@ -70,7 +71,7 @@ class URL(BaseModel):
             authority=authority,
             path=path,
             query=query,
-            fragment=fragment
+            fragment=fragment,
         )
 
     def _generate_signature_(self) -> uuid.UUID:
@@ -83,7 +84,7 @@ class URL(BaseModel):
         raw = url
 
         parsed = cls._parse_(url)
-        
+
         # Elements
         scheme = parsed["scheme"]
         netloc = parsed["authority"]
@@ -96,7 +97,7 @@ class URL(BaseModel):
             domain_port = (netloc.split(":") + [None])[:2]
         else:
             domain_port = [None, None]
-        
+
         domain = domain_port[0]
         port = domain_port[1]
 
@@ -119,21 +120,15 @@ class URL(BaseModel):
             res_query_parts = [f"{k}={query_dict[k]}" for k in query_keys]
 
             res_query = "?" + "&".join(res_query_parts)
-        
+
             path += res_query
-        
+
         if fragment is not None:
             path += f"#{fragment}"
 
         # TODO Adapt restalker.link_extractors.UUF logic to fix URLs
         # TODO Detect network?
-        result = cls(
-            protocol=scheme,
-            domain=domain,
-            port=port,
-            path=path,
-            raw=raw
-        )
+        result = cls(protocol=scheme, domain=domain, port=port, path=path, raw=raw)
 
         if fix:
             result._fix()
@@ -145,20 +140,20 @@ class URL(BaseModel):
         self.signature = self._generate_signature_()
 
     def build(self) -> str:
-        
+
         url = self.path
 
         if self.domain is not None:
-            
+
             if self.port is not None:
                 url = f":{self.port}" + url
-            
+
             url = f"{self.domain}" + url
 
         if self.protocol is not None:
 
             url = f"{self.protocol}://" + url
-            
+
         return url
 
     def _fix(self, default_protocol=Services.http) -> None:
@@ -176,10 +171,10 @@ class URL(BaseModel):
             path = self.path
             if path[0] == "/":
                 path = path[1:]
-            path_parts = path.split('/')
+            path_parts = path.split("/")
             self.domain = path_parts[0]
             self.path = "/" + "/".join(path_parts[1:])
-        
+
         self.signature = self._generate_signature_()
 
     def __str__(self) -> str:

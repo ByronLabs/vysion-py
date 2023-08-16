@@ -126,7 +126,6 @@ class BaseClient:
 
 
 def vysion_error_manager(method) -> Union[dto.Result, VysionError]:
-
     def manage(*args, **kwargs):
         try:
             result = method(*args, **kwargs)
@@ -293,9 +292,7 @@ class Client(BaseClient):
         gte: datetime = None,
     ) -> dto.Result:
 
-        url = self._build_api_url__(
-            "url", query_url, page=page, lte=lte, gte=gte
-        )
+        url = self._build_api_url__("url", query_url, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
         return result.data
@@ -305,9 +302,7 @@ class Client(BaseClient):
         self, email: str, page: int = 1, lte: datetime = None, gte: datetime = None
     ) -> dto.Result:
 
-        url = self._build_api_url__(
-            "email", email, page=page, lte=lte, gte=gte
-        )
+        url = self._build_api_url__("email", email, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
         return result.data
@@ -355,7 +350,6 @@ class RansomwareFeed(DaylyFeed):
         for page in range(pages):
             url = self._build_api_url__("feed", "ransomware", days=days, page=page + 1)
             yield self._make_request(url)
-
 
 
 # TODO /api/v1/feeds

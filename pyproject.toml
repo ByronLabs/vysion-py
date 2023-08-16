@@ -20,7 +20,7 @@ classifiers=[
 [tool.poetry.dependencies]
 python = "^3.7.0"
 
-pydantic = "1.10.3"
+pydantic = "^2.0.1"
 pymisp = "2.4.159"
 softenum = "1.0.1"
 requests = "^2.28.1"
