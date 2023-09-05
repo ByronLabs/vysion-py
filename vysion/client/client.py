@@ -20,7 +20,7 @@ limitations under the License.
 import logging
 from datetime import datetime, timedelta
 from typing import Union
-from urllib.parse import urlencode, urljoin
+from urllib.parse import urlencode, urljoin, quote
 
 # from pydantic import validate_arguments
 import requests
@@ -83,6 +83,7 @@ class BaseClient:
 
     def _build_api_url__(self, endpoint, param, **query_params):
 
+        param = quote(param, safe='')
         base = urljoin(_BASE_API, f"{endpoint}/{param}")
 
         query_params_initialzed = query_params.copy()
