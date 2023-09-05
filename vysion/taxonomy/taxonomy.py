@@ -16,8 +16,14 @@ limitations under the License.
 """
 from typing import Dict
 
-from vysion.taxonomy.flavours import (MISP, DBSafe, EmptyFlavour, Flavour,
-                                      Flavours, Vysion)
+from vysion.taxonomy.flavours import (
+    MISP,
+    DBSafe,
+    EmptyFlavour,
+    Flavour,
+    Flavours,
+    Vysion,
+)
 
 """
     

@@ -28,7 +28,6 @@ from vysion.dto import URL, Hit, Page, RansomFeedHit
 
 
 class MISPProcessor:
-
     def __init__(self):
         self.misp_event = MISPEvent()
 
@@ -54,7 +53,7 @@ class MISPProcessor:
 
         if ref_attribute is not None:
             misp_object.add_reference(ref_attribute.uuid, "associated-to")
-  
+
         self.misp_event.add_object(misp_object)
 
         vysion_reference_id = misp_object.uuid
@@ -94,7 +93,9 @@ class MISPProcessor:
 
         misp_object = MISPObject("vysion-ransomware-feed")
         misp_object.template_uuid = "e0bfa994-c184-4894-bfaa-73b1350746e1"
-        misp_object["meta-category"] = "misc" # TODO Esto se tiene que poder hacer de otra manera... Y sólo es necesario en los feeds
+        misp_object[
+            "meta-category"
+        ] = "misc"  # TODO Esto se tiene que poder hacer de otra manera... Y sólo es necesario en los feeds
 
         misp_object.add_attribute("id", type="text", value=hit.id)
         misp_object.add_attribute("company", type="target-org", value=hit.company)

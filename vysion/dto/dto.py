@@ -128,6 +128,9 @@ class URL(BaseModel):
     signature: str
     network: Network = Field(default_factory=lambda: Network.clearnet)
 
+    class Config:
+        arbitrary_types_allowed = True
+
     @classmethod
     def parse(cls, url):
 
@@ -139,7 +142,7 @@ class URL(BaseModel):
             domain=parsed.domain,
             port=parsed.port,
             path=parsed.path,
-            signature=str(parsed.signature) # TODO Replace signature: str --> UUID
+            signature=str(parsed.signature),  # TODO Replace signature: str --> UUID
         )
 
         return tmp_result
@@ -149,25 +152,23 @@ class URL(BaseModel):
 
 
 class Page(BaseModel):
-
     id: str
     url: URL
-    parent: str = None
-    title: str = None  # TODO Revisar si None o str()
+    parent: Optional[str] = None
+    title: Optional[str] = None
     language: Optional[Language]
     html: str = None
-    sha1sum: str = None
-    sha256sum: str = None
-    ssdeep: str = None
+    sha1sum: Optional[str] = None
+    sha256sum: Optional[str] = None
+    ssdeep: Optional[str] = None
     date: datetime = None
     chunk: bool = False
 
 
 class RansomwarePage(BaseModel):
-
     id: str
     url: URL
-    # title: str = None  
+    # title: str = None
     group: RansomGroup
     company: Optional[str]
     company_address: Optional[str]
@@ -177,8 +178,11 @@ class RansomwarePage(BaseModel):
     country: Optional[str]
     sha256sum: str = None
     ssdeep: str = None
-    date: datetime 
+    date: datetime
     chunk: bool = False
+
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class RansomwareHit(BaseModel):
@@ -186,7 +190,6 @@ class RansomwareHit(BaseModel):
 
 
 class Hit(BaseModel):
-
     page: Page
     tag: List[Tag]
     email: List[Email] = Field(default_factory=lambda: [])
@@ -203,7 +206,6 @@ class Hit(BaseModel):
 
 
 class RansomFeedHit(BaseModel):
-
     id: str
     company: Optional[str]
     company_link: Optional[str]
@@ -212,6 +214,9 @@ class RansomFeedHit(BaseModel):
     date: datetime
     info: Optional[str]
     country: Optional[str]
+
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class TelegramFeedHit(BaseModel):
@@ -225,12 +230,12 @@ class TelegramFeedHit(BaseModel):
 
 
 class Result(BaseModel):
-
-    # TODO Añadir paginación, query, etc?
+    # TODO Add pagination, query, etc?
     total: int = 0
-    hits: Union[List[Hit], List[RansomFeedHit], List[TelegramFeedHit], List[RansomwareHit]] = Field(
-        default_factory=lambda: [])
-        
+    hits: Union[
+        List[Hit], List[RansomFeedHit], List[TelegramFeedHit], List[RansomwareHit]
+    ] = Field(default_factory=lambda: [])
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         if self.total <= 0:
@@ -254,7 +259,6 @@ class VysionResponse(BaseModel):
 
 
 class VysionError(BaseModel):
-
     class StatusCode(int, Enum):
 
         UNK = 000
