@@ -208,4 +208,3 @@ class Language(str, Enum):
     german = "de"
     spanish = "es"
     cotedivoire = "ci"
-

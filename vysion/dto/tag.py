@@ -20,9 +20,9 @@ from typing import Optional
 from pydantic import BaseModel
 from softenum import Softenum
 
-'''
+"""
 https://github.com/MISP/misp-taxonomies
-'''
+"""
 
 
 class Namespace(str, Softenum):
@@ -37,9 +37,12 @@ class Predicate(str, Softenum):
 
 class Tag(BaseModel):
 
-    namespace: Namespace
-    predicate: Predicate
+    namespace: str
+    predicate: str
     value: Optional[str]
+
+    class Config:
+        arbitrary_types_allowed = True
 
     @classmethod
     def parse(cls, tag_str):
