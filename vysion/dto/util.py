@@ -51,6 +51,9 @@ class MISPProcessor:
         title = page.title
         misp_object.add_attribute("title", type="text", value=title)
 
+        url_vysion: URL = "https://app.vysion.ai/document/" + page.id
+        misp_object.add_attribute("url_vysion", type="url", value=url_vysion.build())
+
         if ref_attribute is not None:
             misp_object.add_reference(ref_attribute.uuid, "associated-to")
 
@@ -105,6 +108,7 @@ class MISPProcessor:
         misp_object.add_attribute("date", type="datetime", value=hit.date)
         misp_object.add_attribute("info", type="text", value=hit.info)
         misp_object.add_attribute("country", type="text", value=hit.country)
+        misp_object.add_attribute("url_vysion_ransom", type="text", value=hit.country)
 
         self.misp_event.add_object(misp_object)
 
