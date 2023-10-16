@@ -108,7 +108,7 @@ class MISPProcessor:
         misp_object.add_attribute("date", type="datetime", value=hit.date)
         misp_object.add_attribute("info", type="text", value=hit.info)
         misp_object.add_attribute("country", type="text", value=hit.country)
-        misp_object.add_attribute("url_vysion_ransom", type="link", value="https://app.vysion.ai/victim/" + hit.id)
+        misp_object.add_attribute("url_vysion_ransom", type="link", value=hit.link)
 
         self.misp_event.add_object(misp_object)
 
