@@ -52,7 +52,7 @@ class MISPProcessor:
         misp_object.add_attribute("title", type="text", value=title)
 
         url_vysion: URL = "https://app.vysion.ai/document/" + page.id
-        misp_object.add_attribute("url_vysion", type="url", value=url_vysion.build())
+        misp_object.add_attribute("url_vysion", type="url", value=url_vysion)
 
         if ref_attribute is not None:
             misp_object.add_reference(ref_attribute.uuid, "associated-to")
