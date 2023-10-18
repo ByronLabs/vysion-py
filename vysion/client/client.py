@@ -30,7 +30,7 @@ from vysion.client.error import APIError
 from vysion.dto import VysionError
 from vysion.version import __version__ as vysion_version
 
-_API_HOST = "https://api.vysion.ai"
+_API_HOST = "https://4f8vwl9snj.execute-api.eu-central-1.amazonaws.com/dev/"
 
 # All API endpoints start with this prefix, you don't need to include the
 # prefix in the paths you request as it's prepended automatically.
