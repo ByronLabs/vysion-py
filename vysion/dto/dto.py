@@ -176,6 +176,7 @@ class RansomwarePage(BaseModel):
     info: Optional[str]
     html: Optional[str]
     country: Optional[str]
+    url_vysion_ransom: Optional[str]
     sha256sum: str = None
     ssdeep: str = None
     date: datetime
@@ -214,6 +215,7 @@ class RansomFeedHit(BaseModel):
     date: datetime
     info: Optional[str]
     country: Optional[str]
+    url_vysion_ransom: Optional[str]
 
     class Config:
         arbitrary_types_allowed = True
