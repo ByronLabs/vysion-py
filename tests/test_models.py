@@ -168,7 +168,7 @@ def test_whatsapp():
 
 def test_url():
     try:
-        url = dto.URL.parse("https://vysyion.ai")
+        url = dto.URL.parse("https://vysion.ai")
     except Exception as exc:
         print("TEST EXCEPTION", exc)
         assert False, f"'test_url' raised an exception {exc}"
