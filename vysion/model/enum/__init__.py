@@ -16,6 +16,6 @@ limitations under the License.
 """
 
 from .languages import *
-from .services import *
 from .networks import *
 from .ransom_groups import *
+from .services import *

@@ -15,9 +15,5 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from . import client
-from . import taxonomy
-from . import model
-from . import dto
-
+from . import client, dto, model, taxonomy
 from .version import __version__

@@ -1,4 +1,5 @@
 import pytest
+
 import vysion.dto as dto
 from vysion.dto.util import MISPProcessor
 from vysion.dto import (
@@ -134,6 +135,7 @@ def get_document_fixture():
 ########
 
 
+
 def test_invalid():
     try:
         dto.wrong()
@@ -174,10 +176,11 @@ def test_url():
         assert False, f"'test_url' raised an exception {exc}"
 
 
+
 def test_page():
     pass
-
-
+  
+  
 def test_hit(get_document_fixture):
     processor = MISPProcessor()
     raw_hits = get_document_fixture["data"]["hits"]
@@ -203,7 +206,6 @@ def test_hit(get_document_fixture):
     except Exception as exc:
         print("TEST EXCEPTION", exc)
         assert False, f"'test_hit' raised an exception {exc}"
-    pass
 
 
 def test_ransom_feed_hit(get_ransom_feed_fixture):

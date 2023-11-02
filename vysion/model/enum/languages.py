@@ -207,4 +207,4 @@ class Language(str, Enum):
     czech = "cs"
     german = "de"
     spanish = "es"
-
+    cotedivoire = "ci"

@@ -14,14 +14,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import re
+from typing import Optional
+
 from pydantic import BaseModel
 from softenum import Softenum
-from typing import Optional
-import re
 
-'''
+"""
 https://github.com/MISP/misp-taxonomies
-'''
+"""
 
 
 class Namespace(str, Softenum):
@@ -36,13 +37,16 @@ class Predicate(str, Softenum):
 
 class Tag(BaseModel):
 
-    namespace: Namespace
-    predicate: Predicate
+    namespace: str
+    predicate: str
     value: Optional[str]
+
+    class Config:
+        arbitrary_types_allowed = True
 
     @classmethod
     def parse(cls, tag_str):
-        
+
         tag_parts = re.findall(r"(?:([^:]+):)?(?:([^=]+)=)?(?:\"(.*)\")", tag_str)[0]
 
         namespace = Namespace(tag_parts[0])
@@ -51,7 +55,8 @@ class Tag(BaseModel):
 
         return cls(namespace=namespace, predicate=predicate, value=value)
 
-
-        
     def __repr__(self):
+        return f"Tag<{self}>"
+
+    def __str__(self):
         return f'''{self.namespace}:{self.predicate}:"{self.value}"'''
