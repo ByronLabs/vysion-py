@@ -47,7 +47,7 @@ class BaseClient:
     # __attrs__ = []
 
     # @validate_arguments #
-    def __init__(self, api_key: str = None, api_host: str = None, headers: dict = dict(), proxy: dict = None):
+    def __init__(self, api_key: str = None, headers: dict = dict(), proxy: dict = None):
 
         assert api_key is not None, "API key MUST be provided"
         assert isinstance(api_key, str), "API key MUST be a string"
