@@ -1,6 +1,16 @@
+# Vysion-PY
 
-# References
+Welcome to the open source repository for vysion-py, our implementation as a Python library to use the Vysion tool. 
 
+You can request a demo or an api-key on our [website](https://byronlabs.io) or at [vysion.ai](https://vysion.ai).
+
+Latest version: [1.0.8](https://pypi.org/project/vysion/)
+
+
+## References
+
+- https://pypi.org/project/vysion/
+- https://developers.vysion.ai?python
 - https://pydantic-docs.helpmanual.io/
 - https://python-patterns.guide/
 - https://docs.pytest.org/en/7.1.x/getting-started.html#get-started

@@ -30,13 +30,11 @@ from vysion.client.error import APIError
 from vysion.dto import VysionError
 from vysion.version import __version__ as vysion_version
 
-_API_HOST = "https://api.vysion.ai"
+import os
 
 # All API endpoints start with this prefix, you don't need to include the
 # prefix in the paths you request as it's prepended automatically.
 _ENDPOINT_PREFIX = "/api/v1/"
-
-_BASE_API = urljoin(_API_HOST, _ENDPOINT_PREFIX)
 
 LOGGER = logging.getLogger("vysion-py")
 LOGGER.setLevel(logging.INFO)
@@ -81,9 +79,22 @@ class BaseClient:
 
         return self._session
 
+    def _get_api_host(self):
+
+        if os.getenv("API_HOST") is not None:
+            api_host = os.getenv("API_HOST")
+
+        else:
+            api_host = "https://api.vysion.ai"
+
+        return api_host
+    
+
     def _build_api_url__(self, endpoint, param, **query_params):
 
         param = quote(param, safe='')
+        _API_HOST = self._get_api_host()
+        _BASE_API = urljoin(_API_HOST, _ENDPOINT_PREFIX)
         base = urljoin(_BASE_API, f"{endpoint}/{param}")
 
         query_params_initialzed = query_params.copy()
