@@ -18,10 +18,10 @@ classifiers=[
 # packages = [vysion', 'vysion.client', 'vysion.model',  'vysion.dto', 'vysion.taxonomy'],
 
 [tool.poetry.dependencies]
-python = "^3.7.0"
+python = "^3.8.0"
 
 pydantic = "^2.0.1"
-pymisp = "2.4.159"
+pymisp = "2.4.175"
 softenum = "1.0.1"
 requests = "^2.28.1"
 
