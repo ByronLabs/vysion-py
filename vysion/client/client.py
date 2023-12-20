@@ -132,7 +132,7 @@ class BaseClient:
 
         payload = r.json()
 
-        result = dto.VysionResponse.parse_obj(payload)
+        result = dto.VysionResponse.model_validate(payload)
 
         return result
 

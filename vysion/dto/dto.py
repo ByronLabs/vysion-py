@@ -29,7 +29,7 @@ except:
 from typing import List, Optional, Union
 from urllib.parse import urlparse
 
-from pydantic import BaseModel, Field  # , constr
+from pydantic import BaseModel, Field, ConfigDict  # , constr
 
 from vysion import taxonomy as vystaxonomy
 from vysion.model import URL as URL_model
@@ -128,8 +128,7 @@ class URL(BaseModel):
     signature: str
     network: Network = Field(default_factory=lambda: Network.clearnet)
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     @classmethod
     def parse(cls, url):
@@ -181,8 +180,7 @@ class RansomwarePage(BaseModel):
     date: datetime
     chunk: bool = False
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class RansomwareHit(BaseModel):
@@ -215,8 +213,7 @@ class RansomFeedHit(BaseModel):
     info: Optional[str]
     country: Optional[str]
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class TelegramFeedHit(BaseModel):
