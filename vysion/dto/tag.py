@@ -17,7 +17,7 @@ limitations under the License.
 import re
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from softenum import Softenum
 
 """
@@ -41,8 +41,7 @@ class Tag(BaseModel):
     predicate: str
     value: Optional[str]
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     @classmethod
     def parse(cls, tag_str):
