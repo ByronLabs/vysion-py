@@ -4,7 +4,7 @@ Welcome to the open source repository for vysion-py, our implementation as a Pyt
 
 You can request a demo or an api-key on our [website](https://byronlabs.io) or at [vysion.ai](https://vysion.ai).
 
-Latest version: [1.0.8](https://pypi.org/project/vysion/)
+Latest version: [1.0.10](https://pypi.org/project/vysion/)
 
 
 ## References
