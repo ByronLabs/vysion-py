@@ -168,7 +168,7 @@ class RansomwarePage(BaseModel):
     id: str
     url: URL
     # title: str = None
-    group: RansomGroup
+    group: str
     company: Optional[str]
     company_address: Optional[str]
     company_link: Optional[str]
@@ -176,7 +176,7 @@ class RansomwarePage(BaseModel):
     html: Optional[str]
     country: Optional[str]
     sha256sum: str = None
-    ssdeep: str = None
+    ssdeep: Optional[str] = None
     date: datetime
     chunk: bool = False
 
@@ -208,7 +208,7 @@ class RansomFeedHit(BaseModel):
     company: Optional[str]
     company_link: Optional[str]
     link: str
-    group: RansomGroup
+    group: str
     date: datetime
     info: Optional[str]
     country: Optional[str]
