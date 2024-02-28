@@ -17,6 +17,7 @@ limitations under the License.
 import hashlib
 from datetime import datetime
 from enum import Enum
+import re
 
 from vysion.model import enum
 from vysion.taxonomy import Monero_Address, Ripple_Address
@@ -29,7 +30,15 @@ except:
 from typing import List, Optional, Union
 from urllib.parse import urlparse
 
-from pydantic import BaseModel, Field, ConfigDict  # , constr
+from pydantic import (
+    BaseModel,
+    Field,
+    ConfigDict,
+    validator,
+    field_validator,
+    root_validator,
+)
+from pydantic_core.core_schema import FieldValidationInfo
 
 from vysion import taxonomy as vystaxonomy
 from vysion.model import URL as URL_model
@@ -39,7 +48,6 @@ from .tag import *
 
 
 class Email(BaseModel):
-
     _taxonomy = [vystaxonomy.Email]
 
     # RFC 5322 Official Standard (https://www.emailregex.com/)
@@ -48,77 +56,66 @@ class Email(BaseModel):
 
 
 class Paste(BaseModel):
-
     _taxonomy = [vystaxonomy.Pastebin, vystaxonomy.JustPaste]
 
     value: str  # TODO Regex
 
 
 class Skype(BaseModel):
-
     _taxonomy = [vystaxonomy.Skype]
 
     value: str  # TODO Regex
 
 
 class Telegram(BaseModel):
-
     _taxonomy = [vystaxonomy.Telegram]  # TODO Create Telegram URL
 
     value: str  # TODO Regex
 
 
 class BitcoinAddress(BaseModel):
-
     _taxonomy = [vystaxonomy.Bitcoin_Address]  # TODO Create Telegram URL
 
     value: str  # TODO Regex
 
 
 class PolkadotAddress(BaseModel):
-
     _taxonomy = [vystaxonomy.Polkadot_Address]  # TODO Create Telegram URL
 
     value: str  # TODO Regex
 
 
 class EthereumAddress(BaseModel):
-
     _taxonomy = [vystaxonomy.Ethereum_Address]  # TODO Create Telegram URL
 
     value: str  # TODO Regex
 
 
 class MoneroAddress(BaseModel):
-
     _taxonomy = [vystaxonomy.Monero_Address]  # TODO Create Telegram URL
 
     value: str  # TODO Regex
 
 
 class RippleAddress(BaseModel):
-
     _taxonomy = [vystaxonomy.Ripple_Address]  # TODO Create Telegram URL
 
     value: str  # TODO Regex
 
 
 class ZcashAddress(BaseModel):
-
     _taxonomy = [vystaxonomy.Zcash_Address]  # TODO Create Telegram URL
 
     value: str  # TODO Regex
 
 
 class WhatsApp(BaseModel):
-
     _taxonomy = [vystaxonomy.WhatsApp]
 
     value: str  # TODO Regex
 
 
 class URL(BaseModel):
-
     _taxonomy = [vystaxonomy.URL]
 
     protocol: Optional[str]
@@ -132,7 +129,6 @@ class URL(BaseModel):
 
     @classmethod
     def parse(cls, url):
-
         # TODO Save this parsed in a private variable? (e.g., _pared_)
         parsed = URL_model.parse(url)
         print(parsed)
@@ -183,6 +179,107 @@ class RansomwarePage(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
+class Media(BaseModel):
+    bucketName: Optional[str] = Field(default_factory=lambda: None)
+    objectPath: Optional[str] = Field(default_factory=lambda: None)
+    objectName: Optional[str] = Field(default_factory=lambda: None)
+    contentType: str
+
+    @validator("bucketName", "objectPath", "objectName")
+    def validate_strings(cls, v):
+        if v is not None and not isinstance(v, str):
+            raise ValueError("value must be a string")
+        return v
+
+    @field_validator("contentType")
+    def validate_contentType(cls, v: str) -> str:
+        if not v.strip():
+            raise ValueError("contentType field cannot be empty")
+        return v
+
+
+class LanguagePair(BaseModel):
+    language: str
+    probability: float
+
+    @root_validator(pre=True)
+    def split_key_value(cls, value: str) -> dict:
+        if isinstance(value, str):
+            key, value = value.split(":")
+            return {"key": key, "value": float(value)}
+        return value
+
+    @field_validator("language")
+    def validate_language(cls, v: str) -> str:
+        if not v.strip():
+            raise ValueError("Language field cannot be empty")
+        return v
+
+    @field_validator("probability")
+    def validate_probability(cls, v: float) -> float:
+        if v < 0 or v > 1:
+            raise ValueError("Probability must be between 0 and 1")
+        return v
+
+
+class TelegramMessage(BaseModel):
+    userId: Optional[int] = Field(default_factory=lambda: None)
+    username: Optional[str] = Field(default_factory=lambda: None)
+    channelId: Optional[int] = Field(default_factory=lambda: None)
+    messageId: int
+    message: str
+    channelTitle: Optional[str] = Field(default_factory=lambda: None)
+    languages: Optional[List[LanguagePair]] = Field(default_factory=lambda: None)
+    sha1sum: Optional[str] = None
+    sha256sum: Optional[str] = None
+    detectionDate: datetime
+
+    @field_validator("message")
+    def validate_message(cls, v: str) -> str:
+        if not v.strip():
+            raise ValueError("Message field cannot be empty")
+        return v
+
+    @field_validator("messageId")
+    def validate_messageId(cls, v: int) -> int:
+        if not v:
+            raise ValueError("MessageId field cannot be empty")
+        return v
+
+
+class TelegramMedia(BaseModel):
+    userId: Optional[int] = Field(default_factory=lambda: None)
+    username: Optional[str] = Field(default_factory=lambda: None)
+    channelId: int
+    messageId: int
+    message: Optional[str] = Field(default_factory=lambda: None)
+    channelTitle: Optional[str] = Field(default_factory=lambda: None)
+    languages: Optional[List[LanguagePair]] = Field(default_factory=lambda: None)
+    sha1sum: Optional[str] = None
+    sha256sum: Optional[str] = None
+    media: Optional[Media] = Field(default_factory=lambda: None)
+    detectionDate: datetime
+
+    @field_validator("userId")
+    def userId_validator(cls, v: int) -> int:
+        # ids should be numbers -1001448813240 or 1731636359
+        ret = re.search("^-\d+$", str(v)) or re.search("^\d+$", str(v))
+        if ret is None:
+            raise ValueError("userId not valid")
+        return v
+
+    @field_validator("messageId")
+    def validate_messageId(cls, v: int) -> int:
+        if not v:
+            raise ValueError("MessageId field cannot be empty")
+        return v
+
+
+class TelegramHit(BaseModel):
+    message: TelegramMessage
+    image: Optional[TelegramMedia] = None
+
+
 class RansomwareHit(BaseModel):
     page: RansomwarePage
 
@@ -217,7 +314,6 @@ class RansomFeedHit(BaseModel):
 
 
 class TelegramFeedHit(BaseModel):
-
     id: str
     telegram: List[str]
     date: datetime
@@ -230,7 +326,11 @@ class Result(BaseModel):
     # TODO Add pagination, query, etc?
     total: int = 0
     hits: Union[
-        List[Hit], List[RansomFeedHit], List[TelegramFeedHit], List[RansomwareHit]
+        List[Hit],
+        List[TelegramHit],
+        List[RansomFeedHit],
+        List[TelegramFeedHit],
+        List[RansomwareHit],
     ] = Field(default_factory=lambda: [])
 
     def __init__(self, **kwargs):
@@ -239,7 +339,6 @@ class Result(BaseModel):
             self.total = len(self.hits)
 
     def get_type(self) -> type:
-
         if len(self.hits) <= 0:
             return NoneType
 
@@ -257,7 +356,6 @@ class VysionResponse(BaseModel):
 
 class VysionError(BaseModel):
     class StatusCode(int, Enum):
-
         UNK = 000
         OK = 200
         REQ_ERROR = 400
