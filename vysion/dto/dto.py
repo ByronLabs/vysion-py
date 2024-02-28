@@ -232,6 +232,7 @@ class TelegramMessage(BaseModel):
     languages: Optional[List[LanguagePair]] = Field(default_factory=lambda: None)
     sha1sum: Optional[str] = None
     sha256sum: Optional[str] = None
+    media: Optional[Media] = Field(default_factory=lambda: None)
     detectionDate: datetime
 
     @field_validator("message")
@@ -247,37 +248,9 @@ class TelegramMessage(BaseModel):
         return v
 
 
-class TelegramMedia(BaseModel):
-    userId: Optional[int] = Field(default_factory=lambda: None)
-    username: Optional[str] = Field(default_factory=lambda: None)
-    channelId: int
-    messageId: int
-    message: Optional[str] = Field(default_factory=lambda: None)
-    channelTitle: Optional[str] = Field(default_factory=lambda: None)
-    languages: Optional[List[LanguagePair]] = Field(default_factory=lambda: None)
-    sha1sum: Optional[str] = None
-    sha256sum: Optional[str] = None
-    media: Optional[Media] = Field(default_factory=lambda: None)
-    detectionDate: datetime
-
-    @field_validator("userId")
-    def userId_validator(cls, v: int) -> int:
-        # ids should be numbers -1001448813240 or 1731636359
-        ret = re.search("^-\d+$", str(v)) or re.search("^\d+$", str(v))
-        if ret is None:
-            raise ValueError("userId not valid")
-        return v
-
-    @field_validator("messageId")
-    def validate_messageId(cls, v: int) -> int:
-        if not v:
-            raise ValueError("MessageId field cannot be empty")
-        return v
-
-
 class TelegramHit(BaseModel):
     message: TelegramMessage
-    image: Optional[TelegramMedia] = None
+    media: Optional[Media] = None
 
 
 class RansomwareHit(BaseModel):
