@@ -250,7 +250,6 @@ class TelegramMessage(BaseModel):
 
 class TelegramHit(BaseModel):
     message: TelegramMessage
-    media: Optional[Media] = None
 
 
 class RansomwareHit(BaseModel):
