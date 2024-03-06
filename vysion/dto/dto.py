@@ -175,7 +175,7 @@ class RansomwarePage(BaseModel):
     info: Optional[str]
     html: Optional[str]
     country: Optional[str]
-    sha256sum: str = None
+    sha256sum: Optional[str] = None
     ssdeep: Optional[str] = None
     date: datetime
     chunk: bool = False
