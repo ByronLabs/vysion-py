@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Copyright 2022 ByronLabs S.L.
+Copyright 2024 ByronLabs S.L.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -160,7 +160,7 @@ class Page(BaseModel):
     chunk: bool = False
 
 
-class RansomwarePage(BaseModel):
+class RansomwareHit(BaseModel):
     id: str
     url: URL
     # title: str = None
@@ -222,7 +222,7 @@ class LanguagePair(BaseModel):
         return v
 
 
-class TelegramMessage(BaseModel):
+class TelegramHit(BaseModel):
     userId: Optional[int] = Field(default_factory=lambda: None)
     username: Optional[str] = Field(default_factory=lambda: None)
     channelId: Optional[int] = Field(default_factory=lambda: None)
@@ -246,15 +246,6 @@ class TelegramMessage(BaseModel):
         if not v:
             raise ValueError("MessageId field cannot be empty")
         return v
-
-
-class TelegramHit(BaseModel):
-    message: TelegramMessage
-
-
-class RansomwareHit(BaseModel):
-    page: RansomwarePage
-
 
 class Hit(BaseModel):
     page: Page
