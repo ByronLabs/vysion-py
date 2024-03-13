@@ -247,6 +247,27 @@ class TelegramHit(BaseModel):
             raise ValueError("MessageId field cannot be empty")
         return v
 
+class TelegramProfileHit(BaseModel):
+    userId: int
+    usernames: Optional[List[str]] = Field(default_factory=lambda: None)
+    firstName: Optional[List[str]] = Field(default_factory=lambda: None)
+    lastName: Optional[List[str]] = Field(default_factory=lambda: None)
+    detectionDate: datetime
+    profilePhoto: Optional[List[Media]] = Field(default_factory=lambda: None)
+
+    @field_validator("userId")
+    def validate_userId(cls, v: int) -> int:
+        if not v:
+            raise ValueError("UserId field cannot be empty")
+        return v
+
+
+    @field_validator("detectionDate")
+    def validate_detectionDate(cls, v: datetime) -> datetime:
+        if not v:
+            raise ValueError("DetectionDate field cannot be empty")
+        return v
+
 class Hit(BaseModel):
     page: Page
     tag: List[Tag]
@@ -294,6 +315,7 @@ class Result(BaseModel):
         List[RansomFeedHit],
         List[TelegramFeedHit],
         List[RansomwareHit],
+        List[TelegramProfileHit]
     ] = Field(default_factory=lambda: [])
 
     def __init__(self, **kwargs):
