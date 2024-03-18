@@ -227,19 +227,13 @@ class TelegramHit(BaseModel):
     username: Optional[str] = Field(default_factory=lambda: None)
     channelId: Optional[int] = Field(default_factory=lambda: None)
     messageId: int
-    message: str
+    message: Optional[str] = Field(default_factory=lambda: None)
     channelTitle: Optional[str] = Field(default_factory=lambda: None)
     languages: Optional[List[LanguagePair]] = Field(default_factory=lambda: None)
     sha1sum: Optional[str] = None
     sha256sum: Optional[str] = None
-    media: Optional[Media] = Field(default_factory=lambda: None)
+    media: Optional[str] = Field(default_factory=lambda: None)
     detectionDate: datetime
-
-    @field_validator("message")
-    def validate_message(cls, v: str) -> str:
-        if not v.strip():
-            raise ValueError("Message field cannot be empty")
-        return v
 
     @field_validator("messageId")
     def validate_messageId(cls, v: int) -> int:
@@ -253,7 +247,7 @@ class TelegramProfileHit(BaseModel):
     firstName: Optional[List[str]] = Field(default_factory=lambda: None)
     lastName: Optional[List[str]] = Field(default_factory=lambda: None)
     detectionDate: datetime
-    profilePhoto: Optional[List[Media]] = Field(default_factory=lambda: None)
+    profilePhoto: Optional[List[str]] = Field(default_factory=lambda: None)
 
     @field_validator("userId")
     def validate_userId(cls, v: int) -> int:
@@ -266,6 +260,31 @@ class TelegramProfileHit(BaseModel):
     def validate_detectionDate(cls, v: datetime) -> datetime:
         if not v:
             raise ValueError("DetectionDate field cannot be empty")
+        return v
+    
+class TelegramChannelHit(BaseModel):
+    channelId: int
+    channelTitles: Optional[List[str]] = Field(default_factory=lambda: None)
+    detectionDate: datetime
+    creationDate: datetime 
+    channelPhoto: Optional[List[str]] = Field(default_factory=lambda: None)
+
+    @field_validator("channelId")
+    def validate_channelId(cls, v: int) -> int:
+        if not v:
+            raise ValueError("channelId field cannot be empty")
+        return v
+
+    @field_validator("detectionDate")
+    def validate_detectionDate(cls, v: datetime) -> datetime:
+        if not v:
+            raise ValueError("DetectionDate field cannot be empty")
+        return v
+    
+    @field_validator("creationDate")
+    def validate_creationDate(cls, v: datetime) -> datetime:
+        if not v:
+            raise ValueError("creationDate field cannot be empty")
         return v
 
 class Hit(BaseModel):
@@ -315,7 +334,8 @@ class Result(BaseModel):
         List[RansomFeedHit],
         List[TelegramFeedHit],
         List[RansomwareHit],
-        List[TelegramProfileHit]
+        List[TelegramProfileHit],
+        List[TelegramChannelHit]
     ] = Field(default_factory=lambda: [])
 
     def __init__(self, **kwargs):
