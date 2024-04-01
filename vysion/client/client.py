@@ -205,6 +205,28 @@ class Client(BaseClient):
 
         result = self._make_request(url)
         return result.data
+    
+    @vysion_error_manager
+    def search_telegram(
+        self,
+        query: str,
+        username: str = None,
+        page: int = 1,
+        lte: datetime = None,
+        gte: datetime = None,
+    ) -> dto.Result:
+
+        url = self._build_api_url__(
+            "search-telegram",
+            query,
+            username=username,
+            page=page,
+            lte=lte,
+            gte=gte,
+        )
+
+        result = self._make_request(url)
+        return result.data
 
     @vysion_error_manager
     def fuzzy_search(
@@ -331,6 +353,30 @@ class Client(BaseClient):
     def get_tag(self, tag: str) -> dto.Result:
 
         url = self._build_api_url__("tag", tag)
+
+        result = self._make_request(url)
+        return result.data
+    
+    @vysion_error_manager
+    def get_chat_telegram(
+        self, 
+        channelId: str, 
+        lte:datetime = None,
+        gte: datetime = None, 
+    ) -> dto.Result:
+
+        url = self._build_api_url__("telegram/chat", channelId, lte=lte, gte=gte)
+
+        result = self._make_request(url)
+        return result.data
+    
+    @vysion_error_manager
+    def get_message_telegram(
+        self, 
+        id: str,
+    ) -> dto.Result:
+
+        url = self._build_api_url__("telegram/message", id)
 
         result = self._make_request(url)
         return result.data
