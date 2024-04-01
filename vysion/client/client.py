@@ -85,7 +85,7 @@ class BaseClient:
             api_host = os.getenv("API_HOST")
 
         else:
-            api_host = "https://api-stage.vysion.ai"
+            api_host = "https://api.vysion.ai"
 
         return api_host
     
