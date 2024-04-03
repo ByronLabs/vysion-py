@@ -90,12 +90,15 @@ class BaseClient:
         return api_host
     
 
-    def _build_api_url__(self, endpoint, param, **query_params):
+    def _build_api_url__(self, endpoint, param=None, **query_params):
 
-        param = quote(param, safe='')
         _API_HOST = self._get_api_host()
         _BASE_API = urljoin(_API_HOST, _ENDPOINT_PREFIX)
-        base = urljoin(_BASE_API, f"{endpoint}/{param}")
+        base= urljoin(_BASE_API, endpoint)
+
+        if param is not None:
+            param = quote(param, safe='')
+            base = urljoin(_BASE_API, f"{endpoint}/{param}")
 
         query_params_initialzed = query_params.copy()
 
@@ -110,7 +113,7 @@ class BaseClient:
                 del query_params_initialzed[i]
 
         query = "?" + urlencode(query_params_initialzed)
-
+        print(base + query)
         return urljoin(base, query)
 
     def _make_request(self, url: str) -> dto.VysionResponse:
@@ -192,7 +195,7 @@ class Client(BaseClient):
 
         url = self._build_api_url__(
             "search",
-            query,
+            query=query,
             tag=tag,
             notTag=notTag,
             exact=exact,
@@ -218,7 +221,7 @@ class Client(BaseClient):
 
         url = self._build_api_url__(
             "search-telegram",
-            query,
+            query=query,
             username=username,
             page=page,
             lte=lte,
