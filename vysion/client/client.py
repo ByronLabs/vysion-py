@@ -113,7 +113,6 @@ class BaseClient:
                 del query_params_initialzed[i]
 
         query = "?" + urlencode(query_params_initialzed)
-        print(base + query)
         return urljoin(base, query)
 
     def _make_request(self, url: str) -> dto.VysionResponse:
