@@ -18,19 +18,18 @@ limitations under the License.
 # TODO Referenciar vt-py
 
 import logging
+import os
 from datetime import datetime, timedelta
 from typing import Union
-from urllib.parse import urlencode, urljoin, quote
+from urllib.parse import quote, urlencode, urljoin
 
 # from pydantic import validate_arguments
 import requests
 
 import vysion.dto as dto
 from vysion.client.error import APIError
-from vysion.dto import VysionError
+from vysion.dto import Error
 from vysion.version import __version__ as vysion_version
-
-import os
 
 # All API endpoints start with this prefix, you don't need to include the
 # prefix in the paths you request as it's prepended automatically.
@@ -139,16 +138,16 @@ class BaseClient:
         return result
 
 
-def vysion_error_manager(method) -> Union[dto.Result, VysionError]:
+def vysion_error_manager(method) -> Union[dto.Result, Error]:
     def manage(*args, **kwargs):
         try:
             result = method(*args, **kwargs)
             return result
         except APIError as e:
-            return VysionError(code=e.code, message=e.message)
+            return Error(code=e.code, message=e.message)
         except Exception as e:
             LOGGER.error(e)
-            return VysionError()
+            return Error()
 
     return manage
 

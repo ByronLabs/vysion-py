@@ -15,9 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import hashlib
+import re
 from datetime import datetime
 from enum import Enum
-import re
 
 from vysion.model import enum
 from vysion.taxonomy import Monero_Address, Ripple_Address
@@ -30,14 +30,8 @@ except:
 from typing import List, Optional, Union
 from urllib.parse import urlparse
 
-from pydantic import (
-    BaseModel,
-    Field,
-    ConfigDict,
-    validator,
-    field_validator,
-    root_validator,
-)
+from pydantic import (BaseModel, ConfigDict, Field, field_validator,
+                      root_validator, validator)
 from pydantic_core.core_schema import FieldValidationInfo
 
 from vysion import taxonomy as vystaxonomy
@@ -324,6 +318,17 @@ class TelegramFeedHit(BaseModel):
     path: str
     network: str
 
+class Pagination(BaseModel):
+    page: int = 1
+    page_size: int = 10
+    
+class SearchDto(Pagination):
+    q:  str
+    gte: str = ""
+    lte: str = ""
+    
+class SearchTelegramDto(SearchDto):
+    username: str = "" 
 
 class Result(BaseModel):
     # TODO Add pagination, query, etc?
@@ -350,23 +355,36 @@ class Result(BaseModel):
         return type(self.hits[0])
 
 
-# TODO Move API responses to other class
+class Pagination(BaseModel):
+    page: int = 1
+    limit: int = 10
+
+
+class ErrorCode(int, Enum):
+    BAD_REQUEST = 400
+    UNAUTHORIZED = 401
+    FORBIDDEN = 403
+    NOT_FOUND = 404
+    CONFLICT = 409
+    UNPROCESSABLE_ENTITY = 422
+    TOO_MANY_REQUESTS = 429
+    INTERNAL_SERVER_ERROR = 500
+    
+class ErrorMessage(str, Enum):
+    BAD_REQUEST = "Bad Request"
+    UNAUTHORIZED = "Unauthorized"
+    FORBIDDEN = "Forbidden"
+    NOT_FOUND = "Not Found"
+    CONFLICT = "Conflict"
+    UNPROCESSABLE_ENTITY = "Unprocessable Entity"
+    TOO_MANY_REQUESTS = "Too Many Requests"
+    INTERNAL_SERVER_ERROR = "Internal Server Error"
+
+class Error(BaseModel):
+    code: ErrorCode = ErrorCode.INTERNAL_SERVER_ERROR
+    message: str = ErrorMessage.INTERNAL_SERVER_ERROR
+
 class VysionResponse(BaseModel):
-    """
-    VysionResponse is a json:api flavoured response from the API
-    """
+    data: Optional[Result] = None
+    error: Optional[Error] = None
 
-    data: Result  # TODO Add type to all JSON:API responses
-
-
-class VysionError(BaseModel):
-    class StatusCode(int, Enum):
-        UNK = 000
-        OK = 200
-        REQ_ERROR = 400
-        UNAUTHORIZED = 403
-        NOT_FOUND = 404
-        INTERNAL_ERROR = 500
-
-    code: StatusCode = StatusCode.UNK
-    message: str = "UNK_ERR"

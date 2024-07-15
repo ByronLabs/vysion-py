@@ -1,8 +1,9 @@
 from curses.has_key import has_key
+
 import pytest
 
 import vysion.client as client
-from vysion.client.error import VysionError
+from vysion.client.error import Error
 
 from . import config
 
@@ -138,4 +139,4 @@ def test_invalid_apikey():
     try:
         client.Client(api_key="invalid api key")
     except Exception as e:
-        assert type(e) is VysionError  # TODO Validate 403
+        assert type(e) is Error  # TODO Validate 403
