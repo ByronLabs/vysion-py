@@ -35,7 +35,7 @@ class Predicate(str, Softenum):
     malware_category = "malware-category"
 
 
-class Tag(BaseModel):
+class Topic(BaseModel):
 
     namespace: str
     predicate: str
@@ -46,16 +46,16 @@ class Tag(BaseModel):
     @classmethod
     def parse(cls, tag_str):
 
-        tag_parts = re.findall(r"(?:([^:]+):)?(?:([^=]+)=)?(?:\"(.*)\")", tag_str)[0]
+        topic_parts = re.findall(r"(?:([^:]+):)?(?:([^=]+)=)?(?:\"(.*)\")", tag_str)[0]
 
-        namespace = Namespace(tag_parts[0])
-        predicate = Predicate(tag_parts[1])
-        value = tag_parts[2]
+        namespace = Namespace(topic_parts[0])
+        predicate = Predicate(topic_parts[1])
+        value = topic_parts[2]
 
         return cls(namespace=namespace, predicate=predicate, value=value)
 
     def __repr__(self):
-        return f"Tag<{self}>"
+        return f"Topic<{self}>"
 
     def __str__(self):
         return f'''{self.namespace}:{self.predicate}:"{self.value}"'''

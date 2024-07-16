@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+
 import hashlib
 import re
 from datetime import datetime
@@ -30,15 +31,21 @@ except:
 from typing import List, Optional, Union
 from urllib.parse import urlparse
 
-from pydantic import (BaseModel, ConfigDict, Field, field_validator,
-                      root_validator, validator)
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    field_validator,
+    root_validator,
+    validator,
+)
 from pydantic_core.core_schema import FieldValidationInfo
 
 from vysion import taxonomy as vystaxonomy
 from vysion.model import URL as URL_model
 from vysion.model.enum import Language, Network, RansomGroup, Services
 
-from .tag import *
+from .topic import Topic, Namespace, Predicate
 
 
 class Email(BaseModel):
@@ -169,6 +176,7 @@ class RansomwareHit(BaseModel):
     ssdeep: Optional[str] = None
     detectionDate: datetime
     chunk: bool = False
+    topic: List[Topic] = Field(default_factory=lambda: [])
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
@@ -235,6 +243,7 @@ class TelegramHit(BaseModel):
             raise ValueError("MessageId field cannot be empty")
         return v
 
+
 class TelegramProfileHit(BaseModel):
     userId: int
     usernames: Optional[List[str]] = Field(default_factory=lambda: None)
@@ -249,18 +258,18 @@ class TelegramProfileHit(BaseModel):
             raise ValueError("UserId field cannot be empty")
         return v
 
-
     @field_validator("detectionDate")
     def validate_detectionDate(cls, v: datetime) -> datetime:
         if not v:
             raise ValueError("DetectionDate field cannot be empty")
         return v
-    
+
+
 class TelegramChannelHit(BaseModel):
     channelId: int
     channelTitles: Optional[List[str]] = Field(default_factory=lambda: None)
     detectionDate: datetime
-    creationDate: datetime 
+    creationDate: datetime
     channelPhoto: Optional[List[str]] = Field(default_factory=lambda: None)
 
     @field_validator("channelId")
@@ -274,16 +283,17 @@ class TelegramChannelHit(BaseModel):
         if not v:
             raise ValueError("DetectionDate field cannot be empty")
         return v
-    
+
     @field_validator("creationDate")
     def validate_creationDate(cls, v: datetime) -> datetime:
         if not v:
             raise ValueError("creationDate field cannot be empty")
         return v
 
+
 class Hit(BaseModel):
     page: Page
-    tag: List[Tag]
+    topic: List[Topic] = Field(default_factory=lambda: [])
     email: List[Email] = Field(default_factory=lambda: [])
     paste: List[Paste] = Field(default_factory=lambda: [])
     skype: List[Skype] = Field(default_factory=lambda: [])
@@ -299,12 +309,12 @@ class Hit(BaseModel):
 
 class RansomFeedHit(BaseModel):
     id: str
-    company: Optional[str]
-    company_link: Optional[str]
-    link: str
-    group: str
-    date: datetime
-    info: Optional[str]
+    companyName: Optional[str]
+    companyLink: Optional[str]
+    url: str
+    ransomwareGroup: str
+    detectionDate: datetime
+    text: Optional[str]
     country: Optional[str]
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -313,22 +323,26 @@ class RansomFeedHit(BaseModel):
 class TelegramFeedHit(BaseModel):
     id: str
     telegram: List[str]
-    date: datetime
+    detectionDate: datetime
     url: str
     path: str
     network: str
 
+
 class Pagination(BaseModel):
     page: int = 1
     page_size: int = 10
-    
+
+
 class SearchDto(Pagination):
-    q:  str
+    q: str
     gte: str = ""
     lte: str = ""
-    
+
+
 class SearchTelegramDto(SearchDto):
-    username: str = "" 
+    username: str = ""
+
 
 class Result(BaseModel):
     # TODO Add pagination, query, etc?
@@ -340,7 +354,7 @@ class Result(BaseModel):
         List[TelegramFeedHit],
         List[RansomwareHit],
         List[TelegramProfileHit],
-        List[TelegramChannelHit]
+        List[TelegramChannelHit],
     ] = Field(default_factory=lambda: [])
 
     def __init__(self, **kwargs):
@@ -369,7 +383,8 @@ class ErrorCode(int, Enum):
     UNPROCESSABLE_ENTITY = 422
     TOO_MANY_REQUESTS = 429
     INTERNAL_SERVER_ERROR = 500
-    
+
+
 class ErrorMessage(str, Enum):
     BAD_REQUEST = "Bad Request"
     UNAUTHORIZED = "Unauthorized"
@@ -380,11 +395,12 @@ class ErrorMessage(str, Enum):
     TOO_MANY_REQUESTS = "Too Many Requests"
     INTERNAL_SERVER_ERROR = "Internal Server Error"
 
+
 class Error(BaseModel):
     code: ErrorCode = ErrorCode.INTERNAL_SERVER_ERROR
     message: str = ErrorMessage.INTERNAL_SERVER_ERROR
 
+
 class VysionResponse(BaseModel):
     data: Optional[Result] = None
     error: Optional[Error] = None
-
