@@ -112,8 +112,8 @@ class WhatsApp(BaseModel):
 class URL(BaseModel):
     _taxonomy = [vystaxonomy.URL]
 
-    protocol: Optional[str]
-    domain: Optional[str]
+    networkProtocol: Optional[str]
+    domainName: Optional[str]
     port: Optional[int]
     path: Optional[str]
     signature: str
@@ -127,8 +127,8 @@ class URL(BaseModel):
         parsed = URL_model.parse(url)
         print(parsed)
         tmp_result = cls(
-            protocol=parsed.protocol,
-            domain=parsed.domain,
+            networkProtocol=parsed.protocol,
+            domainName=parsed.domain,
             port=parsed.port,
             path=parsed.path,
             signature=str(parsed.signature),  # TODO Replace signature: str --> UUID
@@ -143,31 +143,31 @@ class URL(BaseModel):
 class Page(BaseModel):
     id: str
     url: URL
-    parent: Optional[str] = None
-    title: Optional[str] = None
+    foundAt: Optional[str] = None
+    pageTitle: Optional[str] = None
     language: Optional[Language]
     html: str = None
     sha1sum: Optional[str] = None
     sha256sum: Optional[str] = None
     ssdeep: Optional[str] = None
-    date: datetime = None
+    detectionDate: datetime = None
     chunk: bool = False
 
 
 class RansomwareHit(BaseModel):
     id: str
     url: URL
-    # title: str = None
-    group: str
-    company: Optional[str]
-    company_address: Optional[str]
-    company_link: Optional[str]
-    info: Optional[str]
+    pageTitle: Optional[str] = None
+    ransomwareGroup: str
+    companyName: Optional[str]
+    companyAddress: Optional[str]
+    companyLink: Optional[str]
+    text: Optional[str]
     html: Optional[str]
     country: Optional[str]
     sha256sum: Optional[str] = None
     ssdeep: Optional[str] = None
-    date: datetime
+    detectionDate: datetime
     chunk: bool = False
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
