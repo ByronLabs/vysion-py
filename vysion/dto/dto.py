@@ -45,7 +45,7 @@ from vysion import taxonomy as vystaxonomy
 from vysion.model import URL as URL_model
 from vysion.model.enum import Language, Network, RansomGroup, Services
 
-from .topic import Topic, Namespace, Predicate
+from .topic import Namespace, Predicate, Topic
 
 
 class Email(BaseModel):
@@ -327,21 +327,6 @@ class TelegramFeedHit(BaseModel):
     url: str
     path: str
     network: str
-
-
-class Pagination(BaseModel):
-    page: int = 1
-    page_size: int = 10
-
-
-class SearchDto(Pagination):
-    q: str
-    gte: str = ""
-    lte: str = ""
-
-
-class SearchTelegramDto(SearchDto):
-    username: str = ""
 
 
 class Result(BaseModel):
