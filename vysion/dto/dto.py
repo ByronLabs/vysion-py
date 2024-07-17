@@ -32,10 +32,7 @@ from pydantic import (
     ConfigDict,
     Field,
     field_validator,
-    root_validator,
     model_validator,
-    validator,
-    field_validator,
 )
 
 from vysion import taxonomy as vystaxonomy
@@ -256,7 +253,7 @@ class Media(BaseModel):
     objectName: Optional[str] = Field(default_factory=lambda: None)
     contentType: str
 
-    @validator("bucketName", "objectPath", "objectName")
+    @field_validator("bucketName", "objectPath", "objectName")
     def validate_strings(cls, v):
         if v is not None and not isinstance(v, str):
             raise ValueError("value must be a string")
@@ -273,12 +270,13 @@ class LanguagePair(BaseModel):
     language: str
     probability: float
 
-    @root_validator(pre=True)
-    def split_key_value(cls, value: str) -> dict:
-        if isinstance(value, str):
-            key, value = value.split(":")
-            return {"key": key, "value": float(value)}
-        return value
+    @model_validator(mode="before")
+    @classmethod
+    def split_key_value(cls, data: str) -> dict:
+        if isinstance(data, str):
+            key, value = data.split(":")
+            return {"language": key, "probability": float(value)}
+        return data
 
     @field_validator("language")
     def validate_language(cls, v: str) -> str:
@@ -421,14 +419,15 @@ class Result(BaseModel):
             return NoneType
 
         return type(self.hits[0])
-
-    @root_validator(pre=True)
-    def check_hits(cls, values):
-        hits = values.get("hits")
+    
+    @model_validator(mode="before")
+    @classmethod
+    def check_hits(cls, data):
+        hits = data.get("hits")
         if not isinstance(hits, list):
             raise ValueError("hits must be a list")
 
-        return values
+        return data
 
 
 class ErrorCode(int, Enum):
