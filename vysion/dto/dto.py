@@ -382,10 +382,26 @@ class TelegramFeedHit(BaseModel):
     network: str
 
 
+class Stat(BaseModel):
+    key: Union[str, int]
+    doc_count: int
+
+
+class Buckets(BaseModel):
+    buckets: List[Stat]
+
+
+class AggStats(Stat):
+    key_as_string: str
+    agg: Buckets
+
+
 class Result(BaseModel):
     # TODO Add pagination, query, etc?
     total: int = 0
     hits: Union[
+        List[Stat],
+        List[AggStats],
         List[Hit],
         List[RansomwareHit],
         List[TelegramHit],
@@ -413,11 +429,6 @@ class Result(BaseModel):
             raise ValueError("hits must be a list")
 
         return values
-
-
-class Pagination(BaseModel):
-    page: int = 1
-    limit: int = 10
 
 
 class ErrorCode(int, Enum):
