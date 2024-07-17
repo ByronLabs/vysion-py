@@ -19,6 +19,7 @@ import hashlib
 import re
 from datetime import datetime
 from enum import Enum
+from typing_extensions import Unpack
 
 from vysion.model import enum
 from vysion.taxonomy import Monero_Address, Ripple_Address
@@ -42,10 +43,11 @@ from pydantic import (
 from pydantic_core.core_schema import FieldValidationInfo
 
 from vysion import taxonomy as vystaxonomy
-from vysion.model import URL as URL_model
 from vysion.model.enum import Language, Network, RansomGroup, Services
 
 from .topic import Namespace, Predicate, Topic
+import uuid
+from urllib.parse import urlparse
 
 
 class Email(BaseModel):
@@ -119,32 +121,97 @@ class WhatsApp(BaseModel):
 class URL(BaseModel):
     _taxonomy = [vystaxonomy.URL]
 
-    networkProtocol: Optional[str]
-    domainName: Optional[str]
-    port: Optional[int]
-    path: Optional[str]
-    signature: str
+    url: str
+    networkProtocol: str = Field(default_factory=lambda: "http")
+    domainName: str = Field(default_factory=lambda: "")
+    port: int = Field(default_factory=lambda: 80)
+    path: str = Field(default_factory=lambda: "")
+    signature: uuid.UUID = Field(
+        default_factory=lambda: uuid.UUID("{00000000-0000-0000-0000-000000000000}")
+    )
     network: Network = Field(default_factory=lambda: Network.clearnet)
 
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    def __generate_signature(self) -> uuid.UUID:
+        return uuid.uuid5(uuid.NAMESPACE_URL, self.build())
 
     @classmethod
     def parse(cls, url):
-        # TODO Save this parsed in a private variable? (e.g., _pared_)
-        parsed = URL_model.parse(url)
-        print(parsed)
-        tmp_result = cls(
-            networkProtocol=parsed.protocol,
-            domainName=parsed.domain,
-            port=parsed.port,
-            path=parsed.path,
-            signature=str(parsed.signature),  # TODO Replace signature: str --> UUID
+        parsed = urlparse(url)
+
+        # Elements
+        scheme = parsed.scheme
+        netloc = parsed.netloc
+        path = parsed.path
+        query = parsed.query
+        fragment = parsed.fragment
+
+        # Build domain:port
+        try:
+            domain_port = (netloc.split(":") + [80])[:2]
+        except Exception as e:
+            print(e)
+
+        domainName = domain_port[0]
+
+        if ".onion" in domainName:
+            network = Network.tor
+        elif ".i2p" in domainName:
+            network = Network.i2p
+        else:
+            network = Network.clearnet
+
+        port = domain_port[1]
+
+        # Build /path?query#fragment
+        res_path = path
+
+        # Rebuild path's query
+        if len(query) > 0:
+            query_parts = [param.split("=") for param in query.split("&")]
+            query_dict = {}
+            for part in query_parts:
+                if len(part) <= 1:
+                    query_dict[part[0]] = str()
+                else:
+                    query_dict[part[0]] = part[1]
+
+            query_keys = list(query_dict.keys())
+            query_keys.sort()
+            res_query_parts = [f"{k}={query_dict[k]}" for k in query_keys]
+
+            res_query = "?" + "&".join(res_query_parts)
+
+            res_path += res_query
+
+        if len(fragment) > 0:
+            res_path += f"#{fragment}"
+
+        return cls(
+            url=url,
+            networkProtocol=scheme,
+            domainName=domainName,
+            port=port,
+            path=res_path,
+            network=network,
         )
 
-        return tmp_result
+    def __init_subclass__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.urlSignature = self.__generate_signature()
 
     def build(self) -> str:
-        return f"{self.protocol}://{self.domain}:{self.port}{self.path}"
+        url = self.path
+
+        if self.domainName != "":
+            if self.port != 80:
+                url = f":{self.port}" + url
+
+            url = f"{self.domainName}" + url
+
+        if self.networkProtocol != "":
+            url = f"{self.networkProtocol}://" + url
+
+        return url
 
 
 class Page(BaseModel):
@@ -154,6 +221,7 @@ class Page(BaseModel):
     pageTitle: Optional[str] = None
     language: Optional[Language]
     html: str = None
+    text: Optional[str] = None
     sha1sum: Optional[str] = None
     sha256sum: Optional[str] = None
     ssdeep: Optional[str] = None
@@ -162,23 +230,29 @@ class Page(BaseModel):
 
 
 class RansomwareHit(BaseModel):
-    id: str
-    url: URL
-    pageTitle: Optional[str] = None
+    page: Page
+    topic: List[Topic] = Field(default_factory=lambda: [])
     ransomwareGroup: str
     companyName: Optional[str]
     companyAddress: Optional[str]
     companyLink: Optional[str]
-    text: Optional[str]
-    html: Optional[str]
     country: Optional[str]
-    sha256sum: Optional[str] = None
-    ssdeep: Optional[str] = None
-    detectionDate: datetime
-    chunk: bool = False
-    topic: List[Topic] = Field(default_factory=lambda: [])
 
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+class Hit(BaseModel):
+    page: Page
+    topic: List[Topic] = Field(default_factory=lambda: [])
+    email: List[Email] = Field(default_factory=lambda: [])
+    paste: List[Paste] = Field(default_factory=lambda: [])
+    skype: List[Skype] = Field(default_factory=lambda: [])
+    telegram: List[Telegram] = Field(default_factory=lambda: [])
+    whatsapp: List[WhatsApp] = Field(default_factory=lambda: [])
+    bitcoin_address: List[BitcoinAddress] = Field(default_factory=lambda: [])
+    polkadot_address: List[PolkadotAddress] = Field(default_factory=lambda: [])
+    ethereum_address: List[EthereumAddress] = Field(default_factory=lambda: [])
+    monero_address: List[MoneroAddress] = Field(default_factory=lambda: [])
+    ripple_address: List[RippleAddress] = Field(default_factory=lambda: [])
+    zcash_address: List[ZcashAddress] = Field(default_factory=lambda: [])
 
 
 class Media(BaseModel):
@@ -291,22 +365,6 @@ class TelegramChannelHit(BaseModel):
         return v
 
 
-class Hit(BaseModel):
-    page: Page
-    topic: List[Topic] = Field(default_factory=lambda: [])
-    email: List[Email] = Field(default_factory=lambda: [])
-    paste: List[Paste] = Field(default_factory=lambda: [])
-    skype: List[Skype] = Field(default_factory=lambda: [])
-    telegram: List[Telegram] = Field(default_factory=lambda: [])
-    whatsapp: List[WhatsApp] = Field(default_factory=lambda: [])
-    bitcoin_address: List[BitcoinAddress] = Field(default_factory=lambda: [])
-    polkadot_address: List[PolkadotAddress] = Field(default_factory=lambda: [])
-    ethereum_address: List[EthereumAddress] = Field(default_factory=lambda: [])
-    monero_address: List[MoneroAddress] = Field(default_factory=lambda: [])
-    ripple_address: List[RippleAddress] = Field(default_factory=lambda: [])
-    zcash_address: List[ZcashAddress] = Field(default_factory=lambda: [])
-
-
 class RansomFeedHit(BaseModel):
     id: str
     companyName: Optional[str]
@@ -334,10 +392,10 @@ class Result(BaseModel):
     total: int = 0
     hits: Union[
         List[Hit],
+        List[RansomwareHit],
         List[TelegramHit],
         List[RansomFeedHit],
         List[TelegramFeedHit],
-        List[RansomwareHit],
         List[TelegramProfileHit],
         List[TelegramChannelHit],
     ] = Field(default_factory=lambda: [])
@@ -352,6 +410,14 @@ class Result(BaseModel):
             return NoneType
 
         return type(self.hits[0])
+
+    @root_validator(pre=True)
+    def check_hits(cls, values):
+        hits = values.get("hits")
+        if not isinstance(hits, list):
+            raise ValueError("hits must be a list")
+
+        return values
 
 
 class Pagination(BaseModel):
