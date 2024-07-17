@@ -19,7 +19,6 @@ from enum import Enum
 
 
 class Language(str, Enum):
-
     """
     Using names from ISO 639-1
     """

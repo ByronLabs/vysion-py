@@ -15,14 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import hashlib
-import re
 from datetime import datetime
 from enum import Enum
-from typing_extensions import Unpack
 
-from vysion.model import enum
-from vysion.taxonomy import Monero_Address, Ripple_Address
 
 try:
     from types import NoneType
@@ -38,16 +33,16 @@ from pydantic import (
     Field,
     field_validator,
     root_validator,
+    model_validator,
     validator,
+    field_validator,
 )
-from pydantic_core.core_schema import FieldValidationInfo
 
 from vysion import taxonomy as vystaxonomy
-from vysion.model.enum import Language, Network, RansomGroup, Services
+from vysion.model.enum import Language, Network
 
-from .topic import Namespace, Predicate, Topic
+from .topic import Topic
 import uuid
-from urllib.parse import urlparse
 
 
 class Email(BaseModel):
@@ -123,9 +118,9 @@ class URL(BaseModel):
 
     url: str
     networkProtocol: str = Field(default_factory=lambda: "http")
-    domainName: str = Field(default_factory=lambda: "")
+    domainName: str = Field(default_factory=lambda: None)
     port: int = Field(default_factory=lambda: 80)
-    path: str = Field(default_factory=lambda: "")
+    path: str = Field(default_factory=lambda: None)
     signature: uuid.UUID = Field(
         default_factory=lambda: uuid.UUID("{00000000-0000-0000-0000-000000000000}")
     )
@@ -220,7 +215,7 @@ class Page(BaseModel):
     foundAt: Optional[str] = None
     pageTitle: Optional[str] = None
     language: Optional[Language]
-    html: str = None
+    html: Optional[str] = None
     text: Optional[str] = None
     sha1sum: Optional[str] = None
     sha256sum: Optional[str] = None
@@ -233,10 +228,10 @@ class RansomwareHit(BaseModel):
     page: Page
     topic: List[Topic] = Field(default_factory=lambda: [])
     ransomwareGroup: str
-    companyName: Optional[str]
-    companyAddress: Optional[str]
-    companyLink: Optional[str]
-    country: Optional[str]
+    companyName: Optional[str] = None
+    companyAddress: Optional[str] = None
+    companyLink: Optional[str] = None
+    country: Optional[str] = None
 
 
 class Hit(BaseModel):
