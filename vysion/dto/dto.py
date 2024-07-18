@@ -18,28 +18,21 @@ limitations under the License.
 from datetime import datetime
 from enum import Enum
 
-
 try:
     from types import NoneType
 except:
     NoneType: type = type(None)
 
+import uuid
 from typing import List, Optional, Union
 from urllib.parse import urlparse
 
-from pydantic import (
-    BaseModel,
-    ConfigDict,
-    Field,
-    field_validator,
-    model_validator,
-)
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from vysion import taxonomy as vystaxonomy
 from vysion.model.enum import Language, Network
 
 from .topic import Topic
-import uuid
 
 
 class Email(BaseModel):
@@ -394,6 +387,13 @@ class AggStats(Stat):
     agg: Buckets
 
 
+class PhoneInfo(BaseModel):
+    name: str
+    source: str
+    href: Optional[str] = None
+    carrier: Optional[str] = None
+
+
 class Result(BaseModel):
     # TODO Add pagination, query, etc?
     total: int = 0
@@ -407,6 +407,7 @@ class Result(BaseModel):
         List[TelegramFeedHit],
         List[TelegramProfileHit],
         List[TelegramChannelHit],
+        List[PhoneInfo],
     ] = Field(default_factory=lambda: [])
 
     def __init__(self, **kwargs):
@@ -419,7 +420,7 @@ class Result(BaseModel):
             return NoneType
 
         return type(self.hits[0])
-    
+
     @model_validator(mode="before")
     @classmethod
     def check_hits(cls, data):
