@@ -24,7 +24,7 @@ except:
     NoneType: type = type(None)
 
 import uuid
-from typing import List, Optional, Union
+from typing import Generic, List, Optional, TypeVar, Union
 from urllib.parse import urlparse
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -224,7 +224,7 @@ class RansomwareHit(BaseModel):
     country: Optional[str] = None
 
 
-class Hit(BaseModel):
+class DocumentHit(BaseModel):
     page: Page
     topic: List[Topic] = Field(default_factory=lambda: [])
     email: List[Email] = Field(default_factory=lambda: [])
@@ -284,7 +284,7 @@ class LanguagePair(BaseModel):
         return v
 
 
-class TelegramHit(BaseModel):
+class ImMessageHit(BaseModel):
     userId: Optional[int] = Field(default_factory=lambda: None)
     username: Optional[str] = Field(default_factory=lambda: None)
     channelId: Optional[int] = Field(default_factory=lambda: None)
@@ -304,7 +304,7 @@ class TelegramHit(BaseModel):
         return v
 
 
-class TelegramProfileHit(BaseModel):
+class ImProfileHit(BaseModel):
     userId: int
     usernames: Optional[List[str]] = Field(default_factory=lambda: None)
     firstName: Optional[List[str]] = Field(default_factory=lambda: None)
@@ -325,7 +325,7 @@ class TelegramProfileHit(BaseModel):
         return v
 
 
-class TelegramChannelHit(BaseModel):
+class ImChannelHit(BaseModel):
     channelId: int
     channelTitles: Optional[List[str]] = Field(default_factory=lambda: None)
     detectionDate: datetime
@@ -351,6 +351,15 @@ class TelegramChannelHit(BaseModel):
         return v
 
 
+class ImFeedHit(BaseModel):
+    id: str
+    telegram: List[str]
+    detectionDate: datetime
+    url: str
+    path: str
+    network: str
+
+
 class RansomFeedHit(BaseModel):
     id: str
     companyName: Optional[str]
@@ -362,15 +371,6 @@ class RansomFeedHit(BaseModel):
     country: Optional[str]
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
-
-
-class TelegramFeedHit(BaseModel):
-    id: str
-    telegram: List[str]
-    detectionDate: datetime
-    url: str
-    path: str
-    network: str
 
 
 class Stat(BaseModel):
@@ -394,21 +394,12 @@ class PhoneInfo(BaseModel):
     carrier: Optional[str] = None
 
 
-class Result(BaseModel):
-    # TODO Add pagination, query, etc?
+T = TypeVar("T")
+
+
+class Result(BaseModel, Generic[T]):
     total: int = 0
-    hits: Union[
-        List[Stat],
-        List[AggStats],
-        List[Hit],
-        List[RansomwareHit],
-        List[TelegramHit],
-        List[RansomFeedHit],
-        List[TelegramFeedHit],
-        List[TelegramProfileHit],
-        List[TelegramChannelHit],
-        List[PhoneInfo],
-    ] = Field(default_factory=lambda: [])
+    hits: List[T] = Field(default_factory=lambda: [])
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -454,10 +445,10 @@ class ErrorMessage(str, Enum):
 
 
 class Error(BaseModel):
-    code: ErrorCode = ErrorCode.INTERNAL_SERVER_ERROR
-    message: str = ErrorMessage.INTERNAL_SERVER_ERROR
+    code: ErrorCode
+    message: str
 
 
-class VysionResponse(BaseModel):
-    data: Optional[Result] = None
+class VysionResponse(BaseModel, Generic[T]):
+    data: Optional[Result[T]] = None
     error: Optional[Error] = None

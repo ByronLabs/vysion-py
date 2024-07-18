@@ -23,15 +23,14 @@ except:
     NoneType = type(None)
 
 import vysion.dto as dto
-from vysion.dto import URL, Hit, Page, RansomFeedHit
+from vysion.dto import URL, DocumentHit, Page, RansomFeedHit
 
 
 class MISPProcessor:
     def __init__(self):
         self.misp_event = MISPEvent()
 
-    def parse_hit(self, hit: Hit, ref_attribute: MISPAttribute = None, **_):
-
+    def parse_hit(self, hit: DocumentHit, ref_attribute: MISPAttribute = None, **_):
         page: Page = hit.page
 
         # TODO Add more page parameters
@@ -90,14 +89,13 @@ class MISPProcessor:
             self.misp_event.add_tag(str(tag))
 
     def parse_ransom_feed_hit(self, hit: RansomFeedHit, **kwargs):
-
         # TODO Add event info!
 
         misp_object = MISPObject("vysion-ransomware-feed")
         misp_object.template_uuid = "e0bfa994-c184-4894-bfaa-73b1350746e1"
-        misp_object[
-            "meta-category"
-        ] = "misc"  # TODO Esto se tiene que poder hacer de otra manera... Y sólo es necesario en los feeds
+        misp_object["meta-category"] = (
+            "misc"  # TODO Esto se tiene que poder hacer de otra manera... Y sólo es necesario en los feeds
+        )
 
         misp_object.add_attribute("id", type="text", value=hit.id)
         misp_object.add_attribute("company", type="target-org", value=hit.company)
@@ -107,14 +105,17 @@ class MISPProcessor:
         misp_object.add_attribute("date", type="datetime", value=hit.date)
         misp_object.add_attribute("info", type="text", value=hit.info)
         misp_object.add_attribute("country", type="text", value=hit.country)
-        misp_object.add_attribute("url_vysion_ransom", type="link", value= "https://app.vysion.ai/victim/" + hit.id)
+        misp_object.add_attribute(
+            "url_vysion_ransom",
+            type="link",
+            value="https://app.vysion.ai/victim/" + hit.id,
+        )
 
         self.misp_event.add_object(misp_object)
 
     def process(self, result: dto.Result, **kwargs) -> MISPEvent:
-
         processor = {
-            Hit: self.parse_hit,
+            DocumentHit: self.parse_hit,
             RansomFeedHit: self.parse_ransom_feed_hit,
         }.get(result.get_type(), lambda *_, **__: {})
 
