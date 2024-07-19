@@ -33,7 +33,7 @@ from vysion.version import __version__ as vysion_version
 
 # All API endpoints start with this prefix, you don't need to include the
 # prefix in the paths you request as it's prepended automatically.
-_ENDPOINT_PREFIX = "/api/v1/"
+_ENDPOINT_PREFIX = "/api/v2/"
 
 LOGGER = logging.getLogger("vysion-py")
 LOGGER.setLevel(logging.INFO)
@@ -42,12 +42,10 @@ LOGGER.setLevel(logging.INFO)
 
 
 class BaseClient:
-
     # __attrs__ = []
 
     # @validate_arguments #
     def __init__(self, api_key: str = None, headers: dict = dict(), proxy: dict = None):
-
         assert api_key is not None, "API key MUST be provided"
         assert isinstance(api_key, str), "API key MUST be a string"
 
@@ -56,14 +54,12 @@ class BaseClient:
         self.headers = headers
 
     def __get_session__(self) -> requests.Session:
-
         # TODO Configure proxy
 
         # If session is undefined
         try:
             self._session
         except (NameError, AttributeError):
-
             headers = self.headers.copy()
             headers.update(
                 {
@@ -79,7 +75,6 @@ class BaseClient:
         return self._session
 
     def _get_api_host(self):
-
         if os.getenv("API_HOST") is not None:
             api_host = os.getenv("API_HOST")
 
@@ -87,16 +82,14 @@ class BaseClient:
             api_host = "https://api.vysion.ai"
 
         return api_host
-    
 
     def _build_api_url__(self, endpoint, param=None, **query_params):
-
         _API_HOST = self._get_api_host()
         _BASE_API = urljoin(_API_HOST, _ENDPOINT_PREFIX)
-        base= urljoin(_BASE_API, endpoint)
+        base = urljoin(_BASE_API, endpoint)
 
         if param is not None:
-            param = quote(param, safe='')
+            param = quote(param, safe="")
             base = urljoin(_BASE_API, f"{endpoint}/{param}")
 
         query_params_initialzed = query_params.copy()
@@ -105,7 +98,6 @@ class BaseClient:
         keys.sort()
 
         for i in keys:
-
             v = query_params[i]
 
             if v is None:
@@ -115,8 +107,8 @@ class BaseClient:
         return urljoin(base, query)
 
     def _make_request(self, url: str) -> dto.VysionResponse:
-
         session = self.__get_session__()
+        print(url)
         r = session.get(url)
 
         # TODO Improve this
@@ -153,7 +145,6 @@ def vysion_error_manager(method) -> Union[dto.Result, Error]:
 
 
 class Client(BaseClient):
-
     # def add_url(self, url:str, type:VysionURL.Type):
     #     """Add a Tor URL to be analyzed by PARCHE.
 
@@ -180,33 +171,32 @@ class Client(BaseClient):
     @vysion_error_manager
     def search(
         self,
-        query: str,
-        tag: str = None,
-        notTag: str = None,
-        exact: bool = False,
-        network: dto.Network = None,
-        language: dto.Language = None,
-        page: int = 1,
+        q: str,
         lte: datetime = None,
         gte: datetime = None,
+        page: int = 1,
+        page_size: int = 10,
+        network: dto.Network = None,
+        language: dto.Language = None,
+        include_tag: str = None,
+        exclude_tag: str = None,
     ) -> dto.Result:
-
         url = self._build_api_url__(
-            "search",
-            query=query,
-            tag=tag,
-            notTag=notTag,
-            exact=exact,
-            network=network,
-            language=language,
-            page=page,
+            "document/search",
+            q=q,
             lte=lte,
             gte=gte,
+            page=page,
+            page_size=page_size,
+            network=network,
+            language=language,
+            include_tag=include_tag,
+            exclude_tag=exclude_tag,
         )
 
         result = self._make_request(url)
         return result.data
-    
+
     @vysion_error_manager
     def search_telegram(
         self,
@@ -216,7 +206,6 @@ class Client(BaseClient):
         lte: datetime = None,
         gte: datetime = None,
     ) -> dto.Result:
-
         url = self._build_api_url__(
             "search-telegram",
             query=query,
@@ -241,7 +230,6 @@ class Client(BaseClient):
         lte: datetime = None,
         gte: datetime = None,
     ) -> dto.Result:
-
         url = self._build_api_url__(
             "fuzzy",
             query,
@@ -261,7 +249,6 @@ class Client(BaseClient):
     def find_btc(
         self, btc: str, page: int = 1, lte: datetime = None, gte: datetime = None
     ) -> dto.Result:
-
         url = self._build_api_url__("btc", btc, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
@@ -271,7 +258,6 @@ class Client(BaseClient):
     def find_eth(
         self, eth: str, page: int = 1, lte: datetime = None, gte: datetime = None
     ) -> dto.Result:
-
         url = self._build_api_url__("eth", eth, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
@@ -281,7 +267,6 @@ class Client(BaseClient):
     def find_dot(
         self, dot: str, page: int = 1, lte: datetime = None, gte: datetime = None
     ) -> dto.Result:
-
         url = self._build_api_url__("dot", dot, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
@@ -291,7 +276,6 @@ class Client(BaseClient):
     def find_xrp(
         self, xrp: str, page: int = 1, lte: datetime = None, gte: datetime = None
     ) -> dto.Result:
-
         url = self._build_api_url__("xrp", xrp, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
@@ -301,7 +285,6 @@ class Client(BaseClient):
     def find_xmr(
         self, xmr: str, page: int = 1, lte: datetime = None, gte: datetime = None
     ) -> dto.Result:
-
         url = self._build_api_url__("xmr", xmr, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
@@ -311,7 +294,6 @@ class Client(BaseClient):
     def find_zec(
         self, zec: str, page: int = 1, lte: datetime = None, gte: datetime = None
     ) -> dto.Result:
-
         url = self._build_api_url__("zec", zec, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
@@ -326,7 +308,6 @@ class Client(BaseClient):
         lte: datetime = None,
         gte: datetime = None,
     ) -> dto.Result:
-
         url = self._build_api_url__("url", query_url, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
@@ -336,7 +317,6 @@ class Client(BaseClient):
     def find_email(
         self, email: str, page: int = 1, lte: datetime = None, gte: datetime = None
     ) -> dto.Result:
-
         url = self._build_api_url__("email", email, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
@@ -344,7 +324,6 @@ class Client(BaseClient):
 
     @vysion_error_manager
     def get_document(self, document_id: str) -> dto.Result:
-
         url = self._build_api_url__("document", document_id)
 
         result = self._make_request(url)
@@ -352,31 +331,28 @@ class Client(BaseClient):
 
     @vysion_error_manager
     def get_tag(self, tag: str) -> dto.Result:
-
         url = self._build_api_url__("tag", tag)
 
         result = self._make_request(url)
         return result.data
-    
+
     @vysion_error_manager
     def get_chat_telegram(
-        self, 
-        channelId: str, 
-        lte:datetime = None,
-        gte: datetime = None, 
+        self,
+        channelId: str,
+        lte: datetime = None,
+        gte: datetime = None,
     ) -> dto.Result:
-
         url = self._build_api_url__("telegram/chat", channelId, lte=lte, gte=gte)
 
         result = self._make_request(url)
         return result.data
-    
+
     @vysion_error_manager
     def get_message_telegram(
-        self, 
+        self,
         id: str,
     ) -> dto.Result:
-
         url = self._build_api_url__("telegram/message", id)
 
         result = self._make_request(url)
@@ -402,7 +378,6 @@ class DaylyFeed(Client):
 
 class RansomwareFeed(DaylyFeed):
     def _consume_batch(self, start_time, end_time):
-
         days = (datetime.now() - start_time).days
         pages = (end_time - start_time).days
 

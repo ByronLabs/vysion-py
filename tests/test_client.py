@@ -20,8 +20,8 @@ def test_url_should_not_find(url="dkalg"):
         c = client.Client(api_key=config.API_KEY)
         result = c.find_url(url)
 
-        assert 'total' in str(result), True
-        assert 'hits' in str(result), True
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
         assert result.total == 0
         assert len(result.hits) == 0
 
@@ -30,13 +30,15 @@ def test_url_should_not_find(url="dkalg"):
         assert False, f"'test_url_should_not_find' raised an exception {exc}"
 
 
-def test_url_should_find(url="continewsnv5otx5kaoje7krkto2qbu3gtqef22mnr7eaxw3y6ncz3ad.onion"):
+def test_url_should_find(
+    url="continewsnv5otx5kaoje7krkto2qbu3gtqef22mnr7eaxw3y6ncz3ad.onion",
+):
     try:
         c = client.Client(api_key=config.API_KEY)
         result = c.find_url(url)
 
-        assert 'total' in str(result), True
-        assert 'hits' in str(result), True
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
         assert result.total > 0
         assert len(result.hits) > 0
 
@@ -50,8 +52,8 @@ def test_email_should_not_find(email="purplefdw@hdu.com.es.org"):
         c = client.Client(api_key=config.API_KEY)
         result = c.find_email(email)
 
-        assert 'total' in str(result), True
-        assert 'hits' in str(result), True
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
         assert result.total == 0
         assert len(result.hits) == 0
 
@@ -65,8 +67,8 @@ def test_email_should_find(email="som3on3@xmpp.jp"):
         c = client.Client(api_key=config.API_KEY)
         result = c.find_email(email)
 
-        assert 'total' in str(result), True
-        assert 'hits' in str(result), True
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
         assert result.total > 0
         assert len(result.hits) > 0
 
@@ -80,8 +82,8 @@ def test_search_should_find(key="tijuana"):
         c = client.Client(api_key=config.API_KEY)
         result = c.search(key)
 
-        assert 'total' in str(result), True
-        assert 'hits' in str(result), True
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
         assert result.total > 0
         assert len(result.hits) > 0
 
@@ -95,8 +97,8 @@ def test_search_should_not_find(key="lorolo"):
         c = client.Client(api_key=config.API_KEY)
         result = c.search(key)
 
-        assert 'total' in str(result), True
-        assert 'hits' in str(result), True
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
         assert result.total == 0
         assert len(result.hits) == 0
 
@@ -110,8 +112,8 @@ def test_find_btc_should_find(address="114qvtyucvKtiNXy9UL3eYx6HPYmadxeM4"):
         c = client.Client(api_key=config.API_KEY)
         result = c.find_btc(address)
 
-        assert 'total' in str(result), True
-        assert 'hits' in str(result), True
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
         assert result.total > 0
         assert len(result.hits) > 0
 
@@ -125,14 +127,14 @@ def test_find_btc_should_not_find(address="notvalidaddress"):
         c = client.Client(api_key=config.API_KEY)
         result = c.find_btc(address)
 
-        assert 'total' in str(result), True
-        assert 'hits' in str(result), True
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
         assert result.total == 0
         assert len(result.hits) == 0
 
     except Exception as exc:
         print("TEST EXCEPTION", exc)
-        assert False, f"'test_find_btc_should_not_find' raised an exception {exc}"        
+        assert False, f"'test_find_btc_should_not_find' raised an exception {exc}"
 
 
 def test_invalid_apikey():
