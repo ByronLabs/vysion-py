@@ -284,7 +284,7 @@ class LanguagePair(BaseModel):
         return v
 
 
-class ImHit(BaseModel):
+class ImMessageHit(BaseModel):
     userId: Optional[int] = Field(default_factory=lambda: None)
     username: Optional[str] = Field(default_factory=lambda: None)
     channelId: Optional[int] = Field(default_factory=lambda: None)
