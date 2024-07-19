@@ -14,7 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from vysion.dto import VysionError
+from vysion.dto import Error
 
 
 class APIError(Exception):
@@ -28,8 +28,8 @@ class APIError(Exception):
 
         super().__init__()
 
-        if code not in [i.value for i in VysionError.StatusCode]:
-            self.code = VysionError.StatusCode.UNK
+        if code not in [i.value for i in Error.StatusCode]:
+            self.code = Error.StatusCode.UNK
             self.message = f"{message} (Original code: {code})"
         else:
             self.code = code
