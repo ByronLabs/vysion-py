@@ -100,7 +100,7 @@ def get_document_fixture():
                         "detectionDate": "2022-06-04T00:09:47.461424",
                         "chunk": True,
                     },
-                    "topic": [],
+                    "tag": [],
                     "email": [
                         {"value": "someonedeep@protonmail.com"},
                         {"value": "som3on3@xmpp.jp"},

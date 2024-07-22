@@ -200,30 +200,10 @@ class Client(BaseClient):
 
         result = self._make_request(url)
         return result.data
-    
 
     @vysion_error_manager
     def get_document(self, document_id: str) -> dto.Result:
         url = self._build_api_url__("document", document_id)
-
-        result = self._make_request(url)
-        return result.data
-    
-
-    @vysion_error_manager
-    def get_document_html(self, document_id: str) -> str:
-        url = self._build_api_url__("html", document_id)
-
-        result = requests.get(url)
-
-        return result.text
-
-
-    @vysion_error_manager
-    def find_email(
-        self, email: str, page: int = 1, lte: datetime = None, gte: datetime = None
-    ) -> dto.Result:
-        url = self._build_api_url__("document/email", email, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
         return result.data
@@ -243,62 +223,72 @@ class Client(BaseClient):
 
     @vysion_error_manager
     def get_tag(self, tag: str) -> dto.Result:
-        url = self._build_api_url__("dcoument/tag", tag)
+        url = self._build_api_url__("document/tag", tag)
+
+        result = self._make_request(url)
+        return result.data
+
+    @vysion_error_manager
+    def find_email(
+        self, email: str, page: int = 1, lte: datetime = None, gte: datetime = None
+    ) -> dto.Result:
+        url = self._build_api_url__(
+            "document/email", email, page=page, lte=lte, gte=gte
+        )
 
         result = self._make_request(url)
         return result.data
 
     @vysion_error_manager
     def find_wallet(
-        self, chain: str, address: str, page: int = 1, lte: datetime = None, gte: datetime = None
+        self,
+        chain: str,
+        address: str,
+        page: int = 1,
+        lte: datetime = None,
+        gte: datetime = None,
     ) -> dto.Result:
-
-        url = self._build_api_url__("document/wallet", chain + "/" + address, page=page, lte=lte, gte=gte)
+        url = self._build_api_url__(
+            "document/wallet", chain + "/" + address, page=page, lte=lte, gte=gte
+        )
 
         result = self._make_request(url)
         return result.data
 
     @vysion_error_manager
-    def find_eth(
-        self, eth: str, page: int = 1, lte: datetime = None, gte: datetime = None
-    ) -> dto.Result:
-        url = self._build_api_url__("eth", eth, page=page, lte=lte, gte=gte)
+    def get_document_html(self, document_id: str) -> str:
+        url = self._build_api_url__("html", document_id)
 
-        result = self._make_request(url)
-        return result.data
+        result = requests.get(url)
 
-    @vysion_error_manager
-    def find_dot(
-        self, dot: str, page: int = 1, lte: datetime = None, gte: datetime = None
-    ) -> dto.Result:
-        url = self._build_api_url__("dot", dot, page=page, lte=lte, gte=gte)
-
-        result = self._make_request(url)
-        return result.data
+        return result.text
+    
 
     @vysion_error_manager
-    def find_xrp(
-        self, xrp: str, page: int = 1, lte: datetime = None, gte: datetime = None
+    def search_ransomware_victim(
+        self,
+        q: str,
+        lte: datetime = None,
+        gte: datetime = None,
+        page: int = 1,
+        page_size: int = 10,
+        network: dto.Network = None,
+        language: dto.Language = None,
+        include_tag: str = None,
+        exclude_tag: str = None,
     ) -> dto.Result:
-        url = self._build_api_url__("xrp", xrp, page=page, lte=lte, gte=gte)
-
-        result = self._make_request(url)
-        return result.data
-
-    @vysion_error_manager
-    def find_xmr(
-        self, xmr: str, page: int = 1, lte: datetime = None, gte: datetime = None
-    ) -> dto.Result:
-        url = self._build_api_url__("xmr", xmr, page=page, lte=lte, gte=gte)
-
-        result = self._make_request(url)
-        return result.data
-
-    @vysion_error_manager
-    def find_zec(
-        self, zec: str, page: int = 1, lte: datetime = None, gte: datetime = None
-    ) -> dto.Result:
-        url = self._build_api_url__("zec", zec, page=page, lte=lte, gte=gte)
+        url = self._build_api_url__(
+            "document/search",
+            q=q,
+            lte=lte,
+            gte=gte,
+            page=page,
+            page_size=page_size,
+            network=network,
+            language=language,
+            include_tag=include_tag,
+            exclude_tag=exclude_tag,
+        )
 
         result = self._make_request(url)
         return result.data
@@ -323,10 +313,6 @@ class Client(BaseClient):
 
         result = self._make_request(url)
         return result.data
-
-
-
-
 
     @vysion_error_manager
     def get_chat_telegram(

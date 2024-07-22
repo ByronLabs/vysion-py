@@ -85,8 +85,8 @@ class MISPProcessor:
         for zec in hit.zcash_address:
             self.misp_event.add_attribute("zec", value=zec.value)
 
-        for topic in hit.topic:
-            self.misp_event.add_tag(str(topic))
+        for tag in hit.tag:
+            self.misp_event.add_tag(str(tag))
 
     def parse_ransom_feed_hit(self, hit: RansomFeedHit, **kwargs):
         # TODO Add event info!

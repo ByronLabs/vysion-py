@@ -32,7 +32,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 from vysion import taxonomy as vystaxonomy
 from vysion.model.enum import Language, Network
 
-from .topic import Topic
+from .tag import Tag
 
 
 class Email(BaseModel):
@@ -216,7 +216,7 @@ class Page(BaseModel):
 
 class RansomwareHit(BaseModel):
     page: Page
-    topic: List[Topic] = Field(default_factory=lambda: [])
+    tag: List[Tag] = Field(default_factory=lambda: [])
     ransomwareGroup: str
     companyName: Optional[str] = None
     companyAddress: Optional[str] = None
@@ -226,7 +226,7 @@ class RansomwareHit(BaseModel):
 
 class DocumentHit(BaseModel):
     page: Page
-    topic: List[Topic] = Field(default_factory=lambda: [])
+    tag: List[Tag] = Field(default_factory=lambda: [])
     email: List[Email] = Field(default_factory=lambda: [])
     paste: List[Paste] = Field(default_factory=lambda: [])
     skype: List[Skype] = Field(default_factory=lambda: [])
