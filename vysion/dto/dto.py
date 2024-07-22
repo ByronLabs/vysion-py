@@ -384,7 +384,7 @@ class Buckets(BaseModel):
 
 class AggStats(Stat):
     key_as_string: str
-    agg: Buckets
+    agg: Optional[Buckets] = None
 
 
 class PhoneInfo(BaseModel):
