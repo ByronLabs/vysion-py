@@ -107,10 +107,26 @@ def test_search_should_not_find(key="lorolo"):
         assert False, f"'test_search_should__not_find' raised an exception {exc}"
 
 
-def test_find_btc_should_find(address="114qvtyucvKtiNXy9UL3eYx6HPYmadxeM4"):
+def test_get_html(key="6437b93761fcc7e355878e90"):
     try:
         c = client.Client(api_key=config.API_KEY)
-        result = c.find_btc(address)
+        result = c.get_document_html(key)
+
+        # compute sha1sum over result
+        import hashlib
+        sha1sum = hashlib.sha1(result.encode()).hexdigest()
+
+        assert "a092ced214da10c9c63293ff9489332f655f2dd7" in sha1sum
+
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, f"'test_get_html' raised an exception {exc}"
+
+
+def test_find_btc_should_find(wallet="114qvtyucvKtiNXy9UL3eYx6HPYmadxeM4"):
+    try:
+        c = client.Client(api_key=config.API_KEY)
+        result = c.find_wallet("BTC", wallet)
 
         assert "total" in str(result), True
         assert "hits" in str(result), True
@@ -125,7 +141,7 @@ def test_find_btc_should_find(address="114qvtyucvKtiNXy9UL3eYx6HPYmadxeM4"):
 def test_find_btc_should_not_find(address="notvalidaddress"):
     try:
         c = client.Client(api_key=config.API_KEY)
-        result = c.find_btc(address)
+        result = c.find_wallet("BTC", address)
 
         assert "total" in str(result), True
         assert "hits" in str(result), True

@@ -46,8 +46,8 @@ class MISPProcessor:
         network = url.network
         misp_object.add_attribute("network", type="text", value=network)
 
-        title = page.title
-        misp_object.add_attribute("title", type="text", value=title)
+        pageTitle = page.pageTitle
+        misp_object.add_attribute("title", type="text", value=pageTitle)
 
         url_vysion: URL = "https://app.vysion.ai/document/" + page.id
         misp_object.add_attribute("url_vysion", type="url", value=url_vysion)
@@ -62,7 +62,7 @@ class MISPProcessor:
         # TODO Remove this addition when the vysion-page object works
         self.misp_event.add_attribute("url", value=url.build())
 
-        self.misp_event.add_attribute("domain", value=url.domain)
+        self.misp_event.add_attribute("domain", value=url.domainName)
 
         for email in hit.email:
             self.misp_event.add_attribute("email", value=email.value)
@@ -85,8 +85,8 @@ class MISPProcessor:
         for zec in hit.zcash_address:
             self.misp_event.add_attribute("zec", value=zec.value)
 
-        for tag in hit.tag:
-            self.misp_event.add_tag(str(tag))
+        for topic in hit.topic:
+            self.misp_event.add_tag(str(topic))
 
     def parse_ransom_feed_hit(self, hit: RansomFeedHit, **kwargs):
         # TODO Add event info!

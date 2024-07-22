@@ -168,6 +168,10 @@ class Client(BaseClient):
         # TODO Check API status
         pass
 
+    #
+    # DOCUMENT SEARCH
+    #
+
     @vysion_error_manager
     def search(
         self,
@@ -196,60 +200,60 @@ class Client(BaseClient):
 
         result = self._make_request(url)
         return result.data
+    
 
     @vysion_error_manager
-    def search_telegram(
-        self,
-        query: str,
-        username: str = None,
-        page: int = 1,
-        lte: datetime = None,
-        gte: datetime = None,
+    def get_document(self, document_id: str) -> dto.Result:
+        url = self._build_api_url__("document", document_id)
+
+        result = self._make_request(url)
+        return result.data
+    
+
+    @vysion_error_manager
+    def get_document_html(self, document_id: str) -> str:
+        url = self._build_api_url__("html", document_id)
+
+        result = requests.get(url)
+
+        return result.text
+
+
+    @vysion_error_manager
+    def find_email(
+        self, email: str, page: int = 1, lte: datetime = None, gte: datetime = None
     ) -> dto.Result:
-        url = self._build_api_url__(
-            "search-telegram",
-            query=query,
-            username=username,
-            page=page,
-            lte=lte,
-            gte=gte,
-        )
+        url = self._build_api_url__("document/email", email, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
         return result.data
 
     @vysion_error_manager
-    def fuzzy_search(
+    def find_url(
         self,
-        query: str,
-        tag: str = None,
-        notTag: str = None,
-        network: dto.Network = None,
-        language: dto.Language = None,
+        url: str,
         page: int = 1,
         lte: datetime = None,
         gte: datetime = None,
     ) -> dto.Result:
-        url = self._build_api_url__(
-            "fuzzy",
-            query,
-            tag=tag,
-            notTag=notTag,
-            network=network,
-            language=language,
-            page=page,
-            lte=lte,
-            gte=gte,
-        )
+        url = self._build_api_url__("document/url", url, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
         return result.data
 
     @vysion_error_manager
-    def find_btc(
-        self, btc: str, page: int = 1, lte: datetime = None, gte: datetime = None
+    def get_tag(self, tag: str) -> dto.Result:
+        url = self._build_api_url__("dcoument/tag", tag)
+
+        result = self._make_request(url)
+        return result.data
+
+    @vysion_error_manager
+    def find_wallet(
+        self, chain: str, address: str, page: int = 1, lte: datetime = None, gte: datetime = None
     ) -> dto.Result:
-        url = self._build_api_url__("btc", btc, page=page, lte=lte, gte=gte)
+
+        url = self._build_api_url__("document/wallet", chain + "/" + address, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
         return result.data
@@ -299,42 +303,30 @@ class Client(BaseClient):
         result = self._make_request(url)
         return result.data
 
-    # TODO find_domain?
     @vysion_error_manager
-    def find_url(
+    def search_telegram(
         self,
-        query_url: str,
+        query: str,
+        username: str = None,
         page: int = 1,
         lte: datetime = None,
         gte: datetime = None,
     ) -> dto.Result:
-        url = self._build_api_url__("url", query_url, page=page, lte=lte, gte=gte)
+        url = self._build_api_url__(
+            "search-telegram",
+            query=query,
+            username=username,
+            page=page,
+            lte=lte,
+            gte=gte,
+        )
 
         result = self._make_request(url)
         return result.data
 
-    @vysion_error_manager
-    def find_email(
-        self, email: str, page: int = 1, lte: datetime = None, gte: datetime = None
-    ) -> dto.Result:
-        url = self._build_api_url__("email", email, page=page, lte=lte, gte=gte)
 
-        result = self._make_request(url)
-        return result.data
 
-    @vysion_error_manager
-    def get_document(self, document_id: str) -> dto.Result:
-        url = self._build_api_url__("document", document_id)
 
-        result = self._make_request(url)
-        return result.data
-
-    @vysion_error_manager
-    def get_tag(self, tag: str) -> dto.Result:
-        url = self._build_api_url__("tag", tag)
-
-        result = self._make_request(url)
-        return result.data
 
     @vysion_error_manager
     def get_chat_telegram(
