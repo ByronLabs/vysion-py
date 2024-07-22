@@ -145,31 +145,13 @@ def vysion_error_manager(method) -> Union[dto.Result, Error]:
 
 
 class Client(BaseClient):
-    # def add_url(self, url:str, type:VysionURL.Type):
-    #     """Add a Tor URL to be analyzed by PARCHE.
-
-    #     :param url: URL to be scanned.
-    #     :param type: Instance of :class:`VysionURL.Type`
-    #     :returns: An instance of :class:`VysionResponse`
-    #     """
-    #     pass
-
-    # def find_onion(self):
-    #   pass
-
-    # def add_onion(self):
-    #   pass
-
-    # def consume_feed(self):
-    #   pass
-
     @vysion_error_manager
     def status(self):
         # TODO Check API status
         pass
 
     #
-    # DOCUMENT SEARCH
+    # Darknet document search
     #
 
     @vysion_error_manager
@@ -262,7 +244,10 @@ class Client(BaseClient):
         result = requests.get(url)
 
         return result.text
-    
+
+    #
+    # Ransowmare Victims Search
+    #
 
     @vysion_error_manager
     def search_ransomware_victim(
@@ -273,42 +258,83 @@ class Client(BaseClient):
         page: int = 1,
         page_size: int = 10,
         network: dto.Network = None,
+        country: str = None,
         language: dto.Language = None,
-        include_tag: str = None,
-        exclude_tag: str = None,
-    ) -> dto.Result:
+    ) -> dto.VysionResponse:
         url = self._build_api_url__(
-            "document/search",
+            "victim/search",
             q=q,
             lte=lte,
             gte=gte,
             page=page,
             page_size=page_size,
             network=network,
+            country=country,
             language=language,
-            include_tag=include_tag,
-            exclude_tag=exclude_tag,
         )
 
         result = self._make_request(url)
         return result.data
 
+    #
+    # Ransomware Stats
+    #
+
     @vysion_error_manager
-    def search_telegram(
+    def ransomware_countries_stats(
         self,
-        query: str,
-        username: str = None,
-        page: int = 1,
-        lte: datetime = None,
         gte: datetime = None,
-    ) -> dto.Result:
+        lte: datetime = None,
+    ) -> dto.Result[dto.Stat]:
+        url = self._build_api_url__("stats/countries", gte=gte, lte=lte)
+
+        result = self._make_request(url)
+        return result.data
+
+    @vysion_error_manager
+    def ransomware_groups_stats(
+        self,
+        gte: datetime = None,
+        lte: datetime = None,
+    ) -> dto.VysionResponse[dto.Stat]:
+        url = self._build_api_url__("stats/groups", gte=gte, lte=lte)
+
+        result = self._make_request(url)
+        return result.data
+
+    @vysion_error_manager
+    def ransomware_attacks_stats(
+        self,
+        gte: datetime = None,
+        lte: datetime = None,
+    ) -> dto.Result[dto.Stat]:
+        url = self._build_api_url__("stats/attacks", gte=gte, lte=lte)
+
+        result = self._make_request(url)
+        return result.data
+    
+    #
+    # IM Search
+    #
+
+    @vysion_error_manager
+    def search_im(
+        self,
+        platform: str,
+        q: str,
+        gte: datetime = None,
+        lte: datetime = None,
+        page: int = 1,
+        username: str = None,
+
+    ) -> dto.Result[dto.ImMessageHit]:
         url = self._build_api_url__(
-            "search-telegram",
-            query=query,
-            username=username,
-            page=page,
-            lte=lte,
+            "im/" + platform + "/search",
+            q=q,
             gte=gte,
+            lte=lte,
+            page=page,
+            username=username,
         )
 
         result = self._make_request(url)

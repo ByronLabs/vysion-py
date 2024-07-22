@@ -153,6 +153,90 @@ def test_find_btc_should_not_find(address="notvalidaddress"):
         assert False, f"'test_find_btc_should_not_find' raised an exception {exc}"
 
 
+def test_search_ransomware_victim_should_find(key="alvac"):
+    try:
+        c = client.Client(api_key=config.API_KEY)
+        result = c.search_ransomware_victim(key)
+
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
+        assert result.total == 1
+        assert len(result.hits) > 0
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, f"'test_search_ransomware_victim_should_find' raised an exception {exc}"
+
+
+def test_search_ransomware_victim_should_not_find(key="UAH1"):
+    try:
+        c = client.Client(api_key=config.API_KEY)
+        result = c.search_ransomware_victim(key)
+
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
+        assert result.total == 0
+        assert len(result.hits) == 0
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, f"'test_search_ransomware_victim_should_not_find' raised an exception {exc}"
+
+
+def test_ransomware_countries_stats():
+    try:
+        c = client.Client(api_key=config.API_KEY)
+        result = c.ransomware_countries_stats()
+
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
+        assert result.total == 10000
+        assert len(result.hits) > 0
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, f"'test_ransomware_countries_stats' raised an exception {exc}"
+
+
+def test_ransomware_groups_stats():
+    try:
+        c = client.Client(api_key=config.API_KEY)
+        result = c.ransomware_groups_stats()
+
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
+        assert result.total == 10000
+        assert len(result.hits) > 0
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, f"'test_ransomware_groups_stats' raised an exception {exc}"     
+
+
+def test_ransmoware_attacks_stats():
+    try:
+        c = client.Client(api_key=config.API_KEY)
+        result = c.ransomware_attacks_stats()
+
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
+        assert result.total == 10000
+        assert len(result.hits) > 0
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, f"'test_ransmoware_attacks_stats' raised an exception {exc}"
+
+
+def test_im_telegram_search(platform="telegram", key="madrid"):
+    try:
+        c = client.Client(api_key=config.API_KEY)
+        result = c.search_im(platform, key)
+
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
+        assert result.total >= 18
+        assert len(result.hits) > 0
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, f"'test_im_telegram_search' raised an exception {exc}"
+
+
 def test_invalid_apikey():
     try:
         client.Client(api_key="invalid api key")
