@@ -4,4 +4,9 @@
     "python.linting.pylintEnabled": false,
     "snyk.advanced.additionalParameters": "--org=50d263d0-ae67-4586-a999-084b375b1ab2 --command=python3",
     "snyk.advanced.organization": "byron-labs",
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
 }

@@ -19,7 +19,6 @@ from softenum import Softenum
 
 
 class RansomGroup(str, Softenum):
-
     conti = "Conti"
     lockbit = "LockBit"
     hive = "Hive"

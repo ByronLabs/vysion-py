@@ -19,7 +19,6 @@ from enum import IntEnum
 
 
 class Services(IntEnum):
-
     acr_nema = 104
     afpovertcp = 548
     afs3_bos = 7007
