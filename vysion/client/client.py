@@ -130,7 +130,7 @@ class BaseClient:
         return result
 
 
-def vysion_error_manager(method) -> Union[dto.Result, Error]:
+def vysion_error_manager(method) -> Union[dto.VysionResponse, Error]:
     def manage(*args, **kwargs):
         try:
             result = method(*args, **kwargs)
@@ -166,7 +166,7 @@ class Client(BaseClient):
         language: dto.Language = None,
         include_tag: str = None,
         exclude_tag: str = None,
-    ) -> dto.Result:
+    ) -> dto.VysionResponse:
         url = self._build_api_url__(
             "document/search",
             q=q,
@@ -184,7 +184,7 @@ class Client(BaseClient):
         return result.data
 
     @vysion_error_manager
-    def get_document(self, document_id: str) -> dto.Result:
+    def get_document(self, document_id: str) -> dto.VysionResponse:
         url = self._build_api_url__("document", document_id)
 
         result = self._make_request(url)
@@ -197,14 +197,14 @@ class Client(BaseClient):
         page: int = 1,
         lte: datetime = None,
         gte: datetime = None,
-    ) -> dto.Result:
+    ) -> dto.VysionResponse:
         url = self._build_api_url__("document/url", url, page=page, lte=lte, gte=gte)
 
         result = self._make_request(url)
         return result.data
 
     @vysion_error_manager
-    def get_tag(self, tag: str) -> dto.Result:
+    def get_tag(self, tag: str) -> dto.VysionResponse:
         url = self._build_api_url__("document/tag", tag)
 
         result = self._make_request(url)
@@ -213,7 +213,7 @@ class Client(BaseClient):
     @vysion_error_manager
     def find_email(
         self, email: str, page: int = 1, lte: datetime = None, gte: datetime = None
-    ) -> dto.Result:
+    ) -> dto.VysionResponse:
         url = self._build_api_url__(
             "document/email", email, page=page, lte=lte, gte=gte
         )
@@ -229,7 +229,7 @@ class Client(BaseClient):
         page: int = 1,
         lte: datetime = None,
         gte: datetime = None,
-    ) -> dto.Result:
+    ) -> dto.VysionResponse:
         url = self._build_api_url__(
             "document/wallet", chain + "/" + address, page=page, lte=lte, gte=gte
         )
@@ -285,7 +285,7 @@ class Client(BaseClient):
         self,
         gte: datetime = None,
         lte: datetime = None,
-    ) -> dto.Result[dto.Stat]:
+    ) -> dto.VysionResponse[dto.Stat]:
         url = self._build_api_url__("stats/countries", gte=gte, lte=lte)
 
         result = self._make_request(url)
@@ -307,12 +307,12 @@ class Client(BaseClient):
         self,
         gte: datetime = None,
         lte: datetime = None,
-    ) -> dto.Result[dto.Stat]:
+    ) -> dto.VysionResponse[dto.Stat]:
         url = self._build_api_url__("stats/attacks", gte=gte, lte=lte)
 
         result = self._make_request(url)
         return result.data
-    
+
     #
     # IM Search
     #
@@ -326,8 +326,7 @@ class Client(BaseClient):
         lte: datetime = None,
         page: int = 1,
         username: str = None,
-
-    ) -> dto.Result[dto.ImMessageHit]:
+    ) -> dto.VysionResponse[dto.ImMessageHit]:
         url = self._build_api_url__(
             "im/" + platform + "/search",
             q=q,
@@ -341,28 +340,45 @@ class Client(BaseClient):
         return result.data
 
     @vysion_error_manager
-    def get_chat_telegram(
-        self,
-        channelId: str,
-        lte: datetime = None,
-        gte: datetime = None,
-    ) -> dto.Result:
-        url = self._build_api_url__("telegram/chat", channelId, lte=lte, gte=gte)
+    def get_im_chat(
+        self, platform: str, channelId: str
+    ) -> dto.VysionResponse[dto.ImMessageHit]:
+        url = self._build_api_url__("im/" + platform + "/chat/", channelId)
 
         result = self._make_request(url)
         return result.data
 
     @vysion_error_manager
-    def get_message_telegram(
-        self,
-        id: str,
-    ) -> dto.Result:
-        url = self._build_api_url__("telegram/message", id)
+    def get_im_profile(
+        self, platform: str, userId: str
+    ) -> dto.VysionResponse[dto.ImProfileHit]:
+        url = self._build_api_url__("im/" + platform + "/profile/", userId)
 
         result = self._make_request(url)
         return result.data
 
+    @vysion_error_manager
+    def get_im_message(
+        self, platform: str, messageId: str
+    ) -> dto.VysionResponse[dto.ImMessageHit]:
+        url = self._build_api_url__("im/" + platform + "/message/", messageId)
+
+        result = self._make_request(url)
+        return result.data
+
+    @vysion_error_manager
+    def get_im_channel(
+        self, platform: str, channelId: str
+    ) -> dto.VysionResponse[dto.ImChannelHit]:
+        url = self._build_api_url__("im/" + platform + "/channel/", channelId)
+
+        result = self._make_request(url)
+        return result.data
+
+    #
     # FEEDS
+    #
+
     @vysion_error_manager
     def consume_feed_ransomware(self, batch_day: datetime = datetime.today()):
         pass

@@ -288,7 +288,7 @@ class ImMessageHit(BaseModel):
     userId: Optional[int] = Field(default_factory=lambda: None)
     username: Optional[str] = Field(default_factory=lambda: None)
     channelId: Optional[int] = Field(default_factory=lambda: None)
-    messageId: int
+    messageId: str
     message: Optional[str] = Field(default_factory=lambda: None)
     channelTitle: Optional[str] = Field(default_factory=lambda: None)
     languages: Optional[List[LanguagePair]] = Field(default_factory=lambda: None)

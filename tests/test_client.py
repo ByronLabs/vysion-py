@@ -236,6 +236,58 @@ def test_im_telegram_search(platform="telegram", key="madrid"):
         print("TEST EXCEPTION", exc)
         assert False, f"'test_im_telegram_search' raised an exception {exc}"
 
+def test_get_im_chat(platform="telegram", key="-1002018336281"):
+    try:
+        c = client.Client(api_key=config.API_KEY)
+        result = c.get_im_chat(platform, key)
+
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
+        assert len(result.hits) > 0
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, f"'test_get_im_chat' raised an exception {exc}"
+
+def test_get_im_profile(platform="telegram", key="609517172"):
+    try:
+        c = client.Client(api_key=config.API_KEY)
+        result = c.get_im_profile(platform, key)
+
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
+        assert result.total == 1
+        assert len(result.hits) > 0
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, f"'test_get_im_profile' raised an exception {exc}"
+
+
+def test_get_im_message(platform="telegram", key="-1002018336281_46918"):
+    try:
+        c = client.Client(api_key=config.API_KEY)
+        result = c.get_im_message(platform, key)
+
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
+        assert result.total == 1
+        assert len(result.hits) > 0
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, f"'test_get_im_message' raised an exception {exc}"
+
+
+def test_get_im_channel(platform="telegram", key="-1001806390689"):
+    try:
+        c = client.Client(api_key=config.API_KEY)
+        result = c.get_im_channel(platform, key)
+
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
+        assert result.total == 1
+        assert len(result.hits) > 0
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, f"'test_get_im_channel' raised an exception {exc}"
 
 def test_invalid_apikey():
     try:
