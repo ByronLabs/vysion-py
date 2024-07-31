@@ -98,12 +98,12 @@ class MISPProcessor:
         )
 
         misp_object.add_attribute("id", type="text", value=hit.id)
-        misp_object.add_attribute("company", type="target-org", value=hit.company)
-        misp_object.add_attribute("company_link", type="link", value=hit.company_link)
-        misp_object.add_attribute("link", type="link", value=hit.link)
-        misp_object.add_attribute("group", type="threat-actor", value=hit.group)
-        misp_object.add_attribute("date", type="datetime", value=hit.date)
-        misp_object.add_attribute("info", type="text", value=hit.info)
+        misp_object.add_attribute("companyName", type="target-org", value=hit.companyName)
+        misp_object.add_attribute("companyLink", type="link", value=hit.companyLink)
+        misp_object.add_attribute("url", type="link", value=hit.url)
+        misp_object.add_attribute("ransomwareGroup", type="threat-actor", value=hit.ransomwareGroup)
+        misp_object.add_attribute("detectionDate", type="datetime", value=hit.detectionDate)
+        misp_object.add_attribute("text", type="text", value=hit.text)
         misp_object.add_attribute("country", type="text", value=hit.country)
         misp_object.add_attribute(
             "url_vysion_ransom",
@@ -114,6 +114,7 @@ class MISPProcessor:
         self.misp_event.add_object(misp_object)
 
     def process(self, result: dto.Result, **kwargs) -> MISPEvent:
+        
         processor = {
             DocumentHit: self.parse_hit,
             RansomFeedHit: self.parse_ransom_feed_hit,
