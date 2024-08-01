@@ -222,6 +222,26 @@ class Client(BaseClient):
         return result.data
 
     @vysion_error_manager
+    def find_phone(
+        self,
+        country_code: str,
+        phone_number: str,
+        page: int = 1,
+        lte: datetime = None,
+        gte: datetime = None,
+    ) -> dto.VysionResponse:
+        url = self._build_api_url__(
+            "document/phone",
+            country_code + "/" + phone_number,
+            page=page,
+            lte=lte,
+            gte=gte,
+        )
+
+        result = self._make_request(url)
+        return result.data
+
+    @vysion_error_manager
     def find_wallet(
         self,
         chain: str,
