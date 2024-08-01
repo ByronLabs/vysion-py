@@ -217,6 +217,20 @@ def test_search_ransomware_victim_should_not_find(key="UAH1"):
         ), f"'test_search_ransomware_victim_should_not_find' raised an exception {exc}"
 
 
+def test_get_ransomware_victim(key="64abc305e7f72075c8b582c2"):
+    try:
+        c = client.Client(api_key=config.API_KEY)
+        result = c.get_ransomware_victim(key)
+
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
+        assert result.total == 1
+        assert len(result.hits) > 0
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, f"'test_get_ransomware_victim' raised an exception {exc}"
+
+
 def test_ransomware_countries_stats():
     try:
         c = client.Client(api_key=config.API_KEY)

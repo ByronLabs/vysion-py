@@ -296,6 +296,13 @@ class Client(BaseClient):
         result = self._make_request(url)
         return result.data
 
+    @vysion_error_manager
+    def get_ransomware_victim(self, document_id: str) -> dto.VysionResponse:
+        url = self._build_api_url__("victim", document_id)
+
+        result = self._make_request(url)
+        return result.data
+
     #
     # Ransomware Stats
     #
