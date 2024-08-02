@@ -222,6 +222,26 @@ class Client(BaseClient):
         return result.data
 
     @vysion_error_manager
+    def find_phone(
+        self,
+        country_code: str,
+        phone_number: str,
+        page: int = 1,
+        lte: datetime = None,
+        gte: datetime = None,
+    ) -> dto.VysionResponse:
+        url = self._build_api_url__(
+            "document/phone",
+            country_code + "/" + phone_number,
+            page=page,
+            lte=lte,
+            gte=gte,
+        )
+
+        result = self._make_request(url)
+        return result.data
+
+    @vysion_error_manager
     def find_wallet(
         self,
         chain: str,
@@ -272,6 +292,13 @@ class Client(BaseClient):
             country=country,
             language=language,
         )
+
+        result = self._make_request(url)
+        return result.data
+
+    @vysion_error_manager
+    def get_ransomware_victim(self, document_id: str) -> dto.VysionResponse:
+        url = self._build_api_url__("victim", document_id)
 
         result = self._make_request(url)
         return result.data
@@ -341,9 +368,9 @@ class Client(BaseClient):
 
     @vysion_error_manager
     def get_im_chat(
-        self, platform: str, channelId: str
+        self, platform: str, channelId: str, gte: datetime = None, lte: datetime = None
     ) -> dto.VysionResponse[dto.ImMessageHit]:
-        url = self._build_api_url__("im/" + platform + "/chat/", channelId)
+        url = self._build_api_url__("im/" + platform + "/chat/" + channelId, gte=gte, lte=lte)
 
         result = self._make_request(url)
         return result.data
