@@ -368,9 +368,9 @@ class Client(BaseClient):
 
     @vysion_error_manager
     def get_im_chat(
-        self, platform: str, channelId: str
+        self, platform: str, channelId: str, gte: datetime = None, lte: datetime = None
     ) -> dto.VysionResponse[dto.ImMessageHit]:
-        url = self._build_api_url__("im/" + platform + "/chat/", channelId)
+        url = self._build_api_url__("im/" + platform + "/chat/" + channelId, gte=gte, lte=lte)
 
         result = self._make_request(url)
         return result.data

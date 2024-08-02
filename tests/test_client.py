@@ -300,6 +300,20 @@ def test_get_im_chat(platform="telegram", key="-1002018336281"):
         assert False, f"'test_get_im_chat' raised an exception {exc}"
 
 
+def test_get_im_chat_gte_lte(platform="telegram", key="-1002018336281", gte="2024-05-16T10:57:58.632466", lte="2024-05-16T10:59:58.632466"):
+    try:
+        c = client.Client(api_key=config.API_KEY)
+        result = c.get_im_chat(platform, key, gte=gte, lte=lte)
+
+        assert "total" in str(result), True
+        assert "hits" in str(result), True
+        assert len(result.hits) == 10
+        assert result.total == 39
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, f"'test_get_im_chat' raised an exception {exc}"
+
+
 def test_get_im_profile(platform="telegram", key="609517172"):
     try:
         c = client.Client(api_key=config.API_KEY)
