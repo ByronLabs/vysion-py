@@ -33,7 +33,6 @@ class MISPProcessor:
     def parse_hit(self, hit: DocumentHit, ref_attribute: MISPAttribute = None, **_):
         page: Page = hit.page
 
-        # TODO Add more page parameters
         misp_object = MISPObject("vysion-page")
         misp_object.template_uuid = "4d0b66f1-5268-47e0-9d29-f2e4f3db8e7f"
 
@@ -47,7 +46,7 @@ class MISPProcessor:
         misp_object.add_attribute("network", type="text", value=network)
 
         pageTitle = page.pageTitle
-        misp_object.add_attribute("title", type="text", value=pageTitle)
+        misp_object.add_attribute("pageTitle", type="text", value=pageTitle)
 
         url_vysion: URL = "https://app.vysion.ai/document/" + page.id
         misp_object.add_attribute("url_vysion", type="url", value=url_vysion)
@@ -59,7 +58,7 @@ class MISPProcessor:
 
         vysion_reference_id = misp_object.uuid
 
-        # TODO Remove this addition when the vysion-page object works
+        # TODO Add more page parameters into misp objects
         self.misp_event.add_attribute("url", value=url.build())
 
         self.misp_event.add_attribute("domain", value=url.domainName)
@@ -94,16 +93,15 @@ class MISPProcessor:
         misp_object = MISPObject("vysion-ransomware-feed")
         misp_object.template_uuid = "e0bfa994-c184-4894-bfaa-73b1350746e1"
         misp_object["meta-category"] = (
-            "misc"  # TODO Esto se tiene que poder hacer de otra manera... Y sólo es necesario en los feeds
+            "misc"  
         )
-
         misp_object.add_attribute("id", type="text", value=hit.id)
-        misp_object.add_attribute("company", type="target-org", value=hit.company)
-        misp_object.add_attribute("company_link", type="link", value=hit.company_link)
-        misp_object.add_attribute("link", type="link", value=hit.link)
-        misp_object.add_attribute("group", type="threat-actor", value=hit.group)
-        misp_object.add_attribute("date", type="datetime", value=hit.date)
-        misp_object.add_attribute("info", type="text", value=hit.info)
+        misp_object.add_attribute("companyName", type="target-org", value=hit.companyName)
+        misp_object.add_attribute("companyLink", type="link", value=hit.companyLink)
+        misp_object.add_attribute("url", type="link", value=hit.url)
+        misp_object.add_attribute("ransomwareGroup", type="threat-actor", value=hit.ransomwareGroup)
+        misp_object.add_attribute("detectionDate", type="datetime", value=hit.detectionDate)
+        misp_object.add_attribute("text", type="text", value=hit.text)
         misp_object.add_attribute("country", type="text", value=hit.country)
         misp_object.add_attribute(
             "url_vysion_ransom",
@@ -114,6 +112,7 @@ class MISPProcessor:
         self.misp_event.add_object(misp_object)
 
     def process(self, result: dto.Result, **kwargs) -> MISPEvent:
+        
         processor = {
             DocumentHit: self.parse_hit,
             RansomFeedHit: self.parse_ransom_feed_hit,
