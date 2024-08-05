@@ -39,6 +39,10 @@ def test_url_should_find(
 
         assert "total" in str(result), True
         assert "hits" in str(result), True
+        print(result.hits)
+        for hit in result.hits:
+            print(hit)
+            print(hit.page)
         assert result.total > 0
         assert len(result.hits) > 0
 

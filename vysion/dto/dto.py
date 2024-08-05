@@ -399,8 +399,9 @@ T = TypeVar("T")
 
 class Result(BaseModel, Generic[T]):
     total: int = 0
-    hits: List[T] = Field(default_factory=lambda: [])
-
+    hits: Union[List[DocumentHit],List[Stat],List[ImChannelHit],List[ImMessageHit],
+                List[ImProfileHit]] = Field(default_factory=lambda: [])
+    
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         if self.total <= 0:
