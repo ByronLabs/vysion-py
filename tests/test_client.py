@@ -238,7 +238,7 @@ def test_ransomware_countries_stats():
 
         assert "total" in str(result), True
         assert "hits" in str(result), True
-        assert result.total == 10000
+        assert result.total > 12000
         assert len(result.hits) > 0
     except Exception as exc:
         print("TEST EXCEPTION", exc)
@@ -252,25 +252,11 @@ def test_ransomware_groups_stats():
 
         assert "total" in str(result), True
         assert "hits" in str(result), True
-        assert result.total == 10000
+        assert result.total > 12000
         assert len(result.hits) > 0
     except Exception as exc:
         print("TEST EXCEPTION", exc)
         assert False, f"'test_ransomware_groups_stats' raised an exception {exc}"
-
-
-def test_ransmoware_attacks_stats():
-    try:
-        c = client.Client(api_key=config.API_KEY)
-        result = c.ransomware_attacks_stats()
-
-        assert "total" in str(result), True
-        assert "hits" in str(result), True
-        assert result.total == 10000
-        assert len(result.hits) > 0
-    except Exception as exc:
-        print("TEST EXCEPTION", exc)
-        assert False, f"'test_ransmoware_attacks_stats' raised an exception {exc}"
 
 
 def test_im_telegram_search(platform="telegram", key="madrid"):

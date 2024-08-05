@@ -310,10 +310,11 @@ class Client(BaseClient):
     @vysion_error_manager
     def ransomware_countries_stats(
         self,
+        countries: str = None,
         gte: datetime = None,
         lte: datetime = None,
     ) -> dto.VysionResponse[dto.Stat]:
-        url = self._build_api_url__("stats/countries", gte=gte, lte=lte)
+        url = self._build_api_url__("stats/countries", countries=countries, gte=gte, lte=lte)
 
         result = self._make_request(url)
         return result.data
@@ -321,21 +322,11 @@ class Client(BaseClient):
     @vysion_error_manager
     def ransomware_groups_stats(
         self,
+        countries: str = None,
         gte: datetime = None,
         lte: datetime = None,
     ) -> dto.VysionResponse[dto.Stat]:
-        url = self._build_api_url__("stats/groups", gte=gte, lte=lte)
-
-        result = self._make_request(url)
-        return result.data
-
-    @vysion_error_manager
-    def ransomware_attacks_stats(
-        self,
-        gte: datetime = None,
-        lte: datetime = None,
-    ) -> dto.VysionResponse[dto.Stat]:
-        url = self._build_api_url__("stats/attacks", gte=gte, lte=lte)
+        url = self._build_api_url__("stats/groups", countries=countries, gte=gte, lte=lte)
 
         result = self._make_request(url)
         return result.data
