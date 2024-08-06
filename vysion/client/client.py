@@ -26,9 +26,19 @@ from urllib.parse import quote, urlencode, urljoin
 # from pydantic import validate_arguments
 import requests
 
-import vysion.dto as dto
 from vysion.client.error import APIError
-from vysion.dto import Error
+from vysion.dto import (
+    Error,
+    DocumentHit,
+    VysionResponse,
+    RansomwareHit,
+    Stat,
+    Network,
+    Language,
+    ImChannelHit,
+    ImMessageHit,
+    ImProfileHit,
+)
 from vysion.version import __version__ as vysion_version
 
 # All API endpoints start with this prefix, you don't need to include the
@@ -106,7 +116,7 @@ class BaseClient:
         query = "?" + urlencode(query_params_initialzed)
         return urljoin(base, query)
 
-    def _make_request(self, url: str) -> dto.VysionResponse:
+    def _make_request(self, url: str) -> VysionResponse:
         session = self.__get_session__()
         r = session.get(url)
 
@@ -122,14 +132,12 @@ class BaseClient:
 
             raise APIError(code, message)
 
-        payload = r.json()
-
-        result = dto.VysionResponse.model_validate(payload)
+        result = r.json()
 
         return result
 
 
-def vysion_error_manager(method) -> Union[dto.VysionResponse, Error]:
+def vysion_error_manager(method) -> Union[VysionResponse, Error]:
     def manage(*args, **kwargs):
         try:
             result = method(*args, **kwargs)
@@ -161,11 +169,11 @@ class Client(BaseClient):
         gte: datetime = None,
         page: int = 1,
         page_size: int = 10,
-        network: dto.Network = None,
-        language: dto.Language = None,
+        network: Network = None,
+        language: Language = None,
         include_tag: str = None,
         exclude_tag: str = None,
-    ) -> dto.VysionResponse:
+    ) -> VysionResponse[DocumentHit]:
         url = self._build_api_url__(
             "document/search",
             q=q,
@@ -179,14 +187,14 @@ class Client(BaseClient):
             exclude_tag=exclude_tag,
         )
 
-        result = self._make_request(url)
+        result = VysionResponse[DocumentHit].model_validate(self._make_request(url))
         return result.data
 
     @vysion_error_manager
-    def get_document(self, document_id: str) -> dto.VysionResponse:
+    def get_document(self, document_id: str) -> VysionResponse[DocumentHit]:
         url = self._build_api_url__("document", document_id)
 
-        result = self._make_request(url)
+        result = VysionResponse[DocumentHit].model_validate(self._make_request(url))
         return result.data
 
     @vysion_error_manager
@@ -196,28 +204,28 @@ class Client(BaseClient):
         page: int = 1,
         lte: datetime = None,
         gte: datetime = None,
-    ) -> dto.VysionResponse:
+    ) -> VysionResponse[DocumentHit]:
         url = self._build_api_url__("document/url", url, page=page, lte=lte, gte=gte)
 
-        result = self._make_request(url)
+        result = VysionResponse[DocumentHit].model_validate(self._make_request(url))
         return result.data
 
     @vysion_error_manager
-    def get_tag(self, tag: str) -> dto.VysionResponse:
+    def get_tag(self, tag: str) -> VysionResponse[DocumentHit]:
         url = self._build_api_url__("document/tag", tag)
 
-        result = self._make_request(url)
+        result = VysionResponse[DocumentHit].model_validate(self._make_request(url))
         return result.data
 
     @vysion_error_manager
     def find_email(
         self, email: str, page: int = 1, lte: datetime = None, gte: datetime = None
-    ) -> dto.VysionResponse[dto.DocumentHit]:
+    ) -> VysionResponse[DocumentHit]:
         url = self._build_api_url__(
             "document/email", email, page=page, lte=lte, gte=gte
         )
 
-        result = self._make_request(url)
+        result = VysionResponse[DocumentHit].model_validate(self._make_request(url))
         return result.data
 
     @vysion_error_manager
@@ -228,7 +236,7 @@ class Client(BaseClient):
         page: int = 1,
         lte: datetime = None,
         gte: datetime = None,
-    ) -> dto.VysionResponse:
+    ) -> VysionResponse[DocumentHit]:
         url = self._build_api_url__(
             "document/phone",
             country_code + "/" + phone_number,
@@ -237,7 +245,7 @@ class Client(BaseClient):
             gte=gte,
         )
 
-        result = self._make_request(url)
+        result = VysionResponse[DocumentHit].model_validate(self._make_request(url))
         return result.data
 
     @vysion_error_manager
@@ -248,12 +256,12 @@ class Client(BaseClient):
         page: int = 1,
         lte: datetime = None,
         gte: datetime = None,
-    ) -> dto.VysionResponse:
+    ) -> VysionResponse[DocumentHit]:
         url = self._build_api_url__(
             "document/wallet", chain + "/" + address, page=page, lte=lte, gte=gte
         )
 
-        result = self._make_request(url)
+        result = VysionResponse[DocumentHit].model_validate(self._make_request(url))
         return result.data
 
     @vysion_error_manager
@@ -276,10 +284,10 @@ class Client(BaseClient):
         gte: datetime = None,
         page: int = 1,
         page_size: int = 10,
-        network: dto.Network = None,
+        network: Network = None,
         country: str = None,
-        language: dto.Language = None,
-    ) -> dto.VysionResponse:
+        language: Language = None,
+    ) -> VysionResponse[RansomwareHit]:
         url = self._build_api_url__(
             "victim/search",
             q=q,
@@ -292,14 +300,14 @@ class Client(BaseClient):
             language=language,
         )
 
-        result = self._make_request(url)
+        result = VysionResponse[RansomwareHit].model_validate(self._make_request(url))
         return result.data
 
     @vysion_error_manager
-    def get_ransomware_victim(self, document_id: str) -> dto.VysionResponse:
+    def get_ransomware_victim(self, document_id: str) -> VysionResponse[RansomwareHit]:
         url = self._build_api_url__("victim", document_id)
 
-        result = self._make_request(url)
+        result = VysionResponse[RansomwareHit].model_validate(self._make_request(url))
         return result.data
 
     #
@@ -312,10 +320,12 @@ class Client(BaseClient):
         countries: str = None,
         gte: datetime = None,
         lte: datetime = None,
-    ) -> dto.VysionResponse[dto.Stat]:
-        url = self._build_api_url__("stats/countries", countries=countries, gte=gte, lte=lte)
+    ) -> VysionResponse[Stat]:
+        url = self._build_api_url__(
+            "stats/countries", countries=countries, gte=gte, lte=lte
+        )
 
-        result = self._make_request(url)
+        result = VysionResponse[Stat].model_validate(self._make_request(url))
         return result.data
 
     @vysion_error_manager
@@ -324,10 +334,12 @@ class Client(BaseClient):
         countries: str = None,
         gte: datetime = None,
         lte: datetime = None,
-    ) -> dto.VysionResponse[dto.Stat]:
-        url = self._build_api_url__("stats/groups", countries=countries, gte=gte, lte=lte)
+    ) -> VysionResponse[Stat]:
+        url = self._build_api_url__(
+            "stats/groups", countries=countries, gte=gte, lte=lte
+        )
 
-        result = self._make_request(url)
+        result = VysionResponse[Stat].model_validate(self._make_request(url))
         return result.data
 
     #
@@ -343,7 +355,7 @@ class Client(BaseClient):
         lte: datetime = None,
         page: int = 1,
         username: str = None,
-    ) -> dto.VysionResponse[dto.ImMessageHit]:
+    ) -> VysionResponse[ImMessageHit]:
         url = self._build_api_url__(
             "im/" + platform + "/search",
             q=q,
@@ -353,43 +365,45 @@ class Client(BaseClient):
             username=username,
         )
 
-        result = self._make_request(url)
+        result = VysionResponse[ImMessageHit].model_validate(self._make_request(url))
         return result.data
 
     @vysion_error_manager
     def get_im_chat(
         self, platform: str, channelId: str, gte: datetime = None, lte: datetime = None
-    ) -> dto.VysionResponse[dto.ImMessageHit]:
-        url = self._build_api_url__("im/" + platform + "/chat/" + channelId, gte=gte, lte=lte)
+    ) -> VysionResponse[ImMessageHit]:
+        url = self._build_api_url__(
+            "im/" + platform + "/chat/" + channelId, gte=gte, lte=lte
+        )
 
-        result = self._make_request(url)
+        result = VysionResponse[ImMessageHit].model_validate(self._make_request(url))
         return result.data
 
     @vysion_error_manager
     def get_im_profile(
         self, platform: str, userId: str
-    ) -> dto.VysionResponse[dto.ImProfileHit]:
+    ) -> VysionResponse[ImProfileHit]:
         url = self._build_api_url__("im/" + platform + "/profile/", userId)
 
-        result = self._make_request(url)
+        result = VysionResponse[ImProfileHit].model_validate(self._make_request(url))
         return result.data
 
     @vysion_error_manager
     def get_im_message(
         self, platform: str, messageId: str
-    ) -> dto.VysionResponse[dto.ImMessageHit]:
+    ) -> VysionResponse[ImMessageHit]:
         url = self._build_api_url__("im/" + platform + "/message/", messageId)
 
-        result = self._make_request(url)
+        result = VysionResponse[ImMessageHit].model_validate(self._make_request(url))
         return result.data
 
     @vysion_error_manager
     def get_im_channel(
         self, platform: str, channelId: str
-    ) -> dto.VysionResponse[dto.ImChannelHit]:
+    ) -> VysionResponse[ImChannelHit]:
         url = self._build_api_url__("im/" + platform + "/channel/", channelId)
 
-        result = self._make_request(url)
+        result = VysionResponse[ImChannelHit].model_validate(self._make_request(url))
         return result.data
 
     #
