@@ -212,7 +212,7 @@ class Client(BaseClient):
     @vysion_error_manager
     def find_email(
         self, email: str, page: int = 1, lte: datetime = None, gte: datetime = None
-    ) -> dto.VysionResponse:
+    ) -> dto.VysionResponse[dto.DocumentHit]:
         url = self._build_api_url__(
             "document/email", email, page=page, lte=lte, gte=gte
         )
