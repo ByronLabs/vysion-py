@@ -108,7 +108,6 @@ class BaseClient:
 
     def _make_request(self, url: str) -> dto.VysionResponse:
         session = self.__get_session__()
-        print(url)
         r = session.get(url)
 
         # TODO Improve this
