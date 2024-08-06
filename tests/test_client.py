@@ -39,7 +39,7 @@ def test_url_should_find(
 
         assert "total" in str(result), True
         assert "hits" in str(result), True
-        assert(result.hits[0].url.domainName == url)
+        assert result.hits[0].page.url.domainName == url
         assert result.total > 0
         assert len(result.hits) > 0
 
@@ -56,6 +56,7 @@ def test_get_tag_should_find(tag='dark-web:topic="hacking"'):
         assert "total" in str(result), True
         assert "hits" in str(result), True
         assert result.total > 0
+        assert tag == str(result.hits[0].tag[0])
         assert len(result.hits) > 0
 
     except Exception as exc:
