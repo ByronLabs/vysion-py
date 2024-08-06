@@ -58,4 +58,4 @@ class Tag(BaseModel):
         return f"Tag<{self}>"
 
     def __str__(self):
-        return f'''{self.namespace}:{self.predicate}:"{self.value}"'''
+        return f'''{self.namespace}:{self.predicate}="{self.value}"'''

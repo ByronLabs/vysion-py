@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "vysion"
-version = "2.0.2"
+version = "2.0.5"
 description = "The official Python client library for Vysion"
 homepage = "https://vysion.ai"
 repository = "https://gitlab.com/byronlabs/vysion/vysion-py"
@@ -36,6 +36,7 @@ black = "^24.3.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.5.2"
+pytest = "^8.3.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

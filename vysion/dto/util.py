@@ -111,7 +111,7 @@ class MISPProcessor:
 
         self.misp_event.add_object(misp_object)
 
-    def process(self, result: dto.Result, **kwargs) -> MISPEvent:
+    def process(self, result: dto.Result[DocumentHit|RansomFeedHit], **kwargs) -> MISPEvent:
         
         processor = {
             DocumentHit: self.parse_hit,
