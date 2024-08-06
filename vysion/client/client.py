@@ -238,8 +238,8 @@ class Client(BaseClient):
         gte: datetime = None,
     ) -> VysionResponse[DocumentHit]:
         url = self._build_api_url__(
-            "document/phone",
-            country_code + "/" + phone_number,
+            "document/phone/" + country_code,
+            phone_number,
             page=page,
             lte=lte,
             gte=gte,
@@ -258,7 +258,7 @@ class Client(BaseClient):
         gte: datetime = None,
     ) -> VysionResponse[DocumentHit]:
         url = self._build_api_url__(
-            "document/wallet", chain + "/" + address, page=page, lte=lte, gte=gte
+            "document/wallet/" + chain, address, page=page, lte=lte, gte=gte
         )
 
         result = VysionResponse[DocumentHit].model_validate(self._make_request(url))
