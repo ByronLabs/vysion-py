@@ -4,7 +4,7 @@ Welcome to the PyPi webpage for Vysion, our implementation as a Python library t
 
 You can request a demo for the web app or an API-key to use in this library at [vysion.ai](https://vysion.ai).
 
-Latest version: [2.0.3](https://pypi.org/project/vysion/)
+Latest version: [2.0.5](https://pypi.org/project/vysion/)
 
 You can visit [the documentation](https://developers.vysion.ai/?python) for more information on the searches and requests performed with the library or directly on the API.
 
