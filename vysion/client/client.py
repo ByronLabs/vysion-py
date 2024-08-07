@@ -116,7 +116,7 @@ class BaseClient:
         query = "?" + urlencode(query_params_initialzed)
         return urljoin(base, query)
 
-    def _make_request(self, url: str) -> VysionResponse:
+    def _make_request(self, url: str, expect_json: bool = True) -> VysionResponse:
         session = self.__get_session__()
         r = session.get(url)
 
@@ -132,7 +132,10 @@ class BaseClient:
 
             raise APIError(code, message)
 
-        result = r.json()
+        if expect_json:
+            result = r.json()
+        else:
+            result = r
 
         return result
 
@@ -268,7 +271,7 @@ class Client(BaseClient):
     def get_document_html(self, document_id: str) -> str:
         url = self._build_api_url__("html", document_id)
 
-        result = requests.get(url)
+        result = self._make_request(url, expect_json=False)
 
         return result.text
 
