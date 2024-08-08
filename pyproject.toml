@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "vysion"
-version = "2.0.5"
+version = "2.0.6"
 description = "The official Python client library for Vysion"
 homepage = "https://vysion.ai"
 repository = "https://gitlab.com/byronlabs/vysion/vysion-py"
@@ -23,7 +23,7 @@ python = "^3.8.0"
 pydantic = "^2.0.1"
 softenum = "1.0.1"
 requests = "^2.28.1"
-pymisp = "2.4.194"
+pymisp = "^2.4.194"
 
 [tool.poetry.dev-dependencies]
 pytest = "7.1.2"
