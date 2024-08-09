@@ -10,10 +10,8 @@ You can visit [the documentation](https://developers.vysion.ai/?python) for more
 
 ### Taxonomy
 
-- https://github.com/MISP/misp-taxonomies/blob/main/tools/machinetag.py
-- https://www.misp-project.org/taxonomies.html#_mapping_of_taxonomies
-- https://github.com/MISP/misp-taxonomies
-- https://github.com/MISP/misp-taxonomies/blob/main/tools/docs/images/taxonomy-explanation.png
+- https://github.com/MISP/misp-taxonomies/tree/main/dark-web
+- https://www.circl.lu/doc/misp-taxonomies/#_dark_web
 
 
 # Ackowledgement
