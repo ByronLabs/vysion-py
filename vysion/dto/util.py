@@ -24,7 +24,7 @@ except:
 
 import vysion.dto as dto
 from vysion.dto import URL, DocumentHit, Page, RansomFeedHit
-
+from typing import Union
 
 class MISPProcessor:
     def __init__(self):
@@ -111,7 +111,7 @@ class MISPProcessor:
 
         self.misp_event.add_object(misp_object)
 
-    def process(self, result: dto.Result[DocumentHit|RansomFeedHit], **kwargs) -> MISPEvent:
+    def process(self, result: dto.Result[Union[DocumentHit,RansomFeedHit]], **kwargs) -> MISPEvent:
         
         processor = {
             DocumentHit: self.parse_hit,
