@@ -4,16 +4,14 @@ Welcome to the open source repository for vysion-py, our implementation as a Pyt
 
 You can request a demo for the web app or an API-key to use in this library at [vysion.ai](https://vysion.ai).
 
-Latest version: [2.0.7](https://pypi.org/project/vysion/)
+Latest version: [2.0.8](https://pypi.org/project/vysion/)
 
 You can visit [the documentation](https://developers.vysion.ai/?python) for more information on the searches and requests performed with the library or directly on the API.
 
 ### Taxonomy
 
-- https://github.com/MISP/misp-taxonomies/blob/main/tools/machinetag.py
-- https://www.misp-project.org/taxonomies.html#_mapping_of_taxonomies
-- https://github.com/MISP/misp-taxonomies
-- https://github.com/MISP/misp-taxonomies/blob/main/tools/docs/images/taxonomy-explanation.png
+- https://github.com/MISP/misp-taxonomies/tree/main/dark-web
+- https://www.circl.lu/doc/misp-taxonomies/#_dark_web
 
 
 # Ackowledgement
