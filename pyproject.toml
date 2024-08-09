@@ -3,7 +3,7 @@ name = "vysion"
 version = "2.0.6"
 description = "The official Python client library for Vysion"
 homepage = "https://vysion.ai"
-repository = "https://gitlab.com/byronlabs/vysion/vysion-py"
+repository = "https://github.com/ByronLabs/vysion-py"
 documentation = "https://developers.vysion.ai"
 authors = [
   "Javier Junquera-Sánchez <javier.junquera@byronlabs.io>"
