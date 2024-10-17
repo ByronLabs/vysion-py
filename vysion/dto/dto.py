@@ -212,6 +212,9 @@ class Page(BaseModel):
     ssdeep: Optional[str] = None
     detectionDate: datetime = None
     chunk: bool = False
+    htmlOversize: Optional[bool] = False
+    docType: Optional[str] = None
+
 
 
 class RansomwareHit(BaseModel):
@@ -222,7 +225,6 @@ class RansomwareHit(BaseModel):
     companyAddress: Optional[str] = None
     companyLink: Optional[str] = None
     country: Optional[str] = None
-
 
 class DocumentHit(BaseModel):
     page: Page
