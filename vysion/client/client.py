@@ -205,27 +205,59 @@ class Client(BaseClient):
         self,
         url: str,
         page: int = 1,
+        page_size: int = 10,
         lte: datetime = None,
         gte: datetime = None,
     ) -> VysionResponse[DocumentHit]:
-        url = self._build_api_url__("document/url", url, page=page, lte=lte, gte=gte)
+        url = self._build_api_url__(
+            "document/url",
+            url,
+            page=page,
+            page_size=page_size,
+            lte=lte,
+            gte=gte,
+        )
 
         result = VysionResponse[DocumentHit].model_validate(self._make_request(url))
         return result.data
 
     @vysion_error_manager
-    def get_tag(self, tag: str) -> VysionResponse[DocumentHit]:
-        url = self._build_api_url__("document/tag", tag)
+    def get_tag(
+        self,
+        tag: str,
+        gte: datetime = None,
+        lte: datetime = None,
+        page: int = 1,
+        page_size: int = 10,
+    ) -> VysionResponse[DocumentHit]:
+        url = self._build_api_url__(
+            "document/tag",
+            tag,
+            gte=gte,
+            lte=lte,
+            page=page,
+            page_size=page_size,
+        )
 
         result = VysionResponse[DocumentHit].model_validate(self._make_request(url))
         return result.data
 
     @vysion_error_manager
     def find_email(
-        self, email: str, page: int = 1, lte: datetime = None, gte: datetime = None
+        self,
+        email: str,
+        page: int = 1,
+        page_size: int = 10,
+        lte: datetime = None,
+        gte: datetime = None
     ) -> VysionResponse[DocumentHit]:
         url = self._build_api_url__(
-            "document/email", email, page=page, lte=lte, gte=gte
+            "document/email",
+            email,
+            page=page,
+            page_size=page_size,
+            lte=lte,
+            gte=gte
         )
 
         result = VysionResponse[DocumentHit].model_validate(self._make_request(url))
@@ -237,6 +269,7 @@ class Client(BaseClient):
         country_code: str,
         phone_number: str,
         page: int = 1,
+        page_size: int = 10,
         lte: datetime = None,
         gte: datetime = None,
     ) -> VysionResponse[DocumentHit]:
@@ -244,6 +277,7 @@ class Client(BaseClient):
             "document/phone/" + country_code,
             phone_number,
             page=page,
+            page_size=page_size,
             lte=lte,
             gte=gte,
         )
@@ -257,11 +291,17 @@ class Client(BaseClient):
         chain: str,
         address: str,
         page: int = 1,
+        page_size: int = 10,
         lte: datetime = None,
         gte: datetime = None,
     ) -> VysionResponse[DocumentHit]:
         url = self._build_api_url__(
-            "document/wallet/" + chain, address, page=page, lte=lte, gte=gte
+            "document/wallet/" + chain,
+            address,
+            page=page,
+            page_size=page_size,
+            lte=lte,
+            gte=gte
         )
 
         result = VysionResponse[DocumentHit].model_validate(self._make_request(url))
@@ -357,6 +397,7 @@ class Client(BaseClient):
         gte: datetime = None,
         lte: datetime = None,
         page: int = 1,
+        page_size: int = 10,
         username: str = None,
     ) -> VysionResponse[ImMessageHit]:
         url = self._build_api_url__(
@@ -365,6 +406,7 @@ class Client(BaseClient):
             gte=gte,
             lte=lte,
             page=page,
+            page_size=page_size,
             username=username,
         )
 
