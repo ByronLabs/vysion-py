@@ -300,6 +300,26 @@ class ImMessageHit(BaseModel):
     detectionDate: datetime
     serverId: Optional[int] = Field(default_factory=lambda: None) #Discord Exclusive
     serverTitle: Optional[str] = Field(default_factory=lambda: None) #Discord Exclusive
+    platform: Optional[str] = Field(default_factory=lambda: None) #Discord Exclusive
+
+    @field_validator("messageId")
+    def validate_messageId(cls, v: int) -> int:
+        if not v:
+            raise ValueError("MessageId field cannot be empty")
+        return v
+    
+class ImMessageCardHit(BaseModel):
+    userId: Optional[int] = Field(default_factory=lambda: None)
+    username: Optional[str] = Field(default_factory=lambda: None)
+    channelId: Optional[int] = Field(default_factory=lambda: None)
+    messageId: str
+    message: Optional[str] = Field(default_factory=lambda: None)
+    channelTitle: Optional[str] = Field(default_factory=lambda: None)
+    languages: Optional[List[LanguagePair]] = Field(default_factory=lambda: None)
+    detectionDate: datetime
+    serverId: Optional[int] = Field(default_factory=lambda: None) #Discord Exclusive
+    serverTitle: Optional[str] = Field(default_factory=lambda: None) #Discord Exclusive
+    platform: Optional[str] = Field(default_factory=lambda: None)
 
     @field_validator("messageId")
     def validate_messageId(cls, v: int) -> int:

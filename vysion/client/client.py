@@ -352,15 +352,16 @@ class Client(BaseClient):
     @vysion_error_manager
     def search_im(
         self,
-        platform: str,
         q: str,
+        platform: str = ""
         gte: datetime = None,
         lte: datetime = None,
         page: int = 1,
         username: str = None,
     ) -> VysionResponse[ImMessageHit]:
         url = self._build_api_url__(
-            "im/" + platform + "/search",
+            "im/search",
+            platform=platform,
             q=q,
             gte=gte,
             lte=lte,
