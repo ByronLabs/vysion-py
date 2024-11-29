@@ -298,6 +298,28 @@ class ImMessageHit(BaseModel):
     sha256sum: Optional[str] = None
     media: Optional[str] = Field(default_factory=lambda: None)
     detectionDate: datetime
+    serverId: Optional[int] = Field(default_factory=lambda: None) #Discord Exclusive
+    serverTitle: Optional[str] = Field(default_factory=lambda: None) #Discord Exclusive
+    platform: Optional[str] = Field(default_factory=lambda: None) #Discord Exclusive
+
+    @field_validator("messageId")
+    def validate_messageId(cls, v: int) -> int:
+        if not v:
+            raise ValueError("MessageId field cannot be empty")
+        return v
+    
+class ImMessageCardHit(BaseModel):
+    userId: Optional[int] = Field(default_factory=lambda: None)
+    username: Optional[str] = Field(default_factory=lambda: None)
+    channelId: Optional[int] = Field(default_factory=lambda: None)
+    messageId: str
+    message: Optional[str] = Field(default_factory=lambda: None)
+    channelTitle: Optional[str] = Field(default_factory=lambda: None)
+    languages: Optional[List[LanguagePair]] = Field(default_factory=lambda: None)
+    detectionDate: datetime
+    serverId: Optional[int] = Field(default_factory=lambda: None) #Discord Exclusive
+    serverTitle: Optional[str] = Field(default_factory=lambda: None) #Discord Exclusive
+    platform: Optional[str] = Field(default_factory=lambda: None)
 
     @field_validator("messageId")
     def validate_messageId(cls, v: int) -> int:
@@ -313,7 +335,10 @@ class ImProfileHit(BaseModel):
     lastName: Optional[List[str]] = Field(default_factory=lambda: None)
     detectionDate: datetime
     profilePhoto: Optional[List[str]] = Field(default_factory=lambda: None)
-
+    bot: Optional[bool] = Field(default_factory=lambda: None) #Discord Exclusive
+    discordLink: Optional[List[str]] = Field(default_factory=lambda: None) #Discord Exclusive
+    discriminator: Optional[List[int]] = Field(default_factory=lambda: None) #Discord Exclusive
+    
     @field_validator("userId")
     def validate_userId(cls, v: int) -> int:
         if not v:
@@ -332,7 +357,9 @@ class ImChannelHit(BaseModel):
     channelTitles: Optional[List[str]] = Field(default_factory=lambda: None)
     detectionDate: datetime
     creationDate: datetime
-    channelPhoto: Optional[List[str]] = Field(default_factory=lambda: None)
+    channelPhoto: Optional[List[str]] = Field(default_factory=lambda: None) #Telegram Exclusive
+    serverId: Optional[int] = Field(default_factory=lambda: None) #Discord Exclusive
+    serverTitle: Optional[List[str]] = Field(default_factory=lambda: None) #Discord Exclusive
 
     @field_validator("channelId")
     def validate_channelId(cls, v: int) -> int:
@@ -352,6 +379,32 @@ class ImChannelHit(BaseModel):
             raise ValueError("creationDate field cannot be empty")
         return v
 
+class ImServerHit(BaseModel):
+    serverId: int
+    serverTitles: Optional[List[str]] = Field(default_factory=lambda: None)
+    detectionDate: datetime
+    creationDate: datetime
+    serverPhoto: Optional[List[str]] = Field(default_factory=lambda: None)
+    memberCount: Optional[int] = Field(default_factory=lambda: None)
+    discordLink: Optional[List[str]] = Field(default_factory=lambda: None)
+
+    @field_validator("serverId")
+    def validate_channelId(cls, v: int) -> int:
+        if not v:
+            raise ValueError("serverId field cannot be empty")
+        return v
+
+    @field_validator("detectionDate")
+    def validate_detectionDate(cls, v: datetime) -> datetime:
+        if not v:
+            raise ValueError("DetectionDate field cannot be empty")
+        return v
+
+    @field_validator("creationDate")
+    def validate_creationDate(cls, v: datetime) -> datetime:
+        if not v:
+            raise ValueError("creationDate field cannot be empty")
+        return v
 
 class ImFeedHit(BaseModel):
     id: str
