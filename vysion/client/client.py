@@ -397,6 +397,7 @@ class Client(BaseClient):
         gte: datetime = None,
         lte: datetime = None,
         page: int = 1,
+        page_size: int = 10,
         username: str = None,
     ) -> VysionResponse[ImMessageHit]:
         url = self._build_api_url__(
@@ -405,6 +406,7 @@ class Client(BaseClient):
             gte=gte,
             lte=lte,
             page=page,
+            page_size=page_size,
             username=username,
         )
 
