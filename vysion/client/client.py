@@ -393,7 +393,7 @@ class Client(BaseClient):
     def search_im(
         self,
         q: str,
-        platform: str = ""
+        platform: str = "",
         gte: datetime = None,
         lte: datetime = None,
         page: int = 1,
