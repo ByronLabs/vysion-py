@@ -287,10 +287,10 @@ class LanguagePair(BaseModel):
 
 
 class ImMessageHit(BaseModel):
-    userId: Optional[int] = Field(default_factory=lambda: None)
+    userId: Optional[Union[int, str]] = Field(default_factory=lambda: None)
     username: Optional[str] = Field(default_factory=lambda: None)
-    channelId: Optional[int] = Field(default_factory=lambda: None)
-    messageId: str
+    channelId: Optional[Union[int, str]] = Field(default_factory=lambda: None)
+    messageId: Union[int, str]
     message: Optional[str] = Field(default_factory=lambda: None)
     channelTitle: Optional[str] = Field(default_factory=lambda: None)
     languages: Optional[List[LanguagePair]] = Field(default_factory=lambda: None)
@@ -298,38 +298,25 @@ class ImMessageHit(BaseModel):
     sha256sum: Optional[str] = None
     media: Optional[str] = Field(default_factory=lambda: None)
     detectionDate: datetime
-    serverId: Optional[int] = Field(default_factory=lambda: None) #Discord Exclusive
+    serverId: Optional[Union[int, str]] = Field(default_factory=lambda: None) #Discord Exclusive
     serverTitle: Optional[str] = Field(default_factory=lambda: None) #Discord Exclusive
     platform: Optional[str] = Field(default_factory=lambda: None) #Discord Exclusive
-
-    @field_validator("messageId")
-    def validate_messageId(cls, v: int) -> int:
-        if not v:
-            raise ValueError("MessageId field cannot be empty")
-        return v
     
 class ImMessageCardHit(BaseModel):
-    userId: Optional[int] = Field(default_factory=lambda: None)
+    userId: Optional[Union[int, str]] = Field(default_factory=lambda: None)
     username: Optional[str] = Field(default_factory=lambda: None)
     channelId: Optional[int] = Field(default_factory=lambda: None)
-    messageId: str
+    messageId: Union[int, str]
     message: Optional[str] = Field(default_factory=lambda: None)
     channelTitle: Optional[str] = Field(default_factory=lambda: None)
     languages: Optional[List[LanguagePair]] = Field(default_factory=lambda: None)
     detectionDate: datetime
-    serverId: Optional[int] = Field(default_factory=lambda: None) #Discord Exclusive
+    serverId: Optional[Union[int, str]] = Field(default_factory=lambda: None) #Discord Exclusive
     serverTitle: Optional[str] = Field(default_factory=lambda: None) #Discord Exclusive
     platform: Optional[str] = Field(default_factory=lambda: None)
 
-    @field_validator("messageId")
-    def validate_messageId(cls, v: int) -> int:
-        if not v:
-            raise ValueError("MessageId field cannot be empty")
-        return v
-
-
 class ImProfileHit(BaseModel):
-    userId: int
+    userId: Union[int, str]
     usernames: Optional[List[str]] = Field(default_factory=lambda: None)
     firstName: Optional[List[str]] = Field(default_factory=lambda: None)
     lastName: Optional[List[str]] = Field(default_factory=lambda: None)
@@ -353,19 +340,13 @@ class ImProfileHit(BaseModel):
 
 
 class ImChannelHit(BaseModel):
-    channelId: int
+    channelId: Union[int, str]
     channelTitles: Optional[List[str]] = Field(default_factory=lambda: None)
     detectionDate: datetime
     creationDate: datetime
     channelPhoto: Optional[List[str]] = Field(default_factory=lambda: None) #Telegram Exclusive
-    serverId: Optional[int] = Field(default_factory=lambda: None) #Discord Exclusive
+    serverId: Optional[Union[int, str]] = Field(default_factory=lambda: None) #Discord Exclusive
     serverTitle: Optional[List[str]] = Field(default_factory=lambda: None) #Discord Exclusive
-
-    @field_validator("channelId")
-    def validate_channelId(cls, v: int) -> int:
-        if not v:
-            raise ValueError("channelId field cannot be empty")
-        return v
 
     @field_validator("detectionDate")
     def validate_detectionDate(cls, v: datetime) -> datetime:
@@ -380,19 +361,13 @@ class ImChannelHit(BaseModel):
         return v
 
 class ImServerHit(BaseModel):
-    serverId: int
+    serverId: Union[int, str]
     serverTitles: Optional[List[str]] = Field(default_factory=lambda: None)
     detectionDate: datetime
     creationDate: datetime
     serverPhoto: Optional[List[str]] = Field(default_factory=lambda: None)
     memberCount: Optional[int] = Field(default_factory=lambda: None)
     discordLink: Optional[List[str]] = Field(default_factory=lambda: None)
-
-    @field_validator("serverId")
-    def validate_channelId(cls, v: int) -> int:
-        if not v:
-            raise ValueError("serverId field cannot be empty")
-        return v
 
     @field_validator("detectionDate")
     def validate_detectionDate(cls, v: datetime) -> datetime:
