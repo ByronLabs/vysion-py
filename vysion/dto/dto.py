@@ -325,6 +325,7 @@ class ImProfileHit(BaseModel):
     bot: Optional[bool] = Field(default_factory=lambda: None) #Discord Exclusive
     discordLink: Optional[List[str]] = Field(default_factory=lambda: None) #Discord Exclusive
     discriminator: Optional[List[int]] = Field(default_factory=lambda: None) #Discord Exclusive
+    platform: Optional[str] = Field(default_factory=lambda: None)
     
     @field_validator("userId")
     def validate_userId(cls, v: int) -> int:
@@ -347,7 +348,8 @@ class ImChannelHit(BaseModel):
     channelPhoto: Optional[List[str]] = Field(default_factory=lambda: None) #Telegram Exclusive
     serverId: Optional[Union[int, str]] = Field(default_factory=lambda: None) #Discord Exclusive
     serverTitle: Optional[List[str]] = Field(default_factory=lambda: None) #Discord Exclusive
-
+    platform: Optional[str] = Field(default_factory=lambda: None)
+    
     @field_validator("detectionDate")
     def validate_detectionDate(cls, v: datetime) -> datetime:
         if not v:
