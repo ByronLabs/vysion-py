@@ -458,7 +458,7 @@ class Client(BaseClient):
     @vysion_error_manager
     def get_im_server(
         self, platform: str, serverId: str
-    ) -> VysionResponse[ImChannelHit]:
+    ) -> VysionResponse[ImServerHit]:
         url = self._build_api_url__("im/" + platform + "/server/", serverId)
 
         result = VysionResponse[ImServerHit].model_validate(self._make_request(url))
