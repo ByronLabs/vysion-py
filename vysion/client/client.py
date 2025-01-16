@@ -38,6 +38,7 @@ from vysion.dto import (
     ImChannelHit,
     ImMessageHit,
     ImProfileHit,
+    ImServerHit,
 )
 from vysion.version import __version__ as vysion_version
 
@@ -392,8 +393,8 @@ class Client(BaseClient):
     @vysion_error_manager
     def search_im(
         self,
-        platform: str,
-        q: str,
+        platform: str = None,
+        q: str = None,
         gte: datetime = None,
         lte: datetime = None,
         page: int = 1,
@@ -401,7 +402,8 @@ class Client(BaseClient):
         username: str = None,
     ) -> VysionResponse[ImMessageHit]:
         url = self._build_api_url__(
-            "im/" + platform + "/search",
+            "im/search",
+            platform=platform,
             q=q,
             gte=gte,
             lte=lte,
@@ -409,6 +411,8 @@ class Client(BaseClient):
             page_size=page_size,
             username=username,
         )
+
+        print(url)
 
         result = VysionResponse[ImMessageHit].model_validate(self._make_request(url))
         return result.data
@@ -449,6 +453,15 @@ class Client(BaseClient):
         url = self._build_api_url__("im/" + platform + "/channel/", channelId)
 
         result = VysionResponse[ImChannelHit].model_validate(self._make_request(url))
+        return result.data
+    
+    @vysion_error_manager
+    def get_im_server(
+        self, platform: str, serverId: str
+    ) -> VysionResponse[ImServerHit]:
+        url = self._build_api_url__("im/" + platform + "/server/", serverId)
+
+        result = VysionResponse[ImServerHit].model_validate(self._make_request(url))
         return result.data
 
     #
