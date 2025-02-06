@@ -211,6 +211,7 @@ class Page(BaseModel):
     sha256sum: Optional[str] = None
     ssdeep: Optional[str] = None
     detectionDate: datetime = None
+    screenshot: Optional[str] = None
     chunk: bool = False
     htmlOversize: Optional[bool] = False
     docType: Optional[str] = None
