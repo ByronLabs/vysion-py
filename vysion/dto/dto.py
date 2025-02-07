@@ -180,9 +180,9 @@ class URL(BaseModel):
             network=network,
         )
 
-    def __init_subclass__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.urlSignature = self.__generate_signature()
+        self.signature = self.__generate_signature()
 
     def build(self) -> str:
         url = self.path
