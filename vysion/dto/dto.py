@@ -180,9 +180,9 @@ class URL(BaseModel):
             network=network,
         )
 
-    def __init_subclass__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.urlSignature = self.__generate_signature()
+        self.signature = self.__generate_signature()
 
     def build(self) -> str:
         url = self.path
@@ -226,8 +226,8 @@ class RansomwareHit(BaseModel):
     companyAddress: Optional[str] = None
     companyLink: Optional[str] = None
     country: Optional[str] = None
-    sector: Optional[str] = None
-    industryGroup: Optional[str] = None
+    naics: Optional[str] = None
+    industry: Optional[str] = None
 
 class DocumentHit(BaseModel):
     page: Page
@@ -404,8 +404,8 @@ class RansomFeedHit(BaseModel):
     detectionDate: datetime
     text: Optional[str]
     country: Optional[str]
-    sector: Optional[str]
-    industryGroup: Optional[str]
+    naics: Optional[str]
+    industry: Optional[str]
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
