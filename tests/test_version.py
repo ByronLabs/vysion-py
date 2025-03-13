@@ -4,4 +4,4 @@ from vysion import __version__
 
 
 def test_version():
-    assert __version__ == "2.0.18"
+    assert __version__ == "2.0.19"
