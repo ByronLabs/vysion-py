@@ -331,6 +331,8 @@ class Client(BaseClient):
         network: Network = None,
         country: str = None,
         language: Language = None,
+        naics: str = None,
+        industry: str = None,
     ) -> VysionResponse[RansomwareHit]:
         url = self._build_api_url__(
             "victim/search",
@@ -342,6 +344,8 @@ class Client(BaseClient):
             network=network,
             country=country,
             language=language,
+            naics=naics,
+            industry=industry,
         )
 
         result = VysionResponse[RansomwareHit].model_validate(self._make_request(url))
