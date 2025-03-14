@@ -323,7 +323,7 @@ class Client(BaseClient):
     @vysion_error_manager
     def search_ransomware_victim(
         self,
-        q: str,
+        q: str = None,
         lte: datetime = None,
         gte: datetime = None,
         page: int = 1,
