@@ -323,7 +323,7 @@ class Client(BaseClient):
     @vysion_error_manager
     def search_ransomware_victim(
         self,
-        q: str,
+        q: str = None,
         lte: datetime = None,
         gte: datetime = None,
         page: int = 1,
@@ -331,6 +331,7 @@ class Client(BaseClient):
         network: Network = None,
         country: str = None,
         language: Language = None,
+        sector: str = None,
     ) -> VysionResponse[RansomwareHit]:
         url = self._build_api_url__(
             "victim/search",
@@ -342,6 +343,7 @@ class Client(BaseClient):
             network=network,
             country=country,
             language=language,
+            sector=sector,
         )
 
         result = VysionResponse[RansomwareHit].model_validate(self._make_request(url))

@@ -395,6 +395,47 @@ class ImFeedHit(BaseModel):
     network: str
 
 
+class CryptoFeedHit(BaseModel):
+    id: str
+    url: str
+    detectionDate: datetime
+    url: str
+    network: str
+    title: str
+    tag: List[Tag] = Field(default_factory=lambda: [])
+    bitcoin_address: Optional[List[BitcoinAddress]] = Field(default_factory=lambda: [])
+    polkadot_address: Optional[List[PolkadotAddress]] = Field(default_factory=lambda: [])
+    ethereum_address: Optional[List[EthereumAddress]] = Field(default_factory=lambda: [])
+    monero_address: Optional[List[MoneroAddress]] = Field(default_factory=lambda: [])
+    ripple_address: Optional[List[RippleAddress]] = Field(default_factory=lambda: [])
+    zcash_address: Optional[List[ZcashAddress]] = Field(default_factory=lambda: [])
+
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True, 
+        exclude_defaults=True, 
+        validate_assignment=True
+    )
+
+    @model_validator(mode="after")
+    def remove_empty_lists(cls, values):
+        """Remove empty cryptocurrency lists from output"""
+        crypto_fields = [
+            "bitcoin_address", 
+            "polkadot_address", 
+            "ethereum_address", 
+            "monero_address", 
+            "ripple_address", 
+            "zcash_address"
+        ]
+        
+        for field_name in crypto_fields:
+            field_value = getattr(values, field_name, None)
+            if isinstance(field_value, list) and not field_value:
+                setattr(values, field_name, None)
+        
+        return values
+
+
 class RansomFeedHit(BaseModel):
     id: str
     companyName: Optional[str]
