@@ -303,7 +303,25 @@ class ImMessageHit(BaseModel):
     detectionDate: datetime
     serverId: Optional[Union[int, str]] = Field(default_factory=lambda: None) #Discord Exclusive
     serverTitle: Optional[str] = Field(default_factory=lambda: None) #Discord Exclusive
-    platform: Optional[str] = Field(default_factory=lambda: None) #Discord Exclusive
+    platform: Optional[str] = Field(default_factory=lambda: None) 
+
+    @model_validator(mode="after")
+    def validate_platform_specific_fields(cls, values):
+        """
+        Conditionally include platform-specific fields:
+        - Include Discord-specific fields only for Discord platform
+        - Exclude Discord-specific fields for Telegram platform
+        """
+        platform = getattr(values, "platform", None)
+        
+        # For Telegram platform, remove Discord-specific fields
+        if platform is None or (isinstance(platform, str) and platform.lower() == "telegram"):
+            # Delete attributes instead of setting to None
+            for attr in ["serverId", "serverTitle"]:
+                if hasattr(values, attr):
+                    delattr(values, attr)
+        
+        return values
     
 class ImMessageCardHit(BaseModel):
     userId: Optional[Union[int, str]] = Field(default_factory=lambda: None)
@@ -317,6 +335,24 @@ class ImMessageCardHit(BaseModel):
     serverId: Optional[Union[int, str]] = Field(default_factory=lambda: None) #Discord Exclusive
     serverTitle: Optional[str] = Field(default_factory=lambda: None) #Discord Exclusive
     platform: Optional[str] = Field(default_factory=lambda: None)
+
+    @model_validator(mode="after")
+    def validate_platform_specific_fields(cls, values):
+        """
+        Conditionally include platform-specific fields:
+        - Include Discord-specific fields only for Discord platform
+        - Exclude Discord-specific fields for Telegram platform
+        """
+        platform = getattr(values, "platform", None)
+        
+        # For Telegram platform, remove Discord-specific fields
+        if platform is None or (isinstance(platform, str) and platform.lower() == "telegram"):
+            # Delete attributes instead of setting to None
+            for attr in ["serverId", "serverTitle"]:
+                if hasattr(values, attr):
+                    delattr(values, attr)
+        
+        return values
 
 class ImProfileHit(BaseModel):
     userId: Union[int, str]
@@ -373,6 +409,29 @@ class ImChannelHit(BaseModel):
     serverId: Optional[Union[int, str]] = Field(default_factory=lambda: None) #Discord Exclusive
     serverTitle: Optional[List[str]] = Field(default_factory=lambda: None) #Discord Exclusive
     platform: Optional[str] = Field(default_factory=lambda: None)
+    
+    @model_validator(mode="after")
+    def validate_platform_specific_fields(cls, values):
+        """
+        Conditionally include platform-specific fields:
+        - Include Discord-specific fields only for Discord platform
+        - Exclude Discord-specific fields for Telegram platform
+        """
+        platform = getattr(values, "platform", None)
+        
+        # For Telegram platform, remove Discord-specific fields
+        if platform is None or (isinstance(platform, str) and platform.lower() == "telegram"):
+            # Delete attributes instead of setting to None
+            for attr in ["serverId", "serverTitle"]:
+                if hasattr(values, attr):
+                    delattr(values, attr)
+        else:
+            # For Discord platform, remove Telegram-specific fields
+            for attr in ["channelPhoto"]:
+                if hasattr(values, attr):
+                    delattr(values, attr)
+        
+        return values
     
     @field_validator("detectionDate")
     def validate_detectionDate(cls, v: datetime) -> datetime:
