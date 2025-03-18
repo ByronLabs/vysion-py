@@ -79,7 +79,7 @@ class MISPProcessor:
             self.misp_event.add_attribute("xmr", value=xmr.value)
 
         for xrp in hit.ripple_address:
-            self.misp_event.add_attribute("xrp", value=xmr.value)
+            self.misp_event.add_attribute("xrp", value=xrp.value)
 
         for zec in hit.zcash_address:
             self.misp_event.add_attribute("zec", value=zec.value)

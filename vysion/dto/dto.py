@@ -328,8 +328,29 @@ class ImProfileHit(BaseModel):
     bot: Optional[bool] = Field(default_factory=lambda: None) #Discord Exclusive
     discordLink: Optional[List[str]] = Field(default_factory=lambda: None) #Discord Exclusive
     discriminator: Optional[List[int]] = Field(default_factory=lambda: None) #Discord Exclusive
+    # TODO platform should be mandatory
     platform: Optional[str] = Field(default_factory=lambda: None)
     
+    model_config = ConfigDict(exclude_defaults=True)
+
+    @model_validator(mode="after")
+    def validate_platform_specific_fields(cls, values):
+        """
+        Conditionally include platform-specific fields:
+        - Include Discord-specific fields only for Discord platform
+        - Exclude Discord-specific fields for Telegram platform
+        """
+        platform = getattr(values, "platform", None)
+        
+        # For Telegram platform, remove Discord-specific fields
+        if platform is None or (isinstance(platform, str) and platform.lower() == "telegram"):
+            # Delete attributes instead of setting to None
+            for attr in ["discordLink", "bot", "discriminator"]:
+                if hasattr(values, attr):
+                    delattr(values, attr)
+        
+        return values
+
     @field_validator("userId")
     def validate_userId(cls, v: int) -> int:
         if not v:
