@@ -366,6 +366,18 @@ class ImProfileHit(BaseModel):
     discriminator: Optional[List[int]] = Field(default_factory=lambda: None) #Discord Exclusive
     # TODO platform should be mandatory
     platform: Optional[str] = Field(default_factory=lambda: None)
+    email: List[Email] = Field(default_factory=lambda: [])
+    paste: List[Paste] = Field(default_factory=lambda: [])
+    skype: List[Skype] = Field(default_factory=lambda: [])
+    telegram: List[Telegram] = Field(default_factory=lambda: [])
+    whatsapp: List[WhatsApp] = Field(default_factory=lambda: [])
+    bitcoin_address: List[BitcoinAddress] = Field(default_factory=lambda: [])
+    polkadot_address: List[PolkadotAddress] = Field(default_factory=lambda: [])
+    ethereum_address: List[EthereumAddress] = Field(default_factory=lambda: [])
+    monero_address: List[MoneroAddress] = Field(default_factory=lambda: [])
+    ripple_address: List[RippleAddress] = Field(default_factory=lambda: [])
+    zcash_address: List[ZcashAddress] = Field(default_factory=lambda: [])
+
     
     model_config = ConfigDict(exclude_defaults=True)
 
