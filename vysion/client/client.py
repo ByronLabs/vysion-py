@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-# TODO Referenciar vt-py
-
 import logging
 import os
 from datetime import datetime, timedelta
@@ -419,6 +417,51 @@ class Client(BaseClient):
         result = VysionResponse[ImMessageHit].model_validate(self._make_request(url))
         return result.data
 
+
+    @vysion_error_manager
+    def im_find_email(
+        self,
+        email: str,
+        page: int = 1,
+        page_size: int = 10,
+        lte: datetime = None,
+        gte: datetime = None
+    ) -> VysionResponse[DocumentHit]:
+        url = self._build_api_url__(
+            "im/email",
+            email,
+            page=page,
+            page_size=page_size,
+            lte=lte,
+            gte=gte
+        )
+
+        result = VysionResponse[ImProfileHit].model_validate(self._make_request(url))
+        return result.data
+    
+    @vysion_error_manager
+    def im_find_wallet(
+        self,
+        chain: str,
+        address: str,
+        page: int = 1,
+        page_size: int = 10,
+        lte: datetime = None,
+        gte: datetime = None,
+    ) -> VysionResponse[DocumentHit]:
+        url = self._build_api_url__(
+            "im/wallet/" + chain,
+            address,
+            page=page,
+            page_size=page_size,
+            lte=lte,
+            gte=gte
+        )
+
+        result = VysionResponse[ImProfileHit].model_validate(self._make_request(url))
+        return result.data
+    
+
     @vysion_error_manager
     def get_im_chat(
         self, platform: str, channelId: str, gte: datetime = None, lte: datetime = None
@@ -465,6 +508,7 @@ class Client(BaseClient):
 
         result = VysionResponse[ImServerHit].model_validate(self._make_request(url))
         return result.data
+    
 
     #
     # FEEDS
@@ -472,6 +516,7 @@ class Client(BaseClient):
 
     @vysion_error_manager
     def consume_feed_ransomware(self, batch_day: datetime = datetime.today()):
+        #TODO implement client feed logic
         pass
 
 
@@ -495,6 +540,3 @@ class RansomwareFeed(DaylyFeed):
         for page in range(pages):
             url = self._build_api_url__("feed", "ransomware", days=days, page=page + 1)
             yield self._make_request(url)
-
-
-# TODO /api/v1/feeds
