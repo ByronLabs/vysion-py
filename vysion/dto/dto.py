@@ -303,7 +303,25 @@ class ImMessageHit(BaseModel):
     detectionDate: datetime
     serverId: Optional[Union[int, str]] = Field(default_factory=lambda: None) #Discord Exclusive
     serverTitle: Optional[str] = Field(default_factory=lambda: None) #Discord Exclusive
-    platform: Optional[str] = Field(default_factory=lambda: None) #Discord Exclusive
+    platform: Optional[str] = Field(default_factory=lambda: None) 
+
+    @model_validator(mode="after")
+    def validate_platform_specific_fields(cls, values):
+        """
+        Conditionally include platform-specific fields:
+        - Include Discord-specific fields only for Discord platform
+        - Exclude Discord-specific fields for Telegram platform
+        """
+        platform = getattr(values, "platform", None)
+        
+        # For Telegram platform, remove Discord-specific fields
+        if platform is None or (isinstance(platform, str) and platform.lower() == "telegram"):
+            # Delete attributes instead of setting to None
+            for attr in ["serverId", "serverTitle"]:
+                if hasattr(values, attr):
+                    delattr(values, attr)
+        
+        return values
     
 class ImMessageCardHit(BaseModel):
     userId: Optional[Union[int, str]] = Field(default_factory=lambda: None)
@@ -318,6 +336,24 @@ class ImMessageCardHit(BaseModel):
     serverTitle: Optional[str] = Field(default_factory=lambda: None) #Discord Exclusive
     platform: Optional[str] = Field(default_factory=lambda: None)
 
+    @model_validator(mode="after")
+    def validate_platform_specific_fields(cls, values):
+        """
+        Conditionally include platform-specific fields:
+        - Include Discord-specific fields only for Discord platform
+        - Exclude Discord-specific fields for Telegram platform
+        """
+        platform = getattr(values, "platform", None)
+        
+        # For Telegram platform, remove Discord-specific fields
+        if platform is None or (isinstance(platform, str) and platform.lower() == "telegram"):
+            # Delete attributes instead of setting to None
+            for attr in ["serverId", "serverTitle"]:
+                if hasattr(values, attr):
+                    delattr(values, attr)
+        
+        return values
+
 class ImProfileHit(BaseModel):
     userId: Union[int, str]
     usernames: Optional[List[str]] = Field(default_factory=lambda: None)
@@ -328,8 +364,41 @@ class ImProfileHit(BaseModel):
     bot: Optional[bool] = Field(default_factory=lambda: None) #Discord Exclusive
     discordLink: Optional[List[str]] = Field(default_factory=lambda: None) #Discord Exclusive
     discriminator: Optional[List[int]] = Field(default_factory=lambda: None) #Discord Exclusive
+    # TODO platform should be mandatory
     platform: Optional[str] = Field(default_factory=lambda: None)
+    email: List[Email] = Field(default_factory=lambda: [])
+    paste: List[Paste] = Field(default_factory=lambda: [])
+    skype: List[Skype] = Field(default_factory=lambda: [])
+    telegram: List[Telegram] = Field(default_factory=lambda: [])
+    whatsapp: List[WhatsApp] = Field(default_factory=lambda: [])
+    bitcoin_address: List[BitcoinAddress] = Field(default_factory=lambda: [])
+    polkadot_address: List[PolkadotAddress] = Field(default_factory=lambda: [])
+    ethereum_address: List[EthereumAddress] = Field(default_factory=lambda: [])
+    monero_address: List[MoneroAddress] = Field(default_factory=lambda: [])
+    ripple_address: List[RippleAddress] = Field(default_factory=lambda: [])
+    zcash_address: List[ZcashAddress] = Field(default_factory=lambda: [])
+
     
+    model_config = ConfigDict(exclude_defaults=True)
+
+    @model_validator(mode="after")
+    def validate_platform_specific_fields(cls, values):
+        """
+        Conditionally include platform-specific fields:
+        - Include Discord-specific fields only for Discord platform
+        - Exclude Discord-specific fields for Telegram platform
+        """
+        platform = getattr(values, "platform", None)
+        
+        # For Telegram platform, remove Discord-specific fields
+        if platform is None or (isinstance(platform, str) and platform.lower() == "telegram"):
+            # Delete attributes instead of setting to None
+            for attr in ["discordLink", "bot", "discriminator"]:
+                if hasattr(values, attr):
+                    delattr(values, attr)
+        
+        return values
+
     @field_validator("userId")
     def validate_userId(cls, v: int) -> int:
         if not v:
@@ -352,6 +421,29 @@ class ImChannelHit(BaseModel):
     serverId: Optional[Union[int, str]] = Field(default_factory=lambda: None) #Discord Exclusive
     serverTitle: Optional[List[str]] = Field(default_factory=lambda: None) #Discord Exclusive
     platform: Optional[str] = Field(default_factory=lambda: None)
+    
+    @model_validator(mode="after")
+    def validate_platform_specific_fields(cls, values):
+        """
+        Conditionally include platform-specific fields:
+        - Include Discord-specific fields only for Discord platform
+        - Exclude Discord-specific fields for Telegram platform
+        """
+        platform = getattr(values, "platform", None)
+        
+        # For Telegram platform, remove Discord-specific fields
+        if platform is None or (isinstance(platform, str) and platform.lower() == "telegram"):
+            # Delete attributes instead of setting to None
+            for attr in ["serverId", "serverTitle"]:
+                if hasattr(values, attr):
+                    delattr(values, attr)
+        else:
+            # For Discord platform, remove Telegram-specific fields
+            for attr in ["channelPhoto"]:
+                if hasattr(values, attr):
+                    delattr(values, attr)
+        
+        return values
     
     @field_validator("detectionDate")
     def validate_detectionDate(cls, v: datetime) -> datetime:
@@ -401,7 +493,7 @@ class CryptoFeedHit(BaseModel):
     detectionDate: datetime
     url: str
     network: str
-    title: str
+    title: Optional[str] = Field(default_factory=lambda: None)
     tag: List[Tag] = Field(default_factory=lambda: [])
     bitcoin_address: Optional[List[BitcoinAddress]] = Field(default_factory=lambda: [])
     polkadot_address: Optional[List[PolkadotAddress]] = Field(default_factory=lambda: [])
