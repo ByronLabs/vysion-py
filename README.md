@@ -4,7 +4,7 @@ Welcome to the open source repository for vysion-py, our implementation as a Pyt
 
 You can request a demo for the web app or an API-key to use in this library at [vysion.ai](https://vysion.ai).
 
-Latest version: [2.0.20](https://pypi.org/project/vysion/)
+Latest version: [2.1.1](https://pypi.org/project/vysion/)
 
 You can visit [the documentation](https://developers.vysion.ai/?python) for more information on the searches and requests performed with the library or directly on the API.
 

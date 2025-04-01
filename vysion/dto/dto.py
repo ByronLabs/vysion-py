@@ -493,7 +493,7 @@ class CryptoFeedHit(BaseModel):
     detectionDate: datetime
     url: str
     network: str
-    title: str
+    title: Optional[str] = Field(default_factory=lambda: None)
     tag: List[Tag] = Field(default_factory=lambda: [])
     bitcoin_address: Optional[List[BitcoinAddress]] = Field(default_factory=lambda: [])
     polkadot_address: Optional[List[PolkadotAddress]] = Field(default_factory=lambda: [])
