@@ -330,6 +330,7 @@ class Client(BaseClient):
         country: str = None,
         language: Language = None,
         sector: str = None,
+        group: str = None,
     ) -> VysionResponse[RansomwareHit]:
         url = self._build_api_url__(
             "victim/search",
@@ -342,6 +343,7 @@ class Client(BaseClient):
             country=country,
             language=language,
             sector=sector,
+            group=group,
         )
 
         result = VysionResponse[RansomwareHit].model_validate(self._make_request(url))
