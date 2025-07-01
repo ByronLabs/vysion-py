@@ -28,8 +28,8 @@ class APIError(Exception):
 
         super().__init__()
 
-        if code not in [i.value for i in Error.StatusCode]:
-            self.code = Error.StatusCode.UNK
+        if code not in [i.value for i in ErrorCode]:
+            self.code = ErrorCode.INTERNAL_SERVER_ERROR
             self.message = f"{message} (Original code: {code})"
         else:
             self.code = code
