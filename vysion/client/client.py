@@ -148,7 +148,6 @@ def vysion_error_manager(method) -> Union[VysionResponse, Error]:
             return Error(code=e.code, message=e.message)
         except Exception as e:
             LOGGER.error(e)
-            from vysion.dto import ErrorCode
             return Error(code=ErrorCode.INTERNAL_SERVER_ERROR, message=str(e))
 
     return manage
