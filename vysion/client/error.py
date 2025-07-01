@@ -28,7 +28,6 @@ class APIError(Exception):
 
         super().__init__()
 
-        from vysion.dto import ErrorCode
         if code not in [i.value for i in ErrorCode]:
             self.code = ErrorCode.INTERNAL_SERVER_ERROR
             self.message = f"{message} (Original code: {code})"
