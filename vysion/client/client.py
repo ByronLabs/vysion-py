@@ -148,7 +148,8 @@ def vysion_error_manager(method) -> Union[VysionResponse, Error]:
             return Error(code=e.code, message=e.message)
         except Exception as e:
             LOGGER.error(e)
-            return Error()
+            from vysion.dto import ErrorCode
+            return Error(code=ErrorCode.INTERNAL_SERVER_ERROR, message=str(e))
 
     return manage
 
@@ -412,11 +413,8 @@ class Client(BaseClient):
             username=username,
         )
 
-        print(url)
-
         result = VysionResponse[ImMessageHit].model_validate(self._make_request(url))
         return result.data
-
 
     @vysion_error_manager
     def im_find_email(
