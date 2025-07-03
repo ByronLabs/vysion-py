@@ -487,6 +487,15 @@ class ImFeedHit(BaseModel):
     network: str
 
 
+class OnionFeedHit(BaseModel):
+    id: str
+    url: URL
+    path: str
+    detectionDate: datetime
+    title: Optional[str] = Field(default_factory=lambda: None)
+    tag: List[Tag] = Field(default_factory=lambda: [])
+    
+
 class CryptoFeedHit(BaseModel):
     id: str
     url: str
