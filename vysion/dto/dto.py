@@ -494,6 +494,7 @@ class OnionFeedHit(BaseModel):
     detectionDate: datetime
     title: Optional[str] = Field(default_factory=lambda: None)
     tag: List[Tag] = Field(default_factory=lambda: [])
+    network: Network = Field(default_factory=lambda: Network.tor)
     
 
 class CryptoFeedHit(BaseModel):

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "vysion"
-version = "2.1.1"
+version = "2.1.2"
 description = "The official Python client library for Vysion"
 homepage = "https://vysion.ai"
 repository = "https://github.com/ByronLabs/vysion-py"
