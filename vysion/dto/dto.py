@@ -541,8 +541,8 @@ class CryptoFeedHit(BaseModel):
 class CryptoTelegramFeedHit(BaseModel):
     userId: str
     usernames: Optional[List[str]] = Field(default_factory=lambda: [])
-    firstName: Optional[str] = Field(default_factory=lambda: None)
-    lastName: Optional[str] = Field(default_factory=lambda: None)
+    firstName: Optional[List[str]] = Field(default_factory=lambda: None)
+    lastName: Optional[List[str]] = Field(default_factory=lambda: None)
     detectionDate: datetime
     profilePhoto: Optional[List[str]] = Field(default_factory=lambda: None)
     bitcoin_address: Optional[List[BitcoinAddress]] = Field(default_factory=lambda: [])
