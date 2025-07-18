@@ -27,6 +27,7 @@ import requests
 from vysion.client.error import APIError
 from vysion.dto import (
     Error,
+    ErrorCode,
     DocumentHit,
     VysionResponse,
     RansomwareHit,

@@ -1,10 +1,10 @@
 # Vysion-PY
 
-Welcome to the open source repository for vysion-py, our implementation as a Python library to use the Vysion tool. Vysion is a dark web intelligence tool that provides information collected from web pages from Tor, I2P, cybercrime forums on the clearnet, etc. Vysion API also provides a feed of information on ransomware attacks published by the various ransomware groups currently active.
+Welcome to the PyPi webpage for Vysion, our implementation as a Python library to use the Vysion tool. Vysion is a dark web intelligence tool that provides information collected from web pages from Tor, I2P, cybercrime forums on the clearnet, etc. Vysion API also provides a feed of information on ransomware attacks published by the various ransomware groups currently active.
 
 You can request a demo for the web app or an API-key to use in this library at [vysion.ai](https://vysion.ai).
 
-Latest version: [2.1.2](https://pypi.org/project/vysion/)
+Latest version: [2.1.4](https://pypi.org/project/vysion/)
 
 You can visit [the documentation](https://developers.vysion.ai/?python) for more information on the searches and requests performed with the library or directly on the API.
 
