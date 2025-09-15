@@ -414,8 +414,57 @@ class Client(BaseClient):
             page_size=page_size,
             username=username,
         )
+        print(url)
 
         result = VysionResponse[ImMessageHit].model_validate(self._make_request(url))
+        return result.data
+    
+    @vysion_error_manager
+    def search_im_profiles(
+        self,
+        platform: str = None,
+        q: str = None,
+        gte: datetime = None,
+        lte: datetime = None,
+        page: int = 1,
+        page_size: int = 10,
+    ) -> VysionResponse[ImProfileHit]:
+        url = self._build_api_url__(
+            "im/search/profiles",
+            platform=platform,
+            q=q,
+            gte=gte,
+            lte=lte,
+            page=page,
+            page_size=page_size,
+        )
+        print(url)
+
+        result = VysionResponse[ImProfileHit].model_validate(self._make_request(url))
+        return result.data
+
+    @vysion_error_manager
+    def search_im_channels(
+        self,
+        platform: str = None,
+        q: str = None,
+        gte: datetime = None,
+        lte: datetime = None,
+        page: int = 1,
+        page_size: int = 10,
+    ) -> VysionResponse[ImChannelHit]:
+        url = self._build_api_url__(
+            "im/search/channels",
+            platform=platform,
+            q=q,
+            gte=gte,
+            lte=lte,
+            page=page,
+            page_size=page_size,
+        )
+        print(url)
+
+        result = VysionResponse[ImChannelHit].model_validate(self._make_request(url))
         return result.data
 
     @vysion_error_manager
