@@ -414,8 +414,7 @@ class Client(BaseClient):
             page_size=page_size,
             username=username,
         )
-        print(url)
-
+        
         result = VysionResponse[ImMessageHit].model_validate(self._make_request(url))
         return result.data
     
@@ -438,7 +437,6 @@ class Client(BaseClient):
             page=page,
             page_size=page_size,
         )
-        print(url)
 
         result = VysionResponse[ImProfileHit].model_validate(self._make_request(url))
         return result.data
@@ -462,7 +460,6 @@ class Client(BaseClient):
             page=page,
             page_size=page_size,
         )
-        print(url)
 
         result = VysionResponse[ImChannelHit].model_validate(self._make_request(url))
         return result.data
