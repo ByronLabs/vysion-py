@@ -393,7 +393,7 @@ class ImProfileHit(BaseModel):
         # For Telegram platform, remove Discord-specific fields
         if platform is None or (isinstance(platform, str) and platform.lower() == "telegram"):
             # Delete attributes instead of setting to None
-            for attr in ["discordLink", "bot", "discriminator"]:
+            for attr in ["discordLink", "discriminator"]:
                 if hasattr(values, attr):
                     delattr(values, attr)
         
@@ -493,7 +493,6 @@ class OnionFeedHit(BaseModel):
     path: str
     detectionDate: datetime
     tag: List[Tag] = Field(default_factory=lambda: [])
-    network: Network = Field(default_factory=lambda: Network.tor)
     
 
 class CryptoFeedHit(BaseModel):
