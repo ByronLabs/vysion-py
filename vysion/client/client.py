@@ -38,6 +38,7 @@ from vysion.dto import (
     ImMessageHit,
     ImProfileHit,
     ImServerHit,
+    LeakHit,
 )
 from vysion.version import __version__ as vysion_version
 
@@ -553,6 +554,246 @@ class Client(BaseClient):
         url = self._build_api_url__("im/" + platform + "/server/", serverId)
 
         result = VysionResponse[ImServerHit].model_validate(self._make_request(url))
+        return result.data
+    
+
+    #
+    # Leak search methods
+    #
+
+    @vysion_error_manager
+    def get_leak_by_email(
+        self,
+        email: str,
+        page: int = 1,
+        page_size: int = 50,
+        gte: datetime = None,
+        lte: datetime = None,
+    ) -> VysionResponse[LeakHit]:
+        """
+        Search for leaks containing a specific email address.
+        
+        :param email: Email address to search for
+        :param page: Page number (default: 1)
+        :param page_size: Results per page (default: 50, max: 100)
+        :param gte: Start date filter (optional)
+        :param lte: End date filter (optional)
+        :return: VysionResponse containing LeakHit objects
+        """
+        url = self._build_api_url__(
+            f"leak/email/{email}",
+            page=page,
+            page_size=page_size,
+            gte=gte,
+            lte=lte,
+        )
+        
+        result = VysionResponse[LeakHit].model_validate(self._make_request(url))
+        return result.data
+
+    @vysion_error_manager
+    def get_leak_by_wallet(
+        self,
+        chain: str,
+        address: str,
+        page: int = 1,
+        page_size: int = 50,
+        gte: datetime = None,
+        lte: datetime = None,
+    ) -> VysionResponse[LeakHit]:
+        """
+        Search for leaks containing a cryptocurrency wallet address.
+        
+        :param chain: Blockchain (btc, eth, xmr, xrp, zec, dot, bnb, dash)
+        :param address: Wallet address
+        :param page: Page number (default: 1)
+        :param page_size: Results per page (default: 50, max: 100)
+        :param gte: Start date filter (optional)
+        :param lte: End date filter (optional)
+        :return: VysionResponse containing LeakHit objects
+        """
+        url = self._build_api_url__(
+            f"leak/wallet/{chain}/{address}",
+            page=page,
+            page_size=page_size,
+            gte=gte,
+            lte=lte,
+        )
+        
+        result = VysionResponse[LeakHit].model_validate(self._make_request(url))
+        return result.data
+
+    @vysion_error_manager
+    def get_leak_by_ip(
+        self,
+        ip_address: str,
+        page: int = 1,
+        page_size: int = 50,
+        gte: datetime = None,
+        lte: datetime = None,
+    ) -> VysionResponse[LeakHit]:
+        """
+        Search for leaks containing an IP address (IPv4 or IPv6).
+        
+        :param ip_address: IP address to search for
+        :param page: Page number (default: 1)
+        :param page_size: Results per page (default: 50, max: 100)
+        :param gte: Start date filter (optional)
+        :param lte: End date filter (optional)
+        :return: VysionResponse containing LeakHit objects
+        """
+        url = self._build_api_url__(
+            f"leak/ip/{ip_address}",
+            page=page,
+            page_size=page_size,
+            gte=gte,
+            lte=lte,
+        )
+        
+        result = VysionResponse[LeakHit].model_validate(self._make_request(url))
+        return result.data
+
+    @vysion_error_manager
+    def get_leak_by_phone(
+        self,
+        country_code: str,
+        number: str,
+        page: int = 1,
+        page_size: int = 50,
+        gte: datetime = None,
+        lte: datetime = None,
+    ) -> VysionResponse[LeakHit]:
+        """
+        Search for leaks containing a phone number.
+        
+        :param country_code: Country code (e.g., "1" for US, "34" for Spain)
+        :param number: Phone number without country code
+        :param page: Page number (default: 1)
+        :param page_size: Results per page (default: 50, max: 100)
+        :param gte: Start date filter (optional)
+        :param lte: End date filter (optional)
+        :return: VysionResponse containing LeakHit objects
+        """
+        url = self._build_api_url__(
+            f"leak/phone/{country_code}/{number}",
+            page=page,
+            page_size=page_size,
+            gte=gte,
+            lte=lte,
+        )
+        
+        result = VysionResponse[LeakHit].model_validate(self._make_request(url))
+        return result.data
+
+    @vysion_error_manager
+    def get_leak_by_username(
+        self,
+        username: str,
+        page: int = 1,
+        page_size: int = 50,
+        gte: datetime = None,
+        lte: datetime = None,
+    ) -> VysionResponse[LeakHit]:
+        """
+        Search for leaks containing a specific username.
+        
+        :param username: Username to search for
+        :param page: Page number (default: 1)
+        :param page_size: Results per page (default: 50, max: 100)
+        :param gte: Start date filter (optional)
+        :param lte: End date filter (optional)
+        :return: VysionResponse containing LeakHit objects
+        """
+        url = self._build_api_url__(
+            f"leak/username/{username}",
+            page=page,
+            page_size=page_size,
+            gte=gte,
+            lte=lte,
+        )
+        
+        result = VysionResponse[LeakHit].model_validate(self._make_request(url))
+        return result.data
+
+    @vysion_error_manager
+    def get_leak_by_hash(
+        self,
+        hash_value: str,
+        page: int = 1,
+        page_size: int = 50,
+        gte: datetime = None,
+        lte: datetime = None,
+    ) -> VysionResponse[LeakHit]:
+        """
+        Search for leaks by file hash (SHA256, SHA1, or MD5).
+        Hash type is auto-detected based on length.
+        
+        :param hash_value: File hash (32, 40, or 64 hex characters)
+        :param page: Page number (default: 1)
+        :param page_size: Results per page (default: 50, max: 100)
+        :param gte: Start date filter (optional)
+        :param lte: End date filter (optional)
+        :return: VysionResponse containing LeakHit objects
+        """
+        url = self._build_api_url__(
+            f"leak/hash/{hash_value}",
+            page=page,
+            page_size=page_size,
+            gte=gte,
+            lte=lte,
+        )
+        
+        result = VysionResponse[LeakHit].model_validate(self._make_request(url))
+        return result.data
+
+    @vysion_error_manager
+    def search_leaks(
+        self,
+        q: str,
+        page: int = 1,
+        page_size: int = 50,
+        gte: datetime = None,
+        lte: datetime = None,
+    ) -> VysionResponse[LeakHit]:
+        """
+        Generic search across all leak content and metadata fields.
+        
+        :param q: Search query (minimum 3 characters)
+        :param page: Page number (default: 1)
+        :param page_size: Results per page (default: 50, max: 100)
+        :param gte: Start date filter (optional)
+        :param lte: End date filter (optional)
+        :return: VysionResponse containing LeakHit objects with highlights
+        """
+        url = self._build_api_url__(
+            "leak/search",
+            q=q,
+            page=page,
+            page_size=page_size,
+            gte=gte,
+            lte=lte,
+        )
+        
+        result = VysionResponse[LeakHit].model_validate(self._make_request(url))
+        return result.data
+
+    @vysion_error_manager
+    def get_leak_by_id(
+        self,
+        leak_id: str,
+    ) -> VysionResponse[LeakHit]:
+        """
+        Retrieve a single leak document by its Elasticsearch ID.
+        Includes downloadUrl if available from linked Telegram message.
+        
+        :param leak_id: Elasticsearch document ID
+        :return: VysionResponse containing a single LeakHit object
+        """
+        url = self._build_api_url__(
+            f"leak/{leak_id}",
+        )
+        
+        result = VysionResponse[LeakHit].model_validate(self._make_request(url))
         return result.data
     
 
