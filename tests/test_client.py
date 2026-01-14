@@ -361,6 +361,91 @@ def test_get_im_server(platform="discord", key="1031841869195395175"):
         assert False, f"'test_get_im_server' raised an exception {exc}"
 
 
+#
+# Leak endpoint tests
+#
+
+def test_leak_search_by_email():
+    """Test searching leaks by email address"""
+    try:
+        c = client.Client(api_key=config.API_KEY)
+        result = c.get_leak_by_email(email="test@example.com", page_size=5)
+        
+        assert hasattr(result, "total")
+        assert hasattr(result, "hits")
+        assert isinstance(result.hits, list)
+        
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, f"'test_leak_search_by_email' raised an exception {exc}"
+
+
+def test_leak_search_by_wallet():
+    """Test searching leaks by crypto wallet"""
+    try:
+        c = client.Client(api_key=config.API_KEY)
+        # Use a common Bitcoin address format for testing
+        result = c.get_leak_by_wallet(chain="btc", address="1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa", page_size=5)
+        
+        assert hasattr(result, "total")
+        assert hasattr(result, "hits")
+        assert isinstance(result.hits, list)
+        
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, f"'test_leak_search_by_wallet' raised an exception {exc}"
+
+
+def test_leak_search_by_ip():
+    """Test searching leaks by IP address"""
+    try:
+        c = client.Client(api_key=config.API_KEY)
+        result = c.get_leak_by_ip(ip_address="192.168.1.1", page_size=5)
+        
+        assert hasattr(result, "total")
+        assert hasattr(result, "hits")
+        assert isinstance(result.hits, list)
+        
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, f"'test_leak_search_by_ip' raised an exception {exc}"
+
+
+def test_leak_search_by_username():
+    """Test searching leaks by username"""
+    try:
+        c = client.Client(api_key=config.API_KEY)
+        result = c.get_leak_by_username(username="admin", page_size=5)
+        
+        assert hasattr(result, "total")
+        assert hasattr(result, "hits")
+        assert isinstance(result.hits, list)
+        
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, f"'test_leak_search_by_username' raised an exception {exc}"
+
+
+def test_leak_generic_search():
+    """Test generic leak search"""
+    try:
+        c = client.Client(api_key=config.API_KEY)
+        result = c.search_leaks(q="password", page_size=5)
+        
+        assert hasattr(result, "total")
+        assert hasattr(result, "hits")
+        assert isinstance(result.hits, list)
+        # Search results should include highlights
+        if result.total > 0 and len(result.hits) > 0:
+            # Check if at least one hit has highlight field
+            has_highlight = any(hasattr(hit, 'highlight') and hit.highlight for hit in result.hits)
+            # Note: highlights are optional, so we don't assert this
+        
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, f"'test_leak_generic_search' raised an exception {exc}"
+
+
 def test_invalid_apikey():
     try:
         client.Client(api_key="invalid api key")
