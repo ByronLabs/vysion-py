@@ -478,6 +478,57 @@ class ImServerHit(BaseModel):
             raise ValueError("creationDate field cannot be empty")
         return v
 
+class LeakHit(BaseModel):
+    """
+    Represents a leak document from telegram-leaks-* indices.
+    Contains file metadata and detected sensitive information.
+    """
+    # Core identification
+    id: str
+    detectionDate: datetime
+    
+    # File metadata
+    filePath: Optional[str] = Field(default_factory=lambda: None)
+    fileHash: Optional[str] = Field(default_factory=lambda: None)  # SHA256, SHA1, or MD5
+    fileSize: Optional[int] = Field(default_factory=lambda: None)
+    fileType: Optional[str] = Field(default_factory=lambda: None)
+    detectedMimeType: Optional[str] = Field(default_factory=lambda: None)
+    decompressedFilename: Optional[str] = Field(default_factory=lambda: None)
+    
+    # Archive metadata (if leak came from archive file)
+    archiveSource: Optional[str] = Field(default_factory=lambda: None)
+    archiveMemberPath: Optional[str] = Field(default_factory=lambda: None)
+    
+    # Telegram source metadata
+    telegram: Optional[dict] = Field(default_factory=lambda: None)  # Contains channel_id, message_id, etc.
+    
+    # Detected sensitive information (enrichment data)
+    detectedInfo: Optional[dict] = Field(default_factory=lambda: None)
+    # detectedInfo contains: emails, usernames, phone_numbers, ipv4_addresses, ipv6_addresses,
+    # btc_wallets, eth_wallets, xmr_wallets, xrp_wallets, zec_wallets, dot_wallets, bnb_wallets, dash_wallets
+    
+    # Language detection
+    language: Optional[str] = Field(default_factory=lambda: None)
+    languages: Optional[List[LanguagePair]] = Field(default_factory=lambda: None)
+    
+    # Parse status
+    parseStatus: Optional[str] = Field(default_factory=lambda: None)
+    
+    # Download URL (only present for /leak/{id} endpoint)
+    downloadUrl: Optional[str] = Field(default_factory=lambda: None)
+    
+    # Search highlights (only present for search endpoints)
+    highlight: Optional[dict] = Field(default_factory=lambda: None)
+    
+    model_config = ConfigDict(exclude_defaults=True)
+    
+    @field_validator("detectionDate")
+    def validate_detectionDate(cls, v: datetime) -> datetime:
+        if not v:
+            raise ValueError("detectionDate field cannot be empty")
+        return v
+
+
 class ImFeedHit(BaseModel):
     id: str
     telegram: List[str]
