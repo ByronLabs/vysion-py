@@ -412,6 +412,12 @@ class ImProfileHit(BaseModel):
         return v
 
 
+class ImChatMessages(BaseModel):
+    messages: List[ImMessageHit]
+    prev_cursor: Optional[str] = None
+    next_cursor: Optional[str] = None
+
+
 class ImChannelHit(BaseModel):
     channelId: Union[int, str]
     channelTitles: Optional[List[str]] = Field(default_factory=lambda: None)
