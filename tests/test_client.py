@@ -3,7 +3,7 @@ from curses.has_key import has_key
 import pytest
 
 import vysion.client as client
-from vysion.client.error import Error
+from vysion.dto import Error
 
 from . import config
 
@@ -279,31 +279,19 @@ def test_im_telegram_search_telegram(platform="telegram", key="madrid"):
         assert False, f"'test_im_telegram_search' raised an exception {exc}"
 
 
-def test_get_im_chat_telegram(platform="telegram", key="-1002018336281"):
+def test_get_im_chat_messages(platform="telegram", channelId="-1003183418226", messageId=276):
     try:
         c = client.Client(api_key=config.API_KEY)
-        result = c.get_im_chat(platform, key)
+        result = c.get_im_chat_messages(platform, channelId, messageId, None, None)
 
-        assert "total" in str(result), True
         assert "hits" in str(result), True
-        assert len(result.hits) > 0
+        assert "total" in str(result), True
+        assert "prev_cursor" in str(result.hits), True
+        assert "next_cursor" in str(result.hits), True
+        assert len(result.hits[0].messages) == 30
     except Exception as exc:
         print("TEST EXCEPTION", exc)
-        assert False, f"'test_get_im_chat_telegram' raised an exception {exc}"
-
-
-def test_get_im_chat_gte_lte_telegram(platform="telegram", key="-1002018336281", gte="2024-05-16T10:57:58.632466", lte="2024-05-16T10:59:58.632466"):
-    try:
-        c = client.Client(api_key=config.API_KEY)
-        result = c.get_im_chat(platform, key, gte=gte, lte=lte)
-
-        assert "total" in str(result), True
-        assert "hits" in str(result), True
-        assert len(result.hits) == 10
-        assert result.total == 39
-    except Exception as exc:
-        print("TEST EXCEPTION", exc)
-        assert False, f"'test_get_im_chat_gte_lte_telegram' raised an exception {exc}"
+        assert False, f"'test_get_im_chat_messages' raised an exception {exc}"
 
 
 def test_get_im_profile_telegram(platform="telegram", key="609517172"):

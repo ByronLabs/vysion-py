@@ -39,6 +39,7 @@ from vysion.dto import (
     ImProfileHit,
     ImServerHit,
     LeakHit,
+    ImChatMessages,
 )
 from vysion.version import __version__ as vysion_version
 
@@ -510,14 +511,22 @@ class Client(BaseClient):
     
 
     @vysion_error_manager
-    def get_im_chat(
-        self, platform: str, channelId: str, gte: datetime = None, lte: datetime = None
-    ) -> VysionResponse[ImMessageHit]:
+    def get_im_chat_messages(
+        self,
+        platform: str,
+        channelId: str,
+        messageId: str | None,
+        cursor: str | None,
+        limit: str = 30
+    ) -> ImChatMessages:
         url = self._build_api_url__(
-            "im/" + platform + "/chat/" + channelId, gte=gte, lte=lte
+            "im/" + platform + "/chat/" + channelId,
+            messageId=messageId,
+            cursor=cursor,
+            limit=limit
         )
 
-        result = VysionResponse[ImMessageHit].model_validate(self._make_request(url))
+        result = VysionResponse[ImChatMessages].model_validate(self._make_request(url))
         return result.data
 
     @vysion_error_manager
