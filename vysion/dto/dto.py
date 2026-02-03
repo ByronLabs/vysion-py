@@ -556,7 +556,6 @@ class CryptoFeedHit(BaseModel):
     id: str
     url: str
     detectionDate: datetime
-    url: str
     network: str
     title: Optional[str] = Field(default_factory=lambda: None)
     tag: List[Tag] = Field(default_factory=lambda: [])
