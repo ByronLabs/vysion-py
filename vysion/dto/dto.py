@@ -411,13 +411,6 @@ class ImProfileHit(BaseModel):
             raise ValueError("DetectionDate field cannot be empty")
         return v
 
-
-class ImChatMessages(BaseModel):
-    messages: List[ImMessageHit]
-    prev_cursor: Optional[str] = None
-    next_cursor: Optional[str] = None
-
-
 class ImChannelHit(BaseModel):
     channelId: Union[int, str]
     channelTitles: Optional[List[str]] = Field(default_factory=lambda: None)
@@ -734,6 +727,31 @@ class Result(BaseModel, Generic[T]):
 
         return data
 
+class ResultPagination(BaseModel, Generic[T]):
+    total: int = 0
+    hits: List[T] = Field(default_factory=lambda: [])
+    prev_cursor: Optional[str] = None
+    next_cursor: Optional[str] = None
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if self.total <= 0:
+            self.total = len(self.hits)
+
+    def get_type(self) -> type:
+        if len(self.hits) <= 0:
+            return NoneType
+
+        return type(self.hits[0])
+
+    @model_validator(mode="before")
+    @classmethod
+    def check_hits(cls, data):
+        hits = data.get("hits")
+        if not isinstance(hits, list):
+            raise ValueError("hits must be a list")
+
+        return data
 
 class ErrorCode(int, Enum):
     BAD_REQUEST = 400
@@ -764,4 +782,9 @@ class Error(BaseModel):
 
 class VysionResponse(BaseModel, Generic[T]):
     data: Optional[Result[T]] = None
+    error: Optional[Error] = None
+
+
+class VysionPaginationResponse(BaseModel, Generic[T]):
+    data: Optional[ResultPagination[T]] = None
     error: Optional[Error] = None

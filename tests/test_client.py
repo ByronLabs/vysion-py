@@ -286,9 +286,10 @@ def test_get_im_chat_messages(platform="telegram", channelId="-1003183418226", m
 
         assert "hits" in str(result), True
         assert "total" in str(result), True
-        assert "prev_cursor" in str(result.hits), True
-        assert "next_cursor" in str(result.hits), True
-        assert len(result.hits[0].messages) == 30
+        assert "prev_cursor" in str(result), True
+        assert "next_cursor" in str(result), True
+        assert result.total == 30
+        assert len(result.hits) > 0
     except Exception as exc:
         print("TEST EXCEPTION", exc)
         assert False, f"'test_get_im_chat_messages' raised an exception {exc}"

@@ -30,6 +30,7 @@ from vysion.dto import (
     ErrorCode,
     DocumentHit,
     VysionResponse,
+    VysionPaginationResponse,
     RansomwareHit,
     Stat,
     Network,
@@ -39,7 +40,6 @@ from vysion.dto import (
     ImProfileHit,
     ImServerHit,
     LeakHit,
-    ImChatMessages,
 )
 from vysion.version import __version__ as vysion_version
 
@@ -518,7 +518,7 @@ class Client(BaseClient):
         messageId: str | None,
         cursor: str | None,
         limit: str = 30
-    ) -> ImChatMessages:
+    ) -> VysionPaginationResponse:
         url = self._build_api_url__(
             "im/" + platform + "/chat/" + channelId,
             messageId=messageId,
@@ -526,7 +526,7 @@ class Client(BaseClient):
             limit=limit
         )
 
-        result = VysionResponse[ImChatMessages].model_validate(self._make_request(url))
+        result = VysionPaginationResponse.model_validate(self._make_request(url))
         return result.data
 
     @vysion_error_manager
