@@ -104,6 +104,7 @@ class MISPProcessor:
         misp_object.add_attribute("text", type="text", value=hit.text)
         misp_object.add_attribute("country", type="text", value=hit.country)
         misp_object.add_attribute("industry", type="text", value=hit.industry)
+        misp_object.add_attribute("naics", type="text", value=hit.naics)
         misp_object.add_attribute(
             "url_vysion_ransom",
             type="link",
