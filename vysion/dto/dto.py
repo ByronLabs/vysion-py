@@ -547,7 +547,7 @@ class OnionFeedHit(BaseModel):
 
 class CryptoFeedHit(BaseModel):
     id: str
-    url: str
+    url: Optional[str] = Field(default_factory=lambda: None)
     detectionDate: datetime
     network: str
     title: Optional[str] = Field(default_factory=lambda: None)
