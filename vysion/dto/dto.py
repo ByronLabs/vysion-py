@@ -211,11 +211,11 @@ class Page(BaseModel):
     sha256sum: Optional[str] = None
     ssdeep: Optional[str] = None
     detectionDate: datetime = None
+    ingestionDate: Optional[datetime] = None
     screenshot: Optional[str] = None
     chunk: bool = False
     htmlOversize: Optional[bool] = False
     docType: Optional[str] = None
-
 
 
 class RansomwareHit(BaseModel):
@@ -228,6 +228,7 @@ class RansomwareHit(BaseModel):
     country: Optional[str] = None
     naics: Optional[str] = None
     industry: Optional[str] = None
+
 
 class DocumentHit(BaseModel):
     page: Page
@@ -301,39 +302,12 @@ class ImMessageHit(BaseModel):
     sha256sum: Optional[str] = None
     media: Optional[str] = Field(default_factory=lambda: None)
     detectionDate: datetime
-    serverId: Optional[Union[int, str]] = Field(default_factory=lambda: None) #Discord Exclusive
-    serverTitle: Optional[str] = Field(default_factory=lambda: None) #Discord Exclusive
-    platform: Optional[str] = Field(default_factory=lambda: None) 
-
-    @model_validator(mode="after")
-    def validate_platform_specific_fields(cls, values):
-        """
-        Conditionally include platform-specific fields:
-        - Include Discord-specific fields only for Discord platform
-        - Exclude Discord-specific fields for Telegram platform
-        """
-        platform = getattr(values, "platform", None)
-        
-        # For Telegram platform, remove Discord-specific fields
-        if platform is None or (isinstance(platform, str) and platform.lower() == "telegram"):
-            # Delete attributes instead of setting to None
-            for attr in ["serverId", "serverTitle"]:
-                if hasattr(values, attr):
-                    delattr(values, attr)
-        
-        return values
-    
-class ImMessageCardHit(BaseModel):
-    userId: Optional[Union[int, str]] = Field(default_factory=lambda: None)
-    username: Optional[str] = Field(default_factory=lambda: None)
-    channelId: Optional[int] = Field(default_factory=lambda: None)
-    messageId: Union[int, str]
-    message: Optional[str] = Field(default_factory=lambda: None)
-    channelTitle: Optional[str] = Field(default_factory=lambda: None)
-    languages: Optional[List[LanguagePair]] = Field(default_factory=lambda: None)
-    detectionDate: datetime
-    serverId: Optional[Union[int, str]] = Field(default_factory=lambda: None) #Discord Exclusive
-    serverTitle: Optional[str] = Field(default_factory=lambda: None) #Discord Exclusive
+    serverId: Optional[Union[int, str]] = Field(
+        default_factory=lambda: None
+    )  # Discord Exclusive
+    serverTitle: Optional[str] = Field(
+        default_factory=lambda: None
+    )  # Discord Exclusive
     platform: Optional[str] = Field(default_factory=lambda: None)
 
     @model_validator(mode="after")
@@ -344,15 +318,56 @@ class ImMessageCardHit(BaseModel):
         - Exclude Discord-specific fields for Telegram platform
         """
         platform = getattr(values, "platform", None)
-        
+
         # For Telegram platform, remove Discord-specific fields
-        if platform is None or (isinstance(platform, str) and platform.lower() == "telegram"):
+        if platform is None or (
+            isinstance(platform, str) and platform.lower() == "telegram"
+        ):
             # Delete attributes instead of setting to None
             for attr in ["serverId", "serverTitle"]:
                 if hasattr(values, attr):
                     delattr(values, attr)
-        
+
         return values
+
+
+class ImMessageCardHit(BaseModel):
+    userId: Optional[Union[int, str]] = Field(default_factory=lambda: None)
+    username: Optional[str] = Field(default_factory=lambda: None)
+    channelId: Optional[int] = Field(default_factory=lambda: None)
+    messageId: Union[int, str]
+    message: Optional[str] = Field(default_factory=lambda: None)
+    channelTitle: Optional[str] = Field(default_factory=lambda: None)
+    languages: Optional[List[LanguagePair]] = Field(default_factory=lambda: None)
+    detectionDate: datetime
+    serverId: Optional[Union[int, str]] = Field(
+        default_factory=lambda: None
+    )  # Discord Exclusive
+    serverTitle: Optional[str] = Field(
+        default_factory=lambda: None
+    )  # Discord Exclusive
+    platform: Optional[str] = Field(default_factory=lambda: None)
+
+    @model_validator(mode="after")
+    def validate_platform_specific_fields(cls, values):
+        """
+        Conditionally include platform-specific fields:
+        - Include Discord-specific fields only for Discord platform
+        - Exclude Discord-specific fields for Telegram platform
+        """
+        platform = getattr(values, "platform", None)
+
+        # For Telegram platform, remove Discord-specific fields
+        if platform is None or (
+            isinstance(platform, str) and platform.lower() == "telegram"
+        ):
+            # Delete attributes instead of setting to None
+            for attr in ["serverId", "serverTitle"]:
+                if hasattr(values, attr):
+                    delattr(values, attr)
+
+        return values
+
 
 class ImProfileHit(BaseModel):
     userId: Union[int, str]
@@ -361,9 +376,13 @@ class ImProfileHit(BaseModel):
     lastName: Optional[List[str]] = Field(default_factory=lambda: None)
     detectionDate: datetime
     profilePhoto: Optional[List[str]] = Field(default_factory=lambda: None)
-    bot: Optional[bool] = Field(default_factory=lambda: None) #Discord Exclusive
-    discordLink: Optional[List[str]] = Field(default_factory=lambda: None) #Discord Exclusive
-    discriminator: Optional[List[int]] = Field(default_factory=lambda: None) #Discord Exclusive
+    bot: Optional[bool] = Field(default_factory=lambda: None)  # Discord Exclusive
+    discordLink: Optional[List[str]] = Field(
+        default_factory=lambda: None
+    )  # Discord Exclusive
+    discriminator: Optional[List[int]] = Field(
+        default_factory=lambda: None
+    )  # Discord Exclusive
     # TODO platform should be mandatory
     platform: Optional[str] = Field(default_factory=lambda: None)
     email: List[Email] = Field(default_factory=lambda: [])
@@ -378,7 +397,6 @@ class ImProfileHit(BaseModel):
     ripple_address: List[RippleAddress] = Field(default_factory=lambda: [])
     zcash_address: List[ZcashAddress] = Field(default_factory=lambda: [])
 
-    
     model_config = ConfigDict(exclude_defaults=True)
 
     @model_validator(mode="after")
@@ -389,14 +407,16 @@ class ImProfileHit(BaseModel):
         - Exclude Discord-specific fields for Telegram platform
         """
         platform = getattr(values, "platform", None)
-        
+
         # For Telegram platform, remove Discord-specific fields
-        if platform is None or (isinstance(platform, str) and platform.lower() == "telegram"):
+        if platform is None or (
+            isinstance(platform, str) and platform.lower() == "telegram"
+        ):
             # Delete attributes instead of setting to None
             for attr in ["discordLink", "discriminator"]:
                 if hasattr(values, attr):
                     delattr(values, attr)
-        
+
         return values
 
     @field_validator("userId")
@@ -411,16 +431,23 @@ class ImProfileHit(BaseModel):
             raise ValueError("DetectionDate field cannot be empty")
         return v
 
+
 class ImChannelHit(BaseModel):
     channelId: Union[int, str]
     channelTitles: Optional[List[str]] = Field(default_factory=lambda: None)
     detectionDate: datetime
     creationDate: datetime
-    channelPhoto: Optional[List[str]] = Field(default_factory=lambda: None) #Telegram Exclusive
-    serverId: Optional[Union[int, str]] = Field(default_factory=lambda: None) #Discord Exclusive
-    serverTitle: Optional[List[str]] = Field(default_factory=lambda: None) #Discord Exclusive
+    channelPhoto: Optional[List[str]] = Field(
+        default_factory=lambda: None
+    )  # Telegram Exclusive
+    serverId: Optional[Union[int, str]] = Field(
+        default_factory=lambda: None
+    )  # Discord Exclusive
+    serverTitle: Optional[List[str]] = Field(
+        default_factory=lambda: None
+    )  # Discord Exclusive
     platform: Optional[str] = Field(default_factory=lambda: None)
-    
+
     @model_validator(mode="after")
     def validate_platform_specific_fields(cls, values):
         """
@@ -429,9 +456,11 @@ class ImChannelHit(BaseModel):
         - Exclude Discord-specific fields for Telegram platform
         """
         platform = getattr(values, "platform", None)
-        
+
         # For Telegram platform, remove Discord-specific fields
-        if platform is None or (isinstance(platform, str) and platform.lower() == "telegram"):
+        if platform is None or (
+            isinstance(platform, str) and platform.lower() == "telegram"
+        ):
             # Delete attributes instead of setting to None
             for attr in ["serverId", "serverTitle"]:
                 if hasattr(values, attr):
@@ -441,9 +470,9 @@ class ImChannelHit(BaseModel):
             for attr in ["channelPhoto"]:
                 if hasattr(values, attr):
                     delattr(values, attr)
-        
+
         return values
-    
+
     @field_validator("detectionDate")
     def validate_detectionDate(cls, v: datetime) -> datetime:
         if not v:
@@ -455,6 +484,7 @@ class ImChannelHit(BaseModel):
         if not v:
             raise ValueError("creationDate field cannot be empty")
         return v
+
 
 class ImServerHit(BaseModel):
     serverId: Union[int, str]
@@ -477,50 +507,56 @@ class ImServerHit(BaseModel):
             raise ValueError("creationDate field cannot be empty")
         return v
 
+
 class LeakHit(BaseModel):
     """
     Represents a leak document from telegram-leaks-* indices.
     Contains file metadata and detected sensitive information.
     """
+
     # Core identification
     id: str
     detectionDate: datetime
-    
+
     # File metadata
     filePath: Optional[str] = Field(default_factory=lambda: None)
-    fileHash: Optional[str] = Field(default_factory=lambda: None)  # SHA256, SHA1, or MD5
+    fileHash: Optional[str] = Field(
+        default_factory=lambda: None
+    )  # SHA256, SHA1, or MD5
     fileSize: Optional[int] = Field(default_factory=lambda: None)
     fileType: Optional[str] = Field(default_factory=lambda: None)
     detectedMimeType: Optional[str] = Field(default_factory=lambda: None)
     decompressedFilename: Optional[str] = Field(default_factory=lambda: None)
-    
+
     # Archive metadata (if leak came from archive file)
     archiveSource: Optional[str] = Field(default_factory=lambda: None)
     archiveMemberPath: Optional[str] = Field(default_factory=lambda: None)
-    
+
     # Telegram source metadata
-    telegram: Optional[dict] = Field(default_factory=lambda: None)  # Contains channel_id, message_id, etc.
-    
+    telegram: Optional[dict] = Field(
+        default_factory=lambda: None
+    )  # Contains channel_id, message_id, etc.
+
     # Detected sensitive information (enrichment data)
     detectedInfo: Optional[dict] = Field(default_factory=lambda: None)
     # detectedInfo contains: emails, usernames, phone_numbers, ipv4_addresses, ipv6_addresses,
     # btc_wallets, eth_wallets, xmr_wallets, xrp_wallets, zec_wallets, dot_wallets, bnb_wallets, dash_wallets
-    
+
     # Language detection
     language: Optional[str] = Field(default_factory=lambda: None)
     languages: Optional[List[LanguagePair]] = Field(default_factory=lambda: None)
-    
+
     # Parse status
     parseStatus: Optional[str] = Field(default_factory=lambda: None)
-    
+
     # Download URL (only present for /leak/{id} endpoint)
     downloadUrl: Optional[str] = Field(default_factory=lambda: None)
-    
+
     # Search highlights (only present for search endpoints)
     highlight: Optional[dict] = Field(default_factory=lambda: None)
-    
+
     model_config = ConfigDict(exclude_defaults=True)
-    
+
     @field_validator("detectionDate")
     def validate_detectionDate(cls, v: datetime) -> datetime:
         if not v:
@@ -543,7 +579,7 @@ class OnionFeedHit(BaseModel):
     path: str
     detectionDate: datetime
     tag: List[Tag] = Field(default_factory=lambda: [])
-    
+
 
 class CryptoFeedHit(BaseModel):
     id: str
@@ -553,35 +589,37 @@ class CryptoFeedHit(BaseModel):
     title: Optional[str] = Field(default_factory=lambda: None)
     tag: List[Tag] = Field(default_factory=lambda: [])
     bitcoin_address: Optional[List[BitcoinAddress]] = Field(default_factory=lambda: [])
-    polkadot_address: Optional[List[PolkadotAddress]] = Field(default_factory=lambda: [])
-    ethereum_address: Optional[List[EthereumAddress]] = Field(default_factory=lambda: [])
+    polkadot_address: Optional[List[PolkadotAddress]] = Field(
+        default_factory=lambda: []
+    )
+    ethereum_address: Optional[List[EthereumAddress]] = Field(
+        default_factory=lambda: []
+    )
     monero_address: Optional[List[MoneroAddress]] = Field(default_factory=lambda: [])
     ripple_address: Optional[List[RippleAddress]] = Field(default_factory=lambda: [])
     zcash_address: Optional[List[ZcashAddress]] = Field(default_factory=lambda: [])
 
     model_config = ConfigDict(
-        arbitrary_types_allowed=True, 
-        exclude_defaults=True, 
-        validate_assignment=True
+        arbitrary_types_allowed=True, exclude_defaults=True, validate_assignment=True
     )
 
     @model_validator(mode="after")
     def remove_empty_lists(cls, values):
         """Remove empty cryptocurrency lists from output"""
         crypto_fields = [
-            "bitcoin_address", 
-            "polkadot_address", 
-            "ethereum_address", 
-            "monero_address", 
-            "ripple_address", 
-            "zcash_address"
+            "bitcoin_address",
+            "polkadot_address",
+            "ethereum_address",
+            "monero_address",
+            "ripple_address",
+            "zcash_address",
         ]
-        
+
         for field_name in crypto_fields:
             field_value = getattr(values, field_name, None)
             if isinstance(field_value, list) and not field_value:
                 setattr(values, field_name, None)
-        
+
         return values
 
 
@@ -593,38 +631,40 @@ class CryptoTelegramFeedHit(BaseModel):
     detectionDate: datetime
     profilePhoto: Optional[List[str]] = Field(default_factory=lambda: None)
     bitcoin_address: Optional[List[BitcoinAddress]] = Field(default_factory=lambda: [])
-    polkadot_address: Optional[List[PolkadotAddress]] = Field(default_factory=lambda: [])
-    ethereum_address: Optional[List[EthereumAddress]] = Field(default_factory=lambda: [])
+    polkadot_address: Optional[List[PolkadotAddress]] = Field(
+        default_factory=lambda: []
+    )
+    ethereum_address: Optional[List[EthereumAddress]] = Field(
+        default_factory=lambda: []
+    )
     monero_address: Optional[List[MoneroAddress]] = Field(default_factory=lambda: [])
     ripple_address: Optional[List[RippleAddress]] = Field(default_factory=lambda: [])
     zcash_address: Optional[List[ZcashAddress]] = Field(default_factory=lambda: [])
 
-
     model_config = ConfigDict(
-        arbitrary_types_allowed=True, 
-        exclude_defaults=True, 
-        validate_assignment=True
+        arbitrary_types_allowed=True, exclude_defaults=True, validate_assignment=True
     )
 
     @model_validator(mode="after")
     def remove_empty_lists(cls, values):
         """Remove empty cryptocurrency lists from output"""
         crypto_fields = [
-            "bitcoin_address", 
-            "polkadot_address", 
-            "ethereum_address", 
-            "monero_address", 
-            "ripple_address", 
-            "zcash_address"
+            "bitcoin_address",
+            "polkadot_address",
+            "ethereum_address",
+            "monero_address",
+            "ripple_address",
+            "zcash_address",
         ]
-        
+
         for field_name in crypto_fields:
             field_value = getattr(values, field_name, None)
             if isinstance(field_value, list) and not field_value:
                 setattr(values, field_name, None)
-        
+
         return values
-    
+
+
 class CryptoDiscordFeedHit(BaseModel):
     userId: str
     usernames: Optional[List[str]] = Field(default_factory=lambda: [])
@@ -632,37 +672,39 @@ class CryptoDiscordFeedHit(BaseModel):
     detectionDate: datetime
     profilePhoto: Optional[List[str]] = Field(default_factory=lambda: None)
     bitcoin_address: Optional[List[BitcoinAddress]] = Field(default_factory=lambda: [])
-    polkadot_address: Optional[List[PolkadotAddress]] = Field(default_factory=lambda: [])
-    ethereum_address: Optional[List[EthereumAddress]] = Field(default_factory=lambda: [])
+    polkadot_address: Optional[List[PolkadotAddress]] = Field(
+        default_factory=lambda: []
+    )
+    ethereum_address: Optional[List[EthereumAddress]] = Field(
+        default_factory=lambda: []
+    )
     monero_address: Optional[List[MoneroAddress]] = Field(default_factory=lambda: [])
     ripple_address: Optional[List[RippleAddress]] = Field(default_factory=lambda: [])
     zcash_address: Optional[List[ZcashAddress]] = Field(default_factory=lambda: [])
 
-
     model_config = ConfigDict(
-        arbitrary_types_allowed=True, 
-        exclude_defaults=True, 
-        validate_assignment=True
+        arbitrary_types_allowed=True, exclude_defaults=True, validate_assignment=True
     )
 
     @model_validator(mode="after")
     def remove_empty_lists(cls, values):
         """Remove empty cryptocurrency lists from output"""
         crypto_fields = [
-            "bitcoin_address", 
-            "polkadot_address", 
-            "ethereum_address", 
-            "monero_address", 
-            "ripple_address", 
-            "zcash_address"
+            "bitcoin_address",
+            "polkadot_address",
+            "ethereum_address",
+            "monero_address",
+            "ripple_address",
+            "zcash_address",
         ]
-        
+
         for field_name in crypto_fields:
             field_value = getattr(values, field_name, None)
             if isinstance(field_value, list) and not field_value:
                 setattr(values, field_name, None)
-        
+
         return values
+
 
 class RansomFeedHit(BaseModel):
     id: str
@@ -706,7 +748,7 @@ T = TypeVar("T")
 class Result(BaseModel, Generic[T]):
     total: int = 0
     hits: List[T] = Field(default_factory=lambda: [])
-    
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         if self.total <= 0:
@@ -726,6 +768,7 @@ class Result(BaseModel, Generic[T]):
             raise ValueError("hits must be a list")
 
         return data
+
 
 class ResultPagination(BaseModel, Generic[T]):
     total: int = 0
@@ -752,6 +795,7 @@ class ResultPagination(BaseModel, Generic[T]):
             raise ValueError("hits must be a list")
 
         return data
+
 
 class ErrorCode(int, Enum):
     BAD_REQUEST = 400
