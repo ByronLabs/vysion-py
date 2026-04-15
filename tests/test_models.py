@@ -180,7 +180,16 @@ def test_url():
 
 
 def test_page():
-    pass
+    page = dto.Page(
+        id="test-id",
+        url=dto.URL.parse("https://vysion.ai"),
+        language=None,
+        detectionDate="2024-01-01T00:00:00",
+        ingestionDate="2024-01-02T00:00:00",
+        chunk=False,
+    )
+    assert page.detectionDate is not None
+    assert page.ingestionDate is not None
 
 
 def test_hit(get_document_fixture):
