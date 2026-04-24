@@ -290,6 +290,15 @@ class LanguagePair(BaseModel):
         return v
 
 
+class TelegramTopic(BaseModel):
+    id: Union[int, str]
+    title: Optional[str] = Field(default_factory=lambda: None)
+    topMessage: Optional[Union[int, str]] = Field(default_factory=lambda: None)
+    closed: Optional[bool] = Field(default_factory=lambda: None)
+    pinned: Optional[bool] = Field(default_factory=lambda: None)
+    hidden: Optional[bool] = Field(default_factory=lambda: None)
+
+
 class ImMessageHit(BaseModel):
     userId: Optional[Union[int, str]] = Field(default_factory=lambda: None)
     username: Optional[str] = Field(default_factory=lambda: None)
@@ -297,6 +306,10 @@ class ImMessageHit(BaseModel):
     messageId: Union[int, str]
     message: Optional[str] = Field(default_factory=lambda: None)
     channelTitle: Optional[str] = Field(default_factory=lambda: None)
+    topicId: Optional[Union[int, str]] = Field(default_factory=lambda: None)
+    topicTitle: Optional[str] = Field(default_factory=lambda: None)
+    replyToMessageId: Optional[Union[int, str]] = Field(default_factory=lambda: None)
+    isForumTopic: Optional[bool] = Field(default_factory=lambda: None)
     languages: Optional[List[LanguagePair]] = Field(default_factory=lambda: None)
     sha1sum: Optional[str] = None
     sha256sum: Optional[str] = None
@@ -325,6 +338,35 @@ class ImMessageHit(BaseModel):
         ):
             # Delete attributes instead of setting to None
             for attr in ["serverId", "serverTitle"]:
+                if hasattr(values, attr):
+                    delattr(values, attr)
+
+            if (
+                not any(
+                    getattr(values, attr, None) is not None
+                    for attr in [
+                        "topicId",
+                        "topicTitle",
+                        "replyToMessageId",
+                    ]
+                )
+                and getattr(values, "isForumTopic", None) is None
+            ):
+                for attr in [
+                    "topicId",
+                    "topicTitle",
+                    "replyToMessageId",
+                    "isForumTopic",
+                ]:
+                    if hasattr(values, attr):
+                        delattr(values, attr)
+        else:
+            for attr in [
+                "topicId",
+                "topicTitle",
+                "replyToMessageId",
+                "isForumTopic",
+            ]:
                 if hasattr(values, attr):
                     delattr(values, attr)
 
@@ -440,6 +482,8 @@ class ImChannelHit(BaseModel):
     channelPhoto: Optional[List[str]] = Field(
         default_factory=lambda: None
     )  # Telegram Exclusive
+    hasTopics: Optional[bool] = Field(default_factory=lambda: None)
+    topics: Optional[List[TelegramTopic]] = Field(default_factory=lambda: None)
     serverId: Optional[Union[int, str]] = Field(
         default_factory=lambda: None
     )  # Discord Exclusive
@@ -465,9 +509,16 @@ class ImChannelHit(BaseModel):
             for attr in ["serverId", "serverTitle"]:
                 if hasattr(values, attr):
                     delattr(values, attr)
+
+            if getattr(values, "hasTopics", None) is None and not getattr(
+                values, "topics", None
+            ):
+                for attr in ["hasTopics", "topics"]:
+                    if hasattr(values, attr):
+                        delattr(values, attr)
         else:
             # For Discord platform, remove Telegram-specific fields
-            for attr in ["channelPhoto"]:
+            for attr in ["channelPhoto", "hasTopics", "topics"]:
                 if hasattr(values, attr):
                     delattr(values, attr)
 
