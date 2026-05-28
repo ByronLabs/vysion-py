@@ -107,11 +107,10 @@ def test_phone_should_find(country_code="1", phone="200080426"):
         assert "hits" in str(result), True
         assert result.total > 0
         assert len(result.hits) > 0
-    
+
     except Exception as exc:
         print("TEST EXCEPTION", exc)
         assert False, f"'test_phone_should_find' raised an exception {exc}"
-
 
 
 def test_search_should_find(key="tijuana"):
@@ -202,9 +201,9 @@ def test_search_ransomware_victim_should_find(key="alvac"):
         assert len(result.hits) > 0
     except Exception as exc:
         print("TEST EXCEPTION", exc)
-        assert (
-            False
-        ), f"'test_search_ransomware_victim_should_find' raised an exception {exc}"
+        assert False, (
+            f"'test_search_ransomware_victim_should_find' raised an exception {exc}"
+        )
 
 
 def test_search_ransomware_victim_should_not_find(key="UAH1"):
@@ -218,9 +217,9 @@ def test_search_ransomware_victim_should_not_find(key="UAH1"):
         assert len(result.hits) == 0
     except Exception as exc:
         print("TEST EXCEPTION", exc)
-        assert (
-            False
-        ), f"'test_search_ransomware_victim_should_not_find' raised an exception {exc}"
+        assert False, (
+            f"'test_search_ransomware_victim_should_not_find' raised an exception {exc}"
+        )
 
 
 def test_get_ransomware_victim(key="64abc305e7f72075c8b582c2"):
@@ -279,7 +278,9 @@ def test_im_telegram_search_telegram(platform="telegram", key="madrid"):
         assert False, f"'test_im_telegram_search' raised an exception {exc}"
 
 
-def test_get_im_chat_messages(platform="telegram", channelId="-1003183418226", messageId=276):
+def test_get_im_chat_messages(
+    platform="telegram", channelId="-1003183418226", messageId=276
+):
     try:
         c = client.Client(api_key=config.API_KEY)
         result = c.get_im_chat_messages(platform, channelId, messageId, None, None)
@@ -336,6 +337,7 @@ def test_get_im_channel_telegram(platform="telegram", key="-1001806390689"):
         print("TEST EXCEPTION", exc)
         assert False, f"'test_get_im_channel_telegram' raised an exception {exc}"
 
+
 def test_get_im_server(platform="discord", key="1031841869195395175"):
     try:
         c = client.Client(api_key=config.API_KEY)
@@ -354,16 +356,17 @@ def test_get_im_server(platform="discord", key="1031841869195395175"):
 # Leak endpoint tests
 #
 
+
 def test_leak_search_by_email():
     """Test searching leaks by email address"""
     try:
         c = client.Client(api_key=config.API_KEY)
         result = c.get_leak_by_email(email="test@example.com", page_size=5)
-        
+
         assert hasattr(result, "total")
         assert hasattr(result, "hits")
         assert isinstance(result.hits, list)
-        
+
     except Exception as exc:
         print("TEST EXCEPTION", exc)
         assert False, f"'test_leak_search_by_email' raised an exception {exc}"
@@ -374,12 +377,14 @@ def test_leak_search_by_wallet():
     try:
         c = client.Client(api_key=config.API_KEY)
         # Use a common Bitcoin address format for testing
-        result = c.get_leak_by_wallet(chain="btc", address="1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa", page_size=5)
-        
+        result = c.get_leak_by_wallet(
+            chain="btc", address="1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa", page_size=5
+        )
+
         assert hasattr(result, "total")
         assert hasattr(result, "hits")
         assert isinstance(result.hits, list)
-        
+
     except Exception as exc:
         print("TEST EXCEPTION", exc)
         assert False, f"'test_leak_search_by_wallet' raised an exception {exc}"
@@ -390,11 +395,11 @@ def test_leak_search_by_ip():
     try:
         c = client.Client(api_key=config.API_KEY)
         result = c.get_leak_by_ip(ip_address="192.168.1.1", page_size=5)
-        
+
         assert hasattr(result, "total")
         assert hasattr(result, "hits")
         assert isinstance(result.hits, list)
-        
+
     except Exception as exc:
         print("TEST EXCEPTION", exc)
         assert False, f"'test_leak_search_by_ip' raised an exception {exc}"
@@ -405,11 +410,11 @@ def test_leak_search_by_username():
     try:
         c = client.Client(api_key=config.API_KEY)
         result = c.get_leak_by_username(username="admin", page_size=5)
-        
+
         assert hasattr(result, "total")
         assert hasattr(result, "hits")
         assert isinstance(result.hits, list)
-        
+
     except Exception as exc:
         print("TEST EXCEPTION", exc)
         assert False, f"'test_leak_search_by_username' raised an exception {exc}"
@@ -420,19 +425,46 @@ def test_leak_generic_search():
     try:
         c = client.Client(api_key=config.API_KEY)
         result = c.search_leaks(q="password", page_size=5)
-        
+
         assert hasattr(result, "total")
         assert hasattr(result, "hits")
         assert isinstance(result.hits, list)
         # Search results should include highlights
         if result.total > 0 and len(result.hits) > 0:
             # Check if at least one hit has highlight field
-            has_highlight = any(hasattr(hit, 'highlight') and hit.highlight for hit in result.hits)
+            has_highlight = any(
+                hasattr(hit, "highlight") and hit.highlight for hit in result.hits
+            )
             # Note: highlights are optional, so we don't assert this
-        
+
     except Exception as exc:
         print("TEST EXCEPTION", exc)
         assert False, f"'test_leak_generic_search' raised an exception {exc}"
+
+
+def test_get_leak_by_id_with_search_highlight():
+    """Test retrieving a leak by ID while requesting optional highlights"""
+    try:
+        c = client.Client(api_key=config.API_KEY)
+        search_result = c.search_leaks(q="password", page_size=1)
+
+        if search_result.total == 0 or len(search_result.hits) == 0:
+            return
+
+        leak_id = search_result.hits[0].id
+        result = c.get_leak_by_id(leak_id=leak_id, search_highlight="password")
+
+        assert hasattr(result, "total")
+        assert hasattr(result, "hits")
+        assert result.total == 1
+        assert len(result.hits) == 1
+        assert result.hits[0].id == leak_id
+
+    except Exception as exc:
+        print("TEST EXCEPTION", exc)
+        assert False, (
+            f"'test_get_leak_by_id_with_search_highlight' raised an exception {exc}"
+        )
 
 
 def test_invalid_apikey():
