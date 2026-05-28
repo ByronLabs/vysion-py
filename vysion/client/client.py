@@ -251,15 +251,10 @@ class Client(BaseClient):
         page: int = 1,
         page_size: int = 10,
         lte: datetime = None,
-        gte: datetime = None
+        gte: datetime = None,
     ) -> VysionResponse[DocumentHit]:
         url = self._build_api_url__(
-            "document/email",
-            email,
-            page=page,
-            page_size=page_size,
-            lte=lte,
-            gte=gte
+            "document/email", email, page=page, page_size=page_size, lte=lte, gte=gte
         )
 
         result = VysionResponse[DocumentHit].model_validate(self._make_request(url))
@@ -303,7 +298,7 @@ class Client(BaseClient):
             page=page,
             page_size=page_size,
             lte=lte,
-            gte=gte
+            gte=gte,
         )
 
         result = VysionResponse[DocumentHit].model_validate(self._make_request(url))
@@ -416,10 +411,10 @@ class Client(BaseClient):
             page_size=page_size,
             username=username,
         )
-        
+
         result = VysionResponse[ImMessageHit].model_validate(self._make_request(url))
         return result.data
-    
+
     @vysion_error_manager
     def search_im_profiles(
         self,
@@ -473,20 +468,15 @@ class Client(BaseClient):
         page: int = 1,
         page_size: int = 10,
         lte: datetime = None,
-        gte: datetime = None
+        gte: datetime = None,
     ) -> VysionResponse[DocumentHit]:
         url = self._build_api_url__(
-            "im/email",
-            email,
-            page=page,
-            page_size=page_size,
-            lte=lte,
-            gte=gte
+            "im/email", email, page=page, page_size=page_size, lte=lte, gte=gte
         )
 
         result = VysionResponse[ImProfileHit].model_validate(self._make_request(url))
         return result.data
-    
+
     @vysion_error_manager
     def im_find_wallet(
         self,
@@ -503,12 +493,11 @@ class Client(BaseClient):
             page=page,
             page_size=page_size,
             lte=lte,
-            gte=gte
+            gte=gte,
         )
 
         result = VysionResponse[ImProfileHit].model_validate(self._make_request(url))
         return result.data
-    
 
     @vysion_error_manager
     def get_im_chat_messages(
@@ -517,13 +506,13 @@ class Client(BaseClient):
         channelId: str,
         messageId: str | None,
         cursor: str | None,
-        limit: str = 30
+        limit: str = 30,
     ) -> VysionPaginationResponse:
         url = self._build_api_url__(
             "im/" + platform + "/chat/" + channelId,
             messageId=messageId,
             cursor=cursor,
-            limit=limit
+            limit=limit,
         )
 
         result = VysionPaginationResponse.model_validate(self._make_request(url))
@@ -555,7 +544,7 @@ class Client(BaseClient):
 
         result = VysionResponse[ImChannelHit].model_validate(self._make_request(url))
         return result.data
-    
+
     @vysion_error_manager
     def get_im_server(
         self, platform: str, serverId: str
@@ -564,7 +553,6 @@ class Client(BaseClient):
 
         result = VysionResponse[ImServerHit].model_validate(self._make_request(url))
         return result.data
-    
 
     #
     # Leak search methods
@@ -581,7 +569,7 @@ class Client(BaseClient):
     ) -> VysionResponse[LeakHit]:
         """
         Search for leaks containing a specific email address.
-        
+
         :param email: Email address to search for
         :param page: Page number (default: 1)
         :param page_size: Results per page (default: 50, max: 100)
@@ -596,7 +584,7 @@ class Client(BaseClient):
             gte=gte,
             lte=lte,
         )
-        
+
         result = VysionResponse[LeakHit].model_validate(self._make_request(url))
         return result.data
 
@@ -612,7 +600,7 @@ class Client(BaseClient):
     ) -> VysionResponse[LeakHit]:
         """
         Search for leaks containing a cryptocurrency wallet address.
-        
+
         :param chain: Blockchain (btc, eth, xmr, xrp, zec, dot, bnb, dash)
         :param address: Wallet address
         :param page: Page number (default: 1)
@@ -628,7 +616,7 @@ class Client(BaseClient):
             gte=gte,
             lte=lte,
         )
-        
+
         result = VysionResponse[LeakHit].model_validate(self._make_request(url))
         return result.data
 
@@ -643,7 +631,7 @@ class Client(BaseClient):
     ) -> VysionResponse[LeakHit]:
         """
         Search for leaks containing an IP address (IPv4 or IPv6).
-        
+
         :param ip_address: IP address to search for
         :param page: Page number (default: 1)
         :param page_size: Results per page (default: 50, max: 100)
@@ -658,7 +646,7 @@ class Client(BaseClient):
             gte=gte,
             lte=lte,
         )
-        
+
         result = VysionResponse[LeakHit].model_validate(self._make_request(url))
         return result.data
 
@@ -674,7 +662,7 @@ class Client(BaseClient):
     ) -> VysionResponse[LeakHit]:
         """
         Search for leaks containing a phone number.
-        
+
         :param country_code: Country code (e.g., "1" for US, "34" for Spain)
         :param number: Phone number without country code
         :param page: Page number (default: 1)
@@ -690,7 +678,7 @@ class Client(BaseClient):
             gte=gte,
             lte=lte,
         )
-        
+
         result = VysionResponse[LeakHit].model_validate(self._make_request(url))
         return result.data
 
@@ -705,7 +693,7 @@ class Client(BaseClient):
     ) -> VysionResponse[LeakHit]:
         """
         Search for leaks containing a specific username.
-        
+
         :param username: Username to search for
         :param page: Page number (default: 1)
         :param page_size: Results per page (default: 50, max: 100)
@@ -720,7 +708,7 @@ class Client(BaseClient):
             gte=gte,
             lte=lte,
         )
-        
+
         result = VysionResponse[LeakHit].model_validate(self._make_request(url))
         return result.data
 
@@ -736,7 +724,7 @@ class Client(BaseClient):
         """
         Search for leaks by file hash (SHA256, SHA1, or MD5).
         Hash type is auto-detected based on length.
-        
+
         :param hash_value: File hash (32, 40, or 64 hex characters)
         :param page: Page number (default: 1)
         :param page_size: Results per page (default: 50, max: 100)
@@ -751,7 +739,7 @@ class Client(BaseClient):
             gte=gte,
             lte=lte,
         )
-        
+
         result = VysionResponse[LeakHit].model_validate(self._make_request(url))
         return result.data
 
@@ -766,7 +754,7 @@ class Client(BaseClient):
     ) -> VysionResponse[LeakHit]:
         """
         Generic search across all leak content and metadata fields.
-        
+
         :param q: Search query (minimum 3 characters)
         :param page: Page number (default: 1)
         :param page_size: Results per page (default: 50, max: 100)
@@ -782,7 +770,7 @@ class Client(BaseClient):
             gte=gte,
             lte=lte,
         )
-        
+
         result = VysionResponse[LeakHit].model_validate(self._make_request(url))
         return result.data
 
@@ -790,21 +778,23 @@ class Client(BaseClient):
     def get_leak_by_id(
         self,
         leak_id: str,
+        search_highlight: str = None,
     ) -> VysionResponse[LeakHit]:
         """
         Retrieve a single leak document by its Elasticsearch ID.
         Includes downloadUrl if available from linked Telegram message.
-        
+
         :param leak_id: Elasticsearch document ID
+        :param search_highlight: Optional keyword or phrase to request highlight snippets inside the leak
         :return: VysionResponse containing a single LeakHit object
         """
         url = self._build_api_url__(
             f"leak/{leak_id}",
+            search_highlight=search_highlight,
         )
-        
+
         result = VysionResponse[LeakHit].model_validate(self._make_request(url))
         return result.data
-    
 
     #
     # FEEDS
@@ -812,7 +802,7 @@ class Client(BaseClient):
 
     @vysion_error_manager
     def consume_feed_ransomware(self, batch_day: datetime = datetime.today()):
-        #TODO implement client feed logic
+        # TODO implement client feed logic
         pass
 
 
