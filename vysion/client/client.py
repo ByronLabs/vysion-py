@@ -178,6 +178,7 @@ class Client(BaseClient):
         language: Language = None,
         include_tag: str = None,
         exclude_tag: str = None,
+        safe_search: bool = False,
     ) -> VysionResponse[DocumentHit]:
         url = self._build_api_url__(
             "document/search",
@@ -190,6 +191,7 @@ class Client(BaseClient):
             language=language,
             include_tag=include_tag,
             exclude_tag=exclude_tag,
+            safe_search=safe_search,
         )
 
         result = VysionResponse[DocumentHit].model_validate(self._make_request(url))
@@ -329,6 +331,7 @@ class Client(BaseClient):
         language: Language = None,
         sector: str = None,
         group: str = None,
+        time_field: str = "date",
     ) -> VysionResponse[RansomwareHit]:
         url = self._build_api_url__(
             "victim/search",
@@ -342,6 +345,7 @@ class Client(BaseClient):
             language=language,
             sector=sector,
             group=group,
+            time_field=time_field,
         )
 
         result = VysionResponse[RansomwareHit].model_validate(self._make_request(url))
@@ -400,6 +404,8 @@ class Client(BaseClient):
         page: int = 1,
         page_size: int = 10,
         username: str = None,
+        topic: str = None,
+        channelId: str = None,
     ) -> VysionResponse[ImMessageHit]:
         url = self._build_api_url__(
             "im/search",
@@ -410,6 +416,8 @@ class Client(BaseClient):
             page=page,
             page_size=page_size,
             username=username,
+            topic=topic,
+            channelId=channelId,
         )
 
         result = VysionResponse[ImMessageHit].model_validate(self._make_request(url))
@@ -424,6 +432,9 @@ class Client(BaseClient):
         lte: datetime = None,
         page: int = 1,
         page_size: int = 10,
+        username: str = None,
+        topic: str = None,
+        channelId: str = None,
     ) -> VysionResponse[ImProfileHit]:
         url = self._build_api_url__(
             "im/search/profiles",
@@ -433,6 +444,9 @@ class Client(BaseClient):
             lte=lte,
             page=page,
             page_size=page_size,
+            username=username,
+            topic=topic,
+            channelId=channelId,
         )
 
         result = VysionResponse[ImProfileHit].model_validate(self._make_request(url))
@@ -447,6 +461,9 @@ class Client(BaseClient):
         lte: datetime = None,
         page: int = 1,
         page_size: int = 10,
+        username: str = None,
+        topic: str = None,
+        channelId: str = None,
     ) -> VysionResponse[ImChannelHit]:
         url = self._build_api_url__(
             "im/search/channels",
@@ -456,6 +473,9 @@ class Client(BaseClient):
             lte=lte,
             page=page,
             page_size=page_size,
+            username=username,
+            topic=topic,
+            channelId=channelId,
         )
 
         result = VysionResponse[ImChannelHit].model_validate(self._make_request(url))
