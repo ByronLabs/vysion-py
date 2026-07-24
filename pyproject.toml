@@ -26,7 +26,7 @@ requests = "^2.28.1"
 pymisp = "^2.4.194"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.3.2"
+pytest = ">=8.3.2,<10.0.0"
 python-dotenv = "^1.0.1"
 flake8 = "4.0.1"
 pyflakes = "2.4.0"
