@@ -18,19 +18,20 @@ import re
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
-from softenum import Softenum
+
+from vysion.model.enum.base import SoftStrEnum
 
 """
 https://github.com/MISP/misp-taxonomies
 """
 
 
-class Namespace(str, Softenum):
+class Namespace(SoftStrEnum):
 
     cccs = "cccs"
 
 
-class Predicate(str, Softenum):
+class Predicate(SoftStrEnum):
 
     malware_category = "malware-category"
 
