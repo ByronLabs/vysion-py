@@ -139,6 +139,7 @@ def get_document_fixture():
                     "monero_address": [],
                     "ripple_address": [],
                     "zcash_address": [],
+                    "tron_address": [],
                 }
             ],
         },
