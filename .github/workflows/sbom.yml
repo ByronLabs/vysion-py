@@ -1,0 +1,13 @@
+name: Generate SBOM
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+      - master
+
+jobs:
+  generate-sbom:
+    if: github.event.pull_request.merged == true
+    uses: ByronLabs/security-workflows/.github/workflows/sbom.yml@main
