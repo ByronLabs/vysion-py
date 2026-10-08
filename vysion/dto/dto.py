@@ -97,6 +97,12 @@ class ZcashAddress(BaseModel):
     value: str  # TODO Regex
 
 
+class TronAddress(BaseModel):
+    _taxonomy = [vystaxonomy.Tron_Address]  # TODO Create Telegram URL
+
+    value: str  # TODO Regex
+
+
 class WhatsApp(BaseModel):
     _taxonomy = [vystaxonomy.WhatsApp]
 
@@ -244,6 +250,7 @@ class DocumentHit(BaseModel):
     monero_address: List[MoneroAddress] = Field(default_factory=lambda: [])
     ripple_address: List[RippleAddress] = Field(default_factory=lambda: [])
     zcash_address: List[ZcashAddress] = Field(default_factory=lambda: [])
+    tron_address: List[TronAddress] = Field(default_factory=lambda: [])
 
 
 class Media(BaseModel):
@@ -438,6 +445,7 @@ class ImProfileHit(BaseModel):
     monero_address: List[MoneroAddress] = Field(default_factory=lambda: [])
     ripple_address: List[RippleAddress] = Field(default_factory=lambda: [])
     zcash_address: List[ZcashAddress] = Field(default_factory=lambda: [])
+    tron_address: List[TronAddress] = Field(default_factory=lambda: [])
 
     model_config = ConfigDict(exclude_defaults=True)
 
@@ -649,6 +657,7 @@ class CryptoFeedHit(BaseModel):
     monero_address: Optional[List[MoneroAddress]] = Field(default_factory=lambda: [])
     ripple_address: Optional[List[RippleAddress]] = Field(default_factory=lambda: [])
     zcash_address: Optional[List[ZcashAddress]] = Field(default_factory=lambda: [])
+    tron_address: Optional[List[TronAddress]] = Field(default_factory=lambda: [])
 
     model_config = ConfigDict(
         arbitrary_types_allowed=True, exclude_defaults=True, validate_assignment=True
@@ -664,6 +673,7 @@ class CryptoFeedHit(BaseModel):
             "monero_address",
             "ripple_address",
             "zcash_address",
+            "tron_address",
         ]
 
         for field_name in crypto_fields:
@@ -691,7 +701,7 @@ class CryptoTelegramFeedHit(BaseModel):
     monero_address: Optional[List[MoneroAddress]] = Field(default_factory=lambda: [])
     ripple_address: Optional[List[RippleAddress]] = Field(default_factory=lambda: [])
     zcash_address: Optional[List[ZcashAddress]] = Field(default_factory=lambda: [])
-
+    tron_address: Optional[List[TronAddress]] = Field(default_factory=lambda: [])
     model_config = ConfigDict(
         arbitrary_types_allowed=True, exclude_defaults=True, validate_assignment=True
     )
@@ -706,6 +716,7 @@ class CryptoTelegramFeedHit(BaseModel):
             "monero_address",
             "ripple_address",
             "zcash_address",
+            "tron_address",
         ]
 
         for field_name in crypto_fields:
@@ -732,6 +743,7 @@ class CryptoDiscordFeedHit(BaseModel):
     monero_address: Optional[List[MoneroAddress]] = Field(default_factory=lambda: [])
     ripple_address: Optional[List[RippleAddress]] = Field(default_factory=lambda: [])
     zcash_address: Optional[List[ZcashAddress]] = Field(default_factory=lambda: [])
+    tron_address: Optional[List[TronAddress]] = Field(default_factory=lambda: [])
 
     model_config = ConfigDict(
         arbitrary_types_allowed=True, exclude_defaults=True, validate_assignment=True
@@ -747,6 +759,7 @@ class CryptoDiscordFeedHit(BaseModel):
             "monero_address",
             "ripple_address",
             "zcash_address",
+            "tron_address",
         ]
 
         for field_name in crypto_fields:

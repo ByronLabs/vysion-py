@@ -84,6 +84,9 @@ class MISPProcessor:
         for zec in hit.zcash_address:
             self.misp_event.add_attribute("zec", value=zec.value)
 
+        for trx in hit.tron_address:
+            self.misp_event.add_attribute("trx", value=trx.value)
+
         for tag in hit.tag:
             self.misp_event.add_tag(str(tag))
 

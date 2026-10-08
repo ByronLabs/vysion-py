@@ -222,6 +222,19 @@ class Zcash_Address(Entity):
     address = Field()
     found_at = Field()
 
+class Tron_Address(Entity):
+
+    _flavours = Flavours(
+        vysion=Vysion("digital-asset", "cryptocurrency", "tron_address"),
+        dbsafe=DBSafe("vysion", "automatic-detection", "tron-address"),
+        misp=EmptyFlavour(),
+        stix=EmptyFlavour(),
+        case=EmptyFlavour(),
+    )
+
+    address = Field()
+    found_at = Field()
+
 
 class Tor_Domain_v3(Entity):
 
