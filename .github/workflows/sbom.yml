@@ -7,7 +7,11 @@ on:
       - main
       - master
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   generate-sbom:
     if: github.event.pull_request.merged == true
-    uses: ByronLabs/security-workflows/.github/workflows/sbom.yml@main
+    uses: ByronLabs/security-workflows/.github/workflows/sbom.yml@a700ff7958265f3b2d6277fea9be65a963ac7985
