@@ -15,10 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from softenum import Softenum
+from .base import SoftStrEnum
 
 
-class RansomGroup(str, Softenum):
+class RansomGroup(SoftStrEnum):
     conti = "Conti"
     lockbit = "LockBit"
     hive = "Hive"
